@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+<style type="text/css">
+rect {
+ height: 5px; 
+ rx: 2.5px;
+ ry: 2.5px;
+}
+.st1 { fill: #ffca28; }
+.st2 { fill: #ef6c00; }
+.st3 { fill: #00c853; }
+.st4 { fill: #888888; }
+</style>
+
+  <g id="tulip">
+    <rect width="5" x="60" y="25" class="st1"/>
+    <rect width="10" x="115" y="25" class="st2"/>
+    <rect width="5" x="175" y="25" class="st1"/>
+    <rect width="17" x="60" y="35" class="st1"/>
+    <rect width="30" x="105" y="35" class="st2"/>
+    <rect width="17" x="163" y="35" class="st1"/>
+    <rect width="30" x="60" y="45" class="st1"/>
+    <rect width="40" x="100" y="45" class="st2"/>
+    <rect width="30" x="150" y="45" class="st1"/>
+    <rect width="35" x="60" y="55" class="st1"/>
+    <rect width="30" x="105" y="55" class="st2"/>
+    <rect width="35" x="145" y="55" class="st1"/>
+    <rect width="40" x="60" y="65" class="st1"/>
+    <rect width="20" x="110" y="65" class="st2"/>
+    <rect width="40" x="140" y="65" class="st1"/>
+    <rect width="40" x="60" y="75" class="st1"/>
+    <rect width="20" x="110" y="75" class="st2"/>
+    <rect width="40" x="140" y="75" class="st1"/>
+    <rect width="40" x="60" y="85" class="st1"/>
+    <rect width="20" x="110" y="85" class="st2"/>
+    <rect width="40" x="140" y="85" class="st1"/>
+    <rect width="35" x="65" y="95" class="st1"/>
+    <rect width="10" x="115" y="95" class="st2"/>
+    <rect width="35" x="140" y="95" class="st1"/>
+    <rect width="40" x="70" y="105" class="st1"/>
+    <rect width="40" x="130" y="105" class="st1"/>
+    <rect width="90" x="75" y="115" class="st1"/>
+    <rect width="5" x="30" y="125" class="st3"/>
+    <rect width="70" x="85" y="125" class="st1"/>
+    <rect width="5" x="205" y="125" class="st3"/>
+    <rect width="25" x="30" y="135" class="st3"/>
+    <rect width="50" x="95" y="135" class="st1"/>
+    <rect width="25" x="185" y="135" class="st3"/>
+    <rect width="30" x="35" y="145" class="st3"/>
+    <rect width="20" x="110" y="145" class="st3"/>
+    <rect width="30" x="175" y="145" class="st3"/>
+    <rect width="45" x="40" y="155" class="st3"/>
+    <rect width="20" x="110" y="155" class="st3"/>
+    <rect width="45" x="155" y="155" class="st3"/>
+    <rect width="50" x="45" y="165" class="st3"/>
+    <rect width="20" x="110" y="165" class="st3"/>
+    <rect width="50" x="145" y="165" class="st3"/>
+    <rect width="50" x="55" y="175" class="st3"/>
+    <rect width="20" x="110" y="175" class="st3"/>
+    <rect width="50" x="135" y="175" class="st3"/>
+    <rect width="120" x="60" y="185" class="st3"/>
+    <rect width="100" x="70" y="195" class="st3"/>
+    <rect width="70" x="85" y="205" class="st3"/>
+  </g>
+  <g id="waterfall" fill-opacity=".5">
+    <rect width="180" x="30" y="15" class="st4"/>
+    <rect width="25" x="30" y="25" class="st4"/>
+    <rect width="40" x="70" y="25" class="st4"/>
+    <rect width="40" x="130" y="25" class="st4"/>
+    <rect width="25" x="185" y="25" class="st4"/>
+    <rect width="25" x="30" y="35" class="st4"/>
+    <rect width="13" x="84.5" y="35" class="st4"/>
+    <rect width="13.5" x="142.5" y="35" class="st4"/>
+    <rect width="25" x="185" y="35" class="st4"/>
+    <rect width="25" x="30" y="45" class="st4"/>
+    <rect width="25" x="185" y="45" class="st4"/>
+    <rect width="25" x="30" y="55" class="st4"/>
+    <rect width="25" x="185" y="55" class="st4"/>
+    <rect width="25" x="30" y="65" class="st4"/>
+    <rect width="25" x="185" y="65" class="st4"/>
+    <rect width="25" x="30" y="75" class="st4"/>
+    <rect width="25" x="185" y="75" class="st4"/>
+    <rect width="25" x="30" y="85" class="st4"/>
+    <rect width="25" x="185" y="85" class="st4"/>
+    <rect width="30" x="30" y="95" class="st4"/>
+    <rect width="30" x="180" y="95" class="st4"/>
+    <rect width="35" x="30" y="105" class="st4"/>
+    <rect width="35" x="175" y="105" class="st4"/>
+    <rect width="40" x="30" y="115" class="st4"/>
+    <rect width="40" x="170" y="115" class="st4"/>
+    <rect width="40" x="40" y="125" class="st4"/>
+    <rect width="40" x="160" y="125" class="st4"/>
+    <rect width="30" x="60" y="135" class="st4"/>
+    <rect width="30" x="150" y="135" class="st4"/>
+    <rect width="35" x="70" y="145" class="st4"/>
+    <rect width="35" x="135" y="145" class="st4"/>
+    <rect width="5" x="30" y="155" class="st4"/>
+    <rect width="15" x="90" y="155" class="st4"/>
+    <rect width="15" x="135" y="155" class="st4"/>
+    <rect width="5" x="205" y="155" class="st4"/>
+    <rect width="10" x="30" y="165" class="st4"/>
+    <rect width="5" x="100" y="165" class="st4"/>
+    <rect width="5" x="135" y="165" class="st4"/>
+    <rect width="10" x="200" y="165" class="st4"/>
+    <rect width="20" x="30" y="175" class="st4"/>
+    <rect width="20" x="190" y="175" class="st4"/>
+    <rect width="25" x="30" y="185" class="st4"/>
+    <rect width="25" x="185" y="185" class="st4"/>
+    <rect width="35" x="30" y="195" class="st4"/>
+    <rect width="35" x="175" y="195" class="st4"/>
+    <rect width="50" x="30" y="205" class="st4"/>
+    <rect width="50" x="160" y="205" class="st4"/>
+    <rect width="180" x="30" y="215" class="st4"/>
+  </g>
+</svg>

@@ -1,1 +1,22 @@
+### CodeMirror
+https://github.com/codemirror/CodeMirror/tree/5.65.13
 
+Files prefixed 'fm-' have been edited with 1-5 lines & can be considered a minor fork of the original.
+
+### CodeMirror external libraries
+CSSLint is also used in (recommended) Stylus
+
+https://github.com/jshint/jshint/blob/2.13.6/dist/jshint.js
+https://github.com/CSSLint/csslint/blob/v1.0.3/dist/csslint.js
+
+
+### js-beautify
+https://github.com/beautify-web/js-beautify
+
+Web Library CDN
+https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.9/beautify.js
+https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.9/beautify-css.js
+
+js-beautify is also used in Firefox
+resource://devtools/shared/jsbeautify/src/beautify-css.js
+resource://devtools/shared/jsbeautify/src/beautify-js.js
