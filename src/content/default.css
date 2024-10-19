@@ -1,0 +1,132 @@
+/* ----- Dark Theme ----- */
+:root,
+body.dark {
+  --color: #fff;
+  --bg: #000;
+  --hover: #888;
+  --btn-bg: #666;
+  --btn-hover: #888;
+  --border: #777;
+  --alt-bg: #444;
+  --link: #0ef;
+  --dim: #ccc;
+
+  --highlight: #f84;
+
+  /* --- about/help --- */
+  --nav: #444;
+  --shadow: #fff8;
+  --img-filter: invert(1) grayscale(1);
+  --code: #555;
+}
+
+/* ----- Light Theme ----- */
+@media screen and (prefers-color-scheme: light) {
+  :root {
+    --color: #000;
+    --bg: #fff;
+    --hover: #eaeaea;
+    --btn-bg: #f5f5f5;
+    --btn-hover: #eaeaea;
+    --border: #ddd;
+    --alt-bg: #f5f5f5;
+    --link: #08f;
+    --dim: #777;
+
+    /* --- about/help --- */
+    --nav: #fff;
+    --shadow: #0004;
+    --img-filter: none;
+    --code: #f1f1f1;
+  }
+}
+
+/* ----- General ----- */
+body {
+  color: var(--color);
+  background: var(--bg);
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+article {
+  padding: 0;
+  margin: 0;
+}
+
+section {
+  padding: 0;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+code {
+  font-size: 1.2em;
+  padding: 0 0.3em;
+  background-color: var(--code);
+  white-space: break-spaces;
+}
+
+/* ----- input ----- */
+select,
+textarea,
+input[type="number"],
+input[type="text"],
+input[type="password"],
+input[type="url"] {
+  width: 100%;
+  color: inherit;
+  background-color: var(--alt-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.3em;
+}
+
+::placeholder {
+  opacity: 0.5;
+  font-style: italic;
+}
+
+.invalid, input:invalid {
+  box-shadow: 1px 1px 4px #f20, -1px -1px 4px #f20;
+}
+
+/* ----- Navigation ----- */
+input[name="nav"],
+input[type="checkbox"].control {
+  display: none;
+}
+/* ----- /input ----- */
+
+/* ----- button ----- */
+button {
+  background: var(--btn-bg);
+  color: inherit;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.5s;
+}
+
+button:hover {
+  background: var(--hover);
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+button > * {
+  pointer-events: none;
+}
+/* ----- /button ----- */
+
+.grid {
+  display: grid;
+}

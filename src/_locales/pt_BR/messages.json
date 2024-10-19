@@ -1,0 +1,236 @@
+{
+  "extensionName": {
+    "message": "FireMonkey"
+  },
+  "extensionDescription": {
+    "message": "Um levíssimo gerenciador de UserScripts e estilos de usuário"
+  },
+  "tabScript": {
+    "message": "Scripts e CSS para a aba atual"
+  },
+  "otherScript": {
+    "message": "Outros scripts e CSS"
+  },
+  "scriptCommands": {
+    "message": "Comandos de scripts"
+  },
+  "back": {
+    "message": "Voltar"
+  },
+  "edit": {
+    "message": "Editar"
+  },
+  "autoUpdateInterval": {
+    "message": "Intervalo de atualização automática"
+  },
+  "autoUpdateIntervalDescription": {
+    "message": "Número de dias entre atualizações (0 = sem atualizações)"
+  },
+  "enableSync": {
+    "message": "Habilitar sincronização de dados"
+  },
+  "syncError": {
+    "message": "Não foi possível sincronizar\nTotal de dados ($1KB) é maior do que 100KB. Sincronização será desativada."
+  },
+  "counter": {
+    "message": "Exibir contador no botão"
+  },
+  "globalScriptExcludeMatches": {
+    "message": "Padrões globais de exclusão"
+  },
+  "globalScriptExcludeMatchesDescription": {
+    "message": "Padrões de exclusão (um por linha) em que todos os scripts serão desativados"
+  },
+  "userVar": {
+    "message": "Variáveis do usuário"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "userMeta": {
+    "message": "Metadados do usuário"
+  },
+  "storage": {
+    "message": "Armazenamento"
+  },
+  "storageError": {
+    "message": "Valor do armazenamento precisa ser um JSON válido"
+  },
+  "sidebar": {
+    "message": "Barra lateral"
+  },
+  "script": {
+    "message": "Scripts e CSS"
+  },
+  "saveScript": {
+    "message": "Salvar"
+  },
+  "enable": {
+    "message": "Ativar"
+  },
+  "update": {
+    "message": "Atualizar"
+  },
+  "autoUpdate": {
+    "message": "Atualizar automaticamente"
+  },
+  "theme": {
+    "message": "Tema"
+  },
+  "light": {
+    "message": "Claro"
+  },
+  "dark": {
+    "message": "Escuro"
+  },
+  "newJS": {
+    "message": "Novo UserScript"
+  },
+  "newCSS": {
+    "message": "Novo UserCSS"
+  },
+  "saveTemplate": {
+    "message": "Salvar como template"
+  },
+  "tabToSpaces": {
+    "message": "Tabs para espaços"
+  },
+  "toUpperCase": {
+    "message": "Seleção em maiúsculas"
+  },
+  "toLowerCase": {
+    "message": "Seleção em minúsculas"
+  },
+  "wrapIIFE": {
+    "message": "Envolver código em uma IIFE"
+  },
+  "stylish": {
+    "message": "Instalar estilo do Stylish"
+  },
+  "beautify": {
+    "message": "Formatar"
+  },
+  "report": {
+    "message": "Relatório"
+  },
+  "discardConfirm": {
+    "message": "Gostaria de descartar as mudanças sem salvar?"
+  },
+  "delete": {
+    "message": "Excluir"
+  },
+  "deleteConfirm": {
+    "message": "Deseja excluir \n'$1'\n e seus dados armazenados?"
+  },
+  "deleteMultiConfirm": {
+    "message": "Deseja deletar os $1 scripts/CSS selecionados e seus dados armazenados?"
+  },
+  "installConfirm": {
+    "message": "Deseja instalar '$1'?\nScripts/CSS com o mesmo nome serão substituídos se tiverem versão menor."
+  },
+  "metaError": {
+    "message": "Erro de metadados"
+  },
+  "noNameError": {
+    "message": "O script/CSS precisa ter um nome."
+  },
+  "nameError": {
+    "message": "Já há um script/CSS com este nome.\nDeseja substituir o existente?"
+  },
+  "updateUrlError": {
+    "message": "O script/CSS não possui updateURL ou version."
+  },
+  "noNewUpdate": {
+    "message": "Não há atualização disponível."
+  },
+  "scriptUpdated": {
+    "message": "Script/CSS atualizado para a versão $1"
+  },
+  "exportAll": {
+    "message": "Exportar"
+  },
+  "log": {
+    "message": "Log"
+  },
+  "time": {
+    "message": "Horário"
+  },
+  "reference": {
+    "message": "Referência"
+  },
+  "message": {
+    "message": "Mensagem"
+  },
+  "scratchpad": {
+    "message": "Scratchpad"
+  },
+  "run": {
+    "message": "Executar"
+  },
+  "undo": {
+    "message": "Desfazer"
+  },
+  "undoDisabled": {
+    "message": "Somente para CSS"
+  },
+  "insertError": {
+    "message": "A execução falhou"
+  },
+  "findScript": {
+    "message": "Encontrar scripts para este site"
+  },
+  "advanced": {
+    "message": "Avançado"
+  },
+  "customOptionsCSS": {
+    "message": "CSS personalizado das opções"
+  },
+  "customOptionsCSSDescription": {
+    "message": "Personalizar estilo da página de opções e do CodeMirror"
+  },
+  "customPopupCSS": {
+    "message": "CSS personalizado do popup"
+  },
+  "customPopupCSSDescription": {
+    "message": "Personalizar estilo do popup da barra de ferramentas"
+  },
+  "cmOptionsDescription": {
+    "message": "Personalizar configuração do CodeMirror, addons e lint do JavaScript"
+  },
+  "about": {
+    "message": "Sobre"
+  },
+  "error": {
+    "message": "Houve um erro de operação"
+  },
+  "export": {
+    "message": "Exportar"
+  },
+  "fileParseError": {
+    "message": "Ocorreu um erro ao processar o arquivo"
+  },
+  "fileReadError": {
+    "message": "Ocorreu um erro ao ler o arquivo"
+  },
+  "fileSizeError": {
+    "message": "O arquivo é maior do que o permitido ($1kb)"
+  },
+  "fileTypeError": {
+    "message": "Tipo de arquivo não suportado"
+  },
+  "help": {
+    "message": "Ajuda"
+  },
+  "import": {
+    "message": "Importar"
+  },
+  "jsonError": {
+    "message": "JSON inválido"
+  },
+  "options": {
+    "message": "Opções"
+  },
+  "saveOptions": {
+    "message": "Salvar"
+  }
+}

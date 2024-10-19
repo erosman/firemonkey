@@ -1,0 +1,239 @@
+{
+  "extensionName": {
+    "message": "FireMonkey"
+  },
+  "extensionDescription": {
+    "message": "Administrador súper ligero de scripts y estilos de usuario."
+  },
+  "tabScript": {
+    "message": "Scripts y estilos para la pestaña actual"
+  },
+  "otherScript": {
+    "message": "Otros scripts y estilos"
+  },
+  "scriptCommands": {
+    "message": "Comandos de scripts"
+  },
+  "back": {
+    "message": "Volver"
+  },
+  "edit": {
+    "message": "Editar"
+  },
+  "autoUpdateInterval": {
+    "message": "Intervalo de actualización automática"
+  },
+  "autoUpdateIntervalDescription": {
+    "message": "Número de días entre actualizaciones (0 = no actualizar)"
+  },
+  "enableSync": {
+    "message": "Habilitar sincronización de datos"
+  },
+  "syncError": {
+    "message": "No es posible sincronizar\nEl total de datos ($1KB) es mayor que 100KB. La sincronización será desactivada."
+  },
+  "counter": {
+    "message": "Contador"
+  },
+  "globalScriptExcludeMatches": {
+    "message": "Patrones globales de exclusión de scripts"
+  },
+  "globalScriptExcludeMatchesDescription": {
+    "message": "Patrones de exclusión (uno por línea) en los que todos los scripts serán desactivados"
+  },
+  "userVar": {
+    "message": "Variables de usuario"
+  },
+  "reset": {
+    "message": "Reiniciar"
+  },
+  "userMeta": {
+    "message": "Metadatos de usuario"
+  },
+  "storage": {
+    "message": "Almacenamiento"
+  },
+  "storageError": {
+    "message": "El valor de almacenamiento debe ser un JSON válido"
+  },
+  "sidebar": {
+    "message": "Barra lateral"
+  },
+  "script": {
+    "message": "Scripts y estilos"
+  },
+  "saveScript": {
+    "message": "Guardar"
+  },
+  "enable": {
+    "message": "Habilitar"
+  },
+  "update": {
+    "message": "Actualizar"
+  },
+  "autoUpdate": {
+    "message": "Actualizar automáticamente"
+  },
+  "theme": {
+    "message": "Tema"
+  },
+  "light": {
+    "message": "Claro"
+  },
+  "dark": {
+    "message": "Oscuro"
+  },
+  "newJS": {
+    "message": "Nuevo Script"
+  },
+  "newCSS": {
+    "message": "Nuevo Estilo"
+  },
+  "saveTemplate": {
+    "message": "Guardar como plantilla"
+  },
+  "tabToSpaces": {
+    "message": "Pestaña para espacios"
+  },
+  "toUpperCase": {
+    "message": "Selección a mayúscula"
+  },
+  "toLowerCase": {
+    "message": "Selección a minúscula"
+  },
+  "wrapIIFE": {
+    "message": "Envolver código en una IIFE"
+  },
+  "stylish": {
+    "message": "Instalar un estilo de Stylish"
+  },
+  "beautify": {
+    "message": "Formatear"
+  },
+  "report": {
+    "message": "Informe"
+  },
+  "discardConfirm": {
+    "message": "Quiere descartar los cambios sin guardar?"
+  },
+  "delete": {
+    "message": "Borrar"
+  },
+  "deleteConfirm": {
+    "message": "Quiere borrar \n'$1'\n y sus datos almacenados?"
+  },
+  "deleteMultiConfirm": {
+    "message": "Quiere borrar los $1 scripts/estilos seleccionados y sus datos almacenados?"
+  },
+  "installConfirm": {
+    "message": "Quiere instalar '$1'?\nLos scripts/estilos con el mismo nombre serán reemplazados si tienen una version menor."
+  },
+  "metaError": {
+    "message": "Error de metadatos"
+  },
+  "noNameError": {
+    "message": "El script/estilo debe tener un nombre."
+  },
+  "nameError": {
+    "message": "Un script/estilo con el mismo nombre ya existe.\nQuiere reemplazar el script/estilo existente?"
+  },
+  "updateUrlError": {
+    "message": "El script/estilo no tiene updateURL o version."
+  },
+  "noNewUpdate": {
+    "message": "No hay nuevas actualizaciones."
+  },
+  "scriptUpdated": {
+    "message": "El script/estilo ha sido actualizado a la versión $1"
+  },
+  "exportAll": {
+    "message": "Exportar"
+  },
+  "log": {
+    "message": "Log"
+  },
+  "time": {
+    "message": "Tiempo"
+  },
+  "reference": {
+    "message": "Referencia"
+  },
+  "message": {
+    "message": "Mensaje"
+  },
+  "scratchpad": {
+    "message": "Scratchpad"
+  },
+  "run": {
+    "message": "Ejecutar"
+  },
+  "undo": {
+    "message": "Deshacer"
+  },
+  "undoDisabled": {
+    "message": "Sólo para estilos"
+  },
+  "insertError": {
+    "message": "Error al insertar"
+  },
+  "findScript": {
+    "message": "Buscar scripts para este sitio"
+  },
+  "advanced": {
+    "message": "Avanzado"
+  },
+  "customOptionsCSS": {
+    "message": "Opciones personalizadas de estilos"
+  },
+  "customOptionsCSSDescription": {
+    "message": "Personalizar la página de opciones y la configuración del estilo de CodeMirror"
+  },
+  "customPopupCSS": {
+    "message": "Estilo personalizado para ventanas emergentes"
+  },
+  "customPopupCSSDescription": {
+    "message": "Personalizar el estilo de la ventana emergente de la barra de herramientas"
+  },
+  "cmOptionsDescription": {
+    "message": "Personalizar la configuración de CodeMirror, addons y lint de JavaScript"
+  },
+  "importFromUrl": {
+    "message": "Importar desde el enlace"
+  },
+  "importFromUrlMessage": {
+    "message": "Ingrese el enlace desde el que desea importar"
+  },
+  "about": {
+    "message": "Acerca de"
+  },
+  "error": {
+    "message": "Hubo un error en la operación"
+  },
+  "export": {
+    "message": "Exportar"
+  },
+  "fileParseError": {
+    "message": "Hubo un error al procesar el archivo"
+  },
+  "fileReadError": {
+    "message": "Hubo un error al leer el archivo"
+  },
+  "fileTypeError": {
+    "message": "Tipo de archivo no soportado"
+  },
+  "help": {
+    "message": "Ayuda"
+  },
+  "import": {
+    "message": "Importar"
+  },
+  "jsonError": {
+    "message": "JSON inválido"
+  },
+  "options": {
+    "message": "Opciones"
+  },
+  "saveOptions": {
+    "message": "Guardar"
+  }
+}

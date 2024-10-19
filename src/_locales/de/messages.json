@@ -1,0 +1,239 @@
+{
+  "extensionName": {
+    "message": "FireMonkey"
+  },
+  "extensionDescription": {
+    "message": "Superleichte Benutzer-Skripte und Style Manager"
+  },
+  "tabScript": {
+    "message": "Registerkarte Skripte & CSS"
+  },
+  "otherScript": {
+    "message": "Andere Skripte & CSS"
+  },
+  "scriptCommands": {
+    "message": "Skript-Befehle"
+  },
+  "back": {
+    "message": "zurück"
+  },
+  "edit": {
+    "message": "Bearbeiten"
+  },
+  "autoUpdateInterval": {
+    "message": "Auto-Update Intervall"
+  },
+  "autoUpdateIntervalDescription": {
+    "message": "Anzahl der Tage zwischen den Aktualisierungen (0 = keine Aktualisierung)"
+  },
+  "enableSync": {
+    "message": "Speichersynchronisation einschalten"
+  },
+  "syncError": {
+    "message": "Synchronisierung nicht möglich\nSpeicher ($1KB) ist größer als 100KB. Die Synchronisierung wird ausgeschaltet."
+  },
+  "counter": {
+    "message": "Zähler"
+  },
+  "globalScriptExcludeMatches": {
+    "message": "Globale Skript-Ausschlussmuster"
+  },
+  "globalScriptExcludeMatchesDescription": {
+    "message": "Ausschlussmuster (ein pro Zeile), um zu verhindern, dass alle Skripte auf ihnen ausgeführt werden"
+  },
+  "userVar": {
+    "message": "Benutzer-Variablen"
+  },
+  "reset": {
+    "message": "Zurücksetzen"
+  },
+  "userMeta": {
+    "message": "Benutzer-Metadaten"
+  },
+  "storage": {
+    "message": "Speicherung"
+  },
+  "storageError": {
+    "message": "Der Speicherwert muss ein gültiges JSON sein"
+  },
+  "sidebar": {
+    "message": "Seitenleiste"
+  },
+  "script": {
+    "message": "Skript und CSS"
+  },
+  "saveScript": {
+    "message": "Speichern"
+  },
+  "enable": {
+    "message": "Aktivieren"
+  },
+  "update": {
+    "message": "Aktualisieren"
+  },
+  "autoUpdate": {
+    "message": "Automatisch aktualisieren"
+  },
+  "theme": {
+    "message": "Thema"
+  },
+  "light": {
+    "message": "Hell"
+  },
+  "dark": {
+    "message": "Dunkel"
+  },
+  "newJS": {
+    "message": "Neues UserScript"
+  },
+  "newCSS": {
+    "message": "Neues UserCSS"
+  },
+  "saveTemplate": {
+    "message": "Als Vorlage speichern"
+  },
+  "tabToSpaces": {
+    "message": "Tabulatoren zu Leerzeichen"
+  },
+  "toUpperCase": {
+    "message": "Auswahl in Großbuchstaben"
+  },
+  "toLowerCase": {
+    "message": "Auswahl in Kleinbuchstaben"
+  },
+  "wrapIIFE": {
+    "message": "Code in IIFE umbrechen"
+  },
+  "stylish": {
+    "message": "Stylish Style installieren"
+  },
+  "beautify": {
+    "message": "verschönern"
+  },
+  "report": {
+    "message": "Bericht"
+  },
+  "discardConfirm": {
+    "message": "Möchten Sie die Änderungen verwerfen, ohne sie zu speichern?"
+  },
+  "delete": {
+    "message": "löschen"
+  },
+  "deleteConfirm": {
+    "message": "Möchten Sie \n'$1'\n und seine gespeicherten Daten löschen?"
+  },
+  "deleteMultiConfirm": {
+    "message": "Möchten Sie die ausgewählten $1-Scripts/CSS und deren gespeicherte Daten löschen?"
+  },
+  "installConfirm": {
+    "message": "Möchten Sie '$1' installieren? \nScripts/CSS mit demselben Namen werden ersetzt, wenn sie eine niedrigere Versionsnummer haben."
+  },
+  "metaError": {
+    "message": "Meta-Daten-Fehler"
+  },
+  "noNameError": {
+    "message": "Skript/CSS muss einen Namen haben."
+  },
+  "nameError": {
+    "message": "Skript/CSS-Name existiert bereits.\nSollen Sie das vorhandene Skript/CSS ersetzen?"
+  },
+  "updateUrlError": {
+    "message": "Skript/CSS hat keine updateURL oder Version."
+  },
+  "noNewUpdate": {
+    "message": "Es gibt keine neue Aktualisierung."
+  },
+  "scriptUpdated": {
+    "message": "Skript/CSS wurde auf Version $1 aktualisiert."
+  },
+  "exportAll": {
+    "message": "exportieren"
+  },
+  "log": {
+    "message": "Protokoll"
+  },
+  "time": {
+    "message": "Zeit"
+  },
+  "reference": {
+    "message": "Referenz"
+  },
+  "message": {
+    "message": "Nachricht"
+  },
+  "scratchpad": {
+    "message": "Scratchpad"
+  },
+  "run": {
+    "message": "Ausführen"
+  },
+  "undo": {
+    "message": "Rückgängig"
+  },
+  "undoDisabled": {
+    "message": "Nur für CSS"
+  },
+  "insertError": {
+    "message": "Einfügen fehlgeschlagen"
+  },
+  "findScript": {
+    "message": "Skripte für diese Seite finden"
+  },
+  "advanced": {
+    "message": "Erweiterte"
+  },
+  "customOptionsCSS": {
+    "message": "Benutzerdefinierte Optionen CSS"
+  },
+  "customOptionsCSSDescription": {
+    "message": "Anpassen der Optionsseite & CodeMirror-Stilkonfiguration"
+  },
+  "customPopupCSS": {
+    "message": "Benutzerdefinierte Popup-CSS"
+  },
+  "customPopupCSSDescription": {
+    "message": "Konfiguration des Popup-Stils der Symbolleiste anpassen"
+  },
+  "cmOptionsDescription": {
+    "message": "Anpassen der Konfiguration von CodeMirror, Addons und JavaScript-Lint"
+  },
+  "importFromUrl": {
+    "message": "Von URL importieren"
+  },
+  "importFromUrlMessage": {
+    "message": "Geben Sie die URL ein, von der importiert werden soll"
+  },
+  "about": {
+    "message": "Über"
+  },
+  "error": {
+    "message": "Es ist ein Fehler bei der Operation aufgetreten"
+  },
+  "export": {
+    "message": "Exportieren"
+  },
+  "fileParseError": {
+    "message": "Es ist ein Fehler beim Parsen der Datei aufgetreten"
+  },
+  "fileReadError": {
+    "message": "Beim Lesen der Datei ist ein Fehler aufgetreten"
+  },
+  "fileTypeError": {
+    "message": "Nicht unterstütztes Dateiformat"
+  },
+  "help": {
+    "message": "Hilfe"
+  },
+  "import": {
+    "message": "Importieren"
+  },
+  "jsonError": {
+    "message": "Ungültiges JSON"
+  },
+  "options": {
+    "message": "Optionen"
+  },
+  "saveOptions": {
+    "message": "Speichern"
+  }
+}
