@@ -1,1 +1,62 @@
+{
+  "manifest_version": 2,
 
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "version": "2.73",
+  "default_locale": "en",
+  "homepage_url": "https://github.com/erosman/support",
+  "author": "erosman",
+
+  "icons": {
+    "16": "image/icon.svg",
+    "32": "image/icon.svg",
+    "48": "image/icon.svg",
+    "64": "image/icon.svg",
+    "128": "image/icon.svg"
+  },
+
+  "background": {
+    "page": "content/background.html"
+  },
+
+  "user_scripts": {
+    "api_script": "content/api.js"
+  },
+
+  "options_ui": {
+    "browser_style": false,
+    "open_in_tab": true,
+    "page": "content/options.html"
+  },
+
+  "browser_action": {
+    "browser_style": false,
+    "default_icon": "image/icon.svg",
+    "default_popup": "content/popup.html",
+    "default_title": "__MSG_extensionName__"
+  },
+
+  "permissions": [
+    "clipboardWrite",
+    "cookies",
+    "downloads",
+    "idle",
+    "menus",
+    "notifications",
+    "storage",
+    "tabs",
+    "unlimitedStorage",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ],
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "firemonkey@eros.man",
+      "strict_min_version": "93.0"
+    }
+  }
+}
