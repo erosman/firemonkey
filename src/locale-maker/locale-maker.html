@@ -1,0 +1,253 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Locale Maker</title>
+    <link href="locale-maker.svg" rel="icon" type="image/png">
+    <link href="locale-maker.css" rel="stylesheet">
+    <script src="locale-maker.js" defer></script>
+  </head>
+  <body>
+    <article>
+
+    <h1><img src="locale-maker.svg" alt=""> Locale Maker <span>1.9</span></h1>
+
+    <div class="head">
+      <input type="file" id="file" accept=".json">
+      <label for="file">📥 Import</label>
+      <button type="button" id="export">📤 Export</button>
+      <button type="button" id="exportAll">🗃 Export All</button>
+      <span></span>
+
+      <select id="locale" autocomplete="off">
+        <option value="" disabled selected>Select Language</option>
+        <option value="af">Afrikaans</option>
+        <option value="sq">Albanian - shqip</option>
+        <option value="am">Amharic - አማርኛ</option>
+        <option value="ar">Arabic - العربية</option>
+        <option value="an">Aragonese - aragonés</option>
+        <option value="hy">Armenian - հայերեն</option>
+        <option value="ast">Asturian - asturianu</option>
+        <option value="az">Azerbaijani - azərbaycan dili</option>
+        <option value="eu">Basque - euskara</option>
+        <option value="be">Belarusian - беларуская</option>
+        <option value="bn">Bengali - বাংলা</option>
+        <option value="bs">Bosnian - bosanski</option>
+        <option value="br">Breton - brezhoneg</option>
+        <option value="bg">Bulgarian - български</option>
+        <option value="ca">Catalan - català</option>
+        <option value="ckb">Central Kurdish - کوردی (دەستنوسی عەرەبی)</option>
+        <option value="zh">Chinese - 中文</option>
+        <option value="zh_HK">Chinese (Hong Kong) - 中文（香港）</option>
+        <option value="zh_CN">Chinese (Simplified) - 中文（简体）</option>
+        <option value="zh_TW">Chinese (Traditional) - 中文（繁體）</option>
+        <option value="co">Corsican</option>
+        <option value="hr">Croatian - hrvatski</option>
+        <option value="cs">Czech - čeština</option>
+        <option value="da">Danish - dansk</option>
+        <option value="nl">Dutch - Nederlands</option>
+        <option value="en">English</option>
+        <option value="en_AU">English (Australia)</option>
+        <option value="en_CA">English (Canada)</option>
+        <option value="en_IN">English (India)</option>
+        <option value="en_NZ">English (New Zealand)</option>
+        <option value="en_ZA">English (South Africa)</option>
+        <option value="en_GB">English (United Kingdom)</option>
+        <option value="en_US">English (United States)</option>
+        <option value="eo">Esperanto - esperanto</option>
+        <option value="et">Estonian - eesti</option>
+        <option value="fo">Faroese - føroyskt</option>
+        <option value="fil">Filipino</option>
+        <option value="fi">Finnish - suomi</option>
+        <option value="fr">French - français</option>
+        <option value="fr_CA">French (Canada) - français (Canada)</option>
+        <option value="fr_FR">French (France) - français (France)</option>
+        <option value="fr_CH">French (Switzerland) - français (Suisse)</option>
+        <option value="gl">Galician - galego</option>
+        <option value="ka">Georgian - ქართული</option>
+        <option value="de">German - Deutsch</option>
+        <option value="de_AT">German (Austria) - Deutsch (Österreich)</option>
+        <option value="de_DE">German (Germany) - Deutsch (Deutschland)</option>
+        <option value="de_LI">German (Liechtenstein) - Deutsch (Liechtenstein)</option>
+        <option value="de_CH">German (Switzerland) - Deutsch (Schweiz)</option>
+        <option value="el">Greek - Ελληνικά</option>
+        <option value="gn">Guarani</option>
+        <option value="gu">Gujarati - ગુજરાતી</option>
+        <option value="ha">Hausa</option>
+        <option value="haw">Hawaiian - ʻŌlelo Hawaiʻi</option>
+        <option value="he">Hebrew - עברית</option>
+        <option value="hi">Hindi - हिन्दी</option>
+        <option value="hu">Hungarian - magyar</option>
+        <option value="is">Icelandic - íslenska</option>
+        <option value="id">Indonesian - Indonesia</option>
+        <option value="ia">Interlingua</option>
+        <option value="ga">Irish - Gaeilge</option>
+        <option value="it">Italian - italiano</option>
+        <option value="it_IT">Italian (Italy) - italiano (Italia)</option>
+        <option value="it_CH">Italian (Switzerland) - italiano (Svizzera)</option>
+        <option value="ja">Japanese - 日本語</option>
+        <option value="kn">Kannada - ಕನ್ನಡ</option>
+        <option value="kk">Kazakh - қазақ тілі</option>
+        <option value="km">Khmer - ខ្មែរ</option>
+        <option value="ko">Korean - 한국어</option>
+        <option value="ku">Kurdish - Kurdî</option>
+        <option value="ky">Kyrgyz - кыргызча</option>
+        <option value="lo">Lao - ລາວ</option>
+        <option value="la">Latin</option>
+        <option value="lv">Latvian - latviešu</option>
+        <option value="ln">Lingala - lingála</option>
+        <option value="lt">Lithuanian - lietuvių</option>
+        <option value="mk">Macedonian - македонски</option>
+        <option value="ms">Malay - Bahasa Melayu</option>
+        <option value="ml">Malayalam - മലയാളം</option>
+        <option value="mt">Maltese - Malti</option>
+        <option value="mr">Marathi - मराठी</option>
+        <option value="mn">Mongolian - монгол</option>
+        <option value="ne">Nepali - नेपाली</option>
+        <option value="no">Norwegian - norsk</option>
+        <option value="nb">Norwegian Bokmål - norsk bokmål</option>
+        <option value="nn">Norwegian Nynorsk - nynorsk</option>
+        <option value="oc">Occitan</option>
+        <option value="or">Oriya - ଓଡ଼ିଆ</option>
+        <option value="om">Oromo - Oromoo</option>
+        <option value="ps">Pashto - پښتو</option>
+        <option value="fa">Persian - فارسی</option>
+        <option value="pl">Polish - polski</option>
+        <option value="pt">Portuguese - português</option>
+        <option value="pt_BR">Portuguese (Brazil) - português (Brasil)</option>
+        <option value="pt_PT">Portuguese (Portugal) - português (Portugal)</option>
+        <option value="pa">Punjabi - ਪੰਜਾਬੀ</option>
+        <option value="qu">Quechua</option>
+        <option value="ro">Romanian - română</option>
+        <option value="mo">Romanian (Moldova) - română (Moldova)</option>
+        <option value="rm">Romansh - rumantsch</option>
+        <option value="ru">Russian - русский</option>
+        <option value="gd">Scottish Gaelic</option>
+        <option value="sr">Serbian - српски</option>
+        <option value="sh">Serbo-Croatian - Srpskohrvatski</option>
+        <option value="sn">Shona - chiShona</option>
+        <option value="sd">Sindhi</option>
+        <option value="si">Sinhala - සිංහල</option>
+        <option value="sk">Slovak - slovenčina</option>
+        <option value="sl">Slovenian - slovenščina</option>
+        <option value="so">Somali - Soomaali</option>
+        <option value="st">Southern Sotho</option>
+        <option value="es">Spanish - español</option>
+        <option value="es_AR">Spanish (Argentina) - español (Argentina)</option>
+        <option value="es_419">Spanish (Latin America) - español (Latinoamérica)</option>
+        <option value="es_MX">Spanish (Mexico) - español (México)</option>
+        <option value="es_ES">Spanish (Spain) - español (España)</option>
+        <option value="es_US">Spanish (United States) - español (Estados Unidos)</option>
+        <option value="su">Sundanese</option>
+        <option value="sw">Swahili - Kiswahili</option>
+        <option value="sv">Swedish - svenska</option>
+        <option value="tg">Tajik - тоҷикӣ</option>
+        <option value="ta">Tamil - தமிழ்</option>
+        <option value="tt">Tatar</option>
+        <option value="te">Telugu - తెలుగు</option>
+        <option value="th">Thai - ไทย</option>
+        <option value="ti">Tigrinya - ትግርኛ</option>
+        <option value="to">Tongan - lea fakatonga</option>
+        <option value="tr">Turkish - Türkçe</option>
+        <option value="tk">Turkmen</option>
+        <option value="tw">Twi</option>
+        <option value="uk">Ukrainian - українська</option>
+        <option value="ur">Urdu - اردو</option>
+        <option value="ug">Uyghur</option>
+        <option value="uz">Uzbek - o‘zbek</option>
+        <option value="vi">Vietnamese - Tiếng Việt</option>
+        <option value="wa">Walloon - wa</option>
+        <option value="cy">Welsh - Cymraeg</option>
+        <option value="fy">Western Frisian</option>
+        <option value="xh">Xhosa</option>
+        <option value="yi">Yiddish</option>
+        <option value="yo">Yoruba - Èdè Yorùbá</option>
+        <option value="zu">Zulu - isiZulu</option>
+      </select>
+
+      <details>
+        <summary><img src="menu-dot.svg" alt=""></summary>
+        <div class="help">
+          <h3>Help</h3>
+          <dl>
+            <dt>Select Language</dt>
+            <dd>Select & load the locale from extension "_locale" if available</dd>
+            <dd>✅ marks the default locale</dd>
+            <dd>✔ marks other available locales</dd>
+
+            <dt>Import</dt>
+            <dd>After selecting the language, import a locale from file</dd>
+
+            <dt>Export</dt>
+            <dd>Export the current locale to "{language-code}/messages.json" (blank entries will be filled with default
+              language)</dd>
+
+            <dt>Export All</dt>
+            <dd>Export all included languages "Local-Maker/{language-code}/messages.json" (blank entries will be filled
+              with default language)</dd>
+
+            <dt>Paste</dt>
+            <dd>Usefull when copy/pasting from a translation API, on "paste", if there are more than 3 lines of text,
+              each line will fill the inputs starting from active input or the first one</dd>
+
+            <dt>Share</dt>
+            <dd>Please share your translations to <a href="https://github.com/erosman/extension-translations"
+                target="_blank">extension-translations</a></dd>
+
+            <dt>Support</dt>
+            <dd>Please use the GitHub Community <a href="https://github.com/erosman/support" target="_blank">Support</a></dd>
+          </dl>
+
+          <h3>Changelog</h3>
+          <dl>
+            <dt>1.9 <span>(2023-07-25)</span></dt>
+            <dd>Updated code (Firefox 93+) & UI</dd>
+
+            <dt>1.8 <span>(2022-04-27)</span></dt>
+            <dd>Added add-on name to document title</dd>
+
+            <dt>1.7 <span>(2022-03-30)</span></dt>
+            <dd>Updated Export All</dd>
+
+            <dt>1.6 <span>(2022-02-07)</span></dt>
+            <dd>Added Export All</dd>
+            <dd>Added marking of available locales</dd>
+            <dd>Added options to save without "downloads" permission (required to save in folders)</dd>
+
+            <dt>1.5 <span>(2021-11-22)</span></dt>
+            <dd>Fixed changing dash to underscore when saving</dd>
+
+            <dt>1.4 <span>(2021-10-15)</span></dt>
+            <dd>Added more Language selection</dd>
+
+            <dt>1.3 <span>(2021-10-15)</span></dt>
+            <dd>Added more Language selection</dd>
+
+            <dt>1.2 <span>(2021-01-21)</span></dt>
+            <dd>Updated Style</dd>
+
+            <dt>1.1 <span>(2020-12-14)</span></dt>
+            <dd>Added Dark/Light theme</dd>
+            <dd>Updated Language selection</dd>
+            <dd>Updated Style</dd>
+
+            <dt>1.0 <span>(2020-12-08)</span></dt>
+            <dd>Initial release</dd>
+          </dl>
+        </div>
+      </details>
+
+    </div>
+
+    <div class="content"></div>
+
+    <!-- template -->
+    <template>
+      <label></label>
+      <input type="text">
+    </template>
+    <!-- /template -->
+  </article>
+</body>
+</html>
