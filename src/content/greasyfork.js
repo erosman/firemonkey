@@ -17,7 +17,7 @@ class GreasyFork {
 
     if (id) {
       const result = await browser.storage.local.get();
-      FM.thisVersion = Object.values(result).find(i =>
+      FM.isInstalled = Object.values(result).find(i =>
         i.updateURL?.startsWith(`https://update.${hostname}/scripts/${id}/`) || // new update URL format
         i.updateURL?.startsWith(`https://${hostname}/scripts/${id}-`)           // old update URL format
       )?.version;
