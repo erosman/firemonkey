@@ -66,8 +66,8 @@ class Popup {
     Info.getMenuCommand(Tab, tabId);
 
     // add click listener if it has children
-    [this.ulTab, this.ulOther].forEach(item =>
-      item.children[0] && item.addEventListener('click', e => this.getClick(e)));
+    [this.ulTab, this.ulOther].forEach(i =>
+      i.children[0] && i.addEventListener('click', e => this.getClick(e)));
   }
 
   static getClick(e) {

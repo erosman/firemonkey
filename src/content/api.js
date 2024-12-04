@@ -14,7 +14,7 @@ browser.userScripts.onBeforeScript.addListener(script => {
   }
 
   // --- check @require CSS
-  remoteCSS.forEach(item => GM.addElement('link', {href: item, rel: 'stylesheet'}));
+  remoteCSS.forEach(i => GM.addElement('link', {href: i, rel: 'stylesheet'}));
 
   // --- GM popup CSS
   const popupCSS =
@@ -235,7 +235,7 @@ browser.userScripts.onBeforeScript.addListener(script => {
     }
 
     static arrayTest(arr, url = location.href) {
-      return arr.some(item => new RegExp(item.slice(1, -1), 'i').test(url));
+      return arr.some(i => new RegExp(i.slice(1, -1), 'i').test(url));
     }
 
     // --- cloneInto wrapper for object methods
@@ -476,7 +476,7 @@ browser.userScripts.onBeforeScript.addListener(script => {
 
       ['method', 'headers', 'body', 'mode', 'credentials', 'cache', 'redirect',
         'referrer', 'referrerPolicy', 'integrity', 'keepalive', 'signal',
-        'responseType'].forEach(item => Object.hasOwn(init, item) && (data.init[item] = init[item]));
+        'responseType'].forEach(i => Object.hasOwn(init, i) && (data.init[i] = init[i]));
 
       // exclude credentials in request, ignore credentials sent back in response (e.g. Set-Cookie header)
       init.anonymous && (data.init.credentials = 'omit');
@@ -607,7 +607,7 @@ browser.userScripts.onBeforeScript.addListener(script => {
       close.textContent = '✖';
       content.appendChild(close);
 
-      [host, content].forEach(item => item.classList.add(type)); // process options
+      [host, content].forEach(i => i.classList.add(type)); // process options
       host.classList.toggle('modal', type.startsWith('panel-') ? modal : true); // process modal
       document.body.appendChild(host);
 

@@ -355,12 +355,12 @@ export class Meta {                                         // bg, options
         if (!jp) { return []; }
 
         if (Array.isArray(jp)) {
-          def = jp.find(item => item.endsWith('*')) || jp[0];
+          def = jp.find(i => i.endsWith('*')) || jp[0];
           return [def, jp];
         }
 
         const ky = Object.keys(jp);
-        def = ky.find(item => item.endsWith('*'));
+        def = ky.find(i => i.endsWith('*'));
         return [def ? jp[def] : jp[ky[0]], jp];
 
       case 'checkbox':
@@ -540,27 +540,27 @@ export class Meta {                                         // bg, options
     }
 
     if (arr.includes('*://*/*')) {
-      arr = arr.filter(item => !item.startsWith('http://') && !item.startsWith('https://') && !item.startsWith('*://'));
+      arr = arr.filter(i => !i.startsWith('http://') && !i.startsWith('https://') && !i.startsWith('*://'));
       arr.push('*://*/*');
     }
 
     if (arr.includes('file:///*')) {
-      arr = arr.filter(item => !item.startsWith('file:///'));
+      arr = arr.filter(i => !i.startsWith('file:///'));
       arr.push('file:///*');
     }
 
     if (arr.includes('http://*/*')) {
-      arr = arr.filter(item => !item.startsWith('http://'));
+      arr = arr.filter(i => !i.startsWith('http://'));
       arr.push('http://*/*');
     }
 
     if (arr.includes('https://*/*')) {
-      arr = arr.filter(item => !item.startsWith('https://'));
+      arr = arr.filter(i => !i.startsWith('https://'));
       arr.push('https://*/*');
     }
 
     if (arr.includes('http://*/*') && arr.includes('https://*/*')) {
-      arr = arr.filter(item => !['http://*/*', 'https://*/*'].includes(item));
+      arr = arr.filter(i => !['http://*/*', 'https://*/*'].includes(i));
       arr.push('*://*/*');
     }
 
@@ -571,7 +571,7 @@ export class Meta {                                         // bg, options
   static prepare(str) {
     return str.replace(this.regEx, (m) =>
       !m.includes('*/') ? m :
-        m.split(/\r?\n/).map(item => /^\s*@[\w:-]+\s+.+/.test(item) ? item.replace(/\*\//g, '* /') : item).join('\n')
+        m.split(/\r?\n/).map(i => /^\s*@[\w:-]+\s+.+/.test(i) ? i.replace(/\*\//g, '* /') : i).join('\n')
     );
   }
 }

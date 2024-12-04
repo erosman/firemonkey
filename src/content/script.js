@@ -76,7 +76,7 @@ export class Script {
     globalScriptExcludeMatches && options.excludeMatches.push(...globalScriptExcludeMatches.split(/\s+/));
 
     // --- remove empty arrays (causes error)
-    ['excludeMatches', 'includeGlobs', 'excludeGlobs'].forEach(item => !options[item][0] && delete options[item]);
+    ['excludeMatches', 'includeGlobs', 'excludeGlobs'].forEach(i => !options[i][0] && delete options[i]);
 
     return options;
   }
@@ -264,8 +264,8 @@ export class Script {
     const {name, require, requireRemote, userVar = {}, style = []} = script;
 
     // --- add @require
-    require.forEach(item =>
-      pref[`_${item}`]?.css && options.css.push({code: Meta.prepare(pref[`_${item}`].css)})
+    require.forEach(i =>
+      pref[`_${i}`]?.css && options.css.push({code: Meta.prepare(pref[`_${i}`].css)})
     );
 
     // --- add @requireRemote

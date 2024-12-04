@@ -112,7 +112,7 @@ export class OnMessage {
   static async addCookie(url, headers, storeId) {
     // add contextual cookies, only in container/incognito
     const cookies = await browser.cookies.getAll({url, storeId});
-    const str = cookies && cookies.map(item => `${item.name}=${item.value}`).join('; ');
+    const str = cookies && cookies.map(i => `${i.name}=${i.value}`).join('; ');
     str && (headers['FM-Contextual-Cookie'] = str);
   }
 

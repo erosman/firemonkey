@@ -1946,6 +1946,24 @@ body {
     <li><a href="https://violentmonkey.github.io/api/matching/" target="_blank">Violentmonkey Matching</a></li>
   </ul>
 
+  <p><a href="https://github.com/greasyfork-org/greasyfork/issues/1345"  target="_blank">Statics</a> show that only a small percentage of userscripts use regular expression in @include & @exclude.</p>
+
+  <table>
+    <caption>Greasy Fork scripts/styles</caption>
+    <thead>
+    <tr>
+      <th></th>
+      <th>total</th>
+      <th>use regex</th>
+      <th>percentage</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr><th>scripts/styles</th><td>113,151</td><td>2,973</td><td>2.6%</td></tr>
+      <tr><th>install count</th><td>211,144,364</td><td>6,556,394</td><td>3.1%</td></tr>
+    </tbody>
+  </table>
+
 
   <h3>@includeGlob & @excludeGlob</h3>
   <p>Due to the following logic process in Firefox & Chrome, when using <code>includeGlob</code>, there must also be the mandatory <code>match</code>.</p>

@@ -133,8 +133,8 @@ class Script {
     this.storage = document.querySelector('#storage');
     this.storage.value = '';
 
-    document.querySelectorAll('.script button, .script li.button, aside button').forEach(item =>
-      item.addEventListener('click', e => this.processButtons(e)));
+    document.querySelectorAll('.script button, .script li.button, aside button').forEach(i =>
+      i.addEventListener('click', e => this.processButtons(e)));
 
     window.addEventListener('beforeunload', e =>
       this.unsavedChanges() ? e.preventDefault() : this.box.value = '');
@@ -163,15 +163,15 @@ class Script {
     // --- menu dropdown (close when clicking body)
     const menuDetails = document.querySelectorAll('.menu details');
     document.body.addEventListener('click', e =>
-      menuDetails.forEach(item => !item.contains(e.explicitOriginalTarget) && (item.open = false))
+      menuDetails.forEach(i => !i.contains(e.explicitOriginalTarget) && (i.open = false))
     );
 
     // --- textarea resize
     const divUser = document.querySelector('.menu details div.user');
     divUser.parentElement.addEventListener('toggle', e => !e.target.open && divUser.classList.remove('expand'));
-    divUser.querySelectorAll('textarea').forEach(item => {
-      item.addEventListener('focus', () => divUser.classList.toggle('expand', true));
-    });
+    divUser.querySelectorAll('textarea').forEach(i =>
+      i.addEventListener('focus', () => divUser.classList.toggle('expand', true))
+    );
 
     // --- CodeMirror & Theme
     this.cm;
@@ -313,7 +313,7 @@ class Script {
           GM_fetch: false, GM_xmlhttpRequest: false, unsafeWindow: false,
           exportFunction: false, cloneInto: false
         },
-        jquery: js && !!this.box.id && pref[this.box.id]?.require.some(item => /\bjquery\b/i.test(item)),
+        jquery: js && !!this.box.id && pref[this.box.id]?.require.some(i => /\bjquery\b/i.test(i)),
         latedef: 'nofunc',
         leanswitch: true,
         maxerr: 100,
@@ -824,7 +824,7 @@ class Script {
 
     if (!box.id) {                                          // new script
       this.addScript(data);
-      const index = [...this.navUL.children].findIndex(item => Intl.Collator().compare(item.id, id) > 0);
+      const index = [...this.navUL.children].findIndex(i => Intl.Collator().compare(i.id, id) > 0);
       index !== -1 ? this.navUL.insertBefore(this.docFrag, this.navUL.children[index]) : this.navUL.appendChild(this.docFrag);
       this.navUL.children[index !== -1 ? index : 0].classList.toggle('on', true);
     }

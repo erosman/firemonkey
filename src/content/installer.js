@@ -11,11 +11,11 @@ class Installer {
     // --- Web/Direct Installer
     browser.webRequest.onBeforeRequest.addListener(e => this.webInstall(e), {
         urls: [
-          'https://greasyfork.org/scripts/*.user.js',
-          'https://greasyfork.org/scripts/*.user.css',
-          'https://sleazyfork.org/scripts/*.user.js',
-          'https://sleazyfork.org/scripts/*.user.css',
-          'https://openuserjs.org/install/*.user.js',
+          'https://update.greasyfork.org/scripts/*.user.js',
+          'https://update.greasyfork.org/scripts/*.user.css',
+          'https://update.sleazyfork.org/scripts/*.user.js',
+          'https://update.sleazyfork.org/scripts/*.user.css',
+          'https://update.openuserjs.org/install/*.user.js',
         ],
         types: ['main_frame']
       },
@@ -64,13 +64,13 @@ class Installer {
     let q;
     switch (true) {
       // --- GreasyFork & SleazyFork
-      case [e.originUrl, e.url].every(item => item.startsWith('https://greasyfork.org/')):
-      case [e.originUrl, e.url].every(item => item.startsWith('https://sleazyfork.org/')):
+      case e.originUrl.startsWith('https://greasyfork.org/') && e.url.startsWith('https://update.greasyfork.org/'):
+      case e.originUrl.startsWith('https://sleazyfork.org/') && e.url.startsWith('https://update.sleazyfork.org/'):
         q = 'header h2';
         break;
 
       // --- OpenUserJS
-      case [e.originUrl, e.url].every(item => item.startsWith('https://openuserjs.org/')):
+      case [e.originUrl, e.url].every(i => i.startsWith('https://openuserjs.org/')):
         q = 'a[class="script-name"]';
         break;
     }

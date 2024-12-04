@@ -77,8 +77,8 @@ export class Match {                                        // bg & popup
 
       // catch all checks
       case arr.includes('<all_urls>'):
-      case arr.includes('*://*/*') && urls.some(item => item.startsWith('http')):
-      case arr.includes('file:///*') && urls.some(item => item.startsWith('file:///')):
+      case arr.includes('*://*/*') && urls.some(i => i.startsWith('http')):
+      case arr.includes('file:///*') && urls.some(i => i.startsWith('file:///')):
         return true;
 
       default:
