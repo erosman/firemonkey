@@ -3,7 +3,7 @@
 
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
-  "version": "2.73",
+  "version": "2.74",
   "default_locale": "en",
   "homepage_url": "https://github.com/erosman/support",
   "author": "erosman",
@@ -19,6 +19,27 @@
   "background": {
     "page": "content/background.html"
   },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://greasyfork.org/*/scripts/*",
+        "https://sleazyfork.org/*/scripts/*"
+      ],
+      "exclude_matches": [
+        "https://greasyfork.org/*/scripts",
+        "https://greasyfork.org/*/scripts/*/feedback",
+        "https://greasyfork.org/*/scripts/*/stats",
+        "https://greasyfork.org/*/scripts/*/versions",
+        "https://sleazyfork.org/*/scripts",
+        "https://sleazyfork.org/*/scripts/*/feedback",
+        "https://sleazyfork.org/*/scripts/*/stats",
+        "https://sleazyfork.org/*/scripts/*/versions"
+      ],
+      "js": ["content/greasyfork.js"],
+      "run_at": "document_start"
+    }
+  ],
 
   "user_scripts": {
     "api_script": "content/api.js"
