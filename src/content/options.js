@@ -909,7 +909,7 @@ class Script {
     const oldId = `_${name}`;
 
     // --- check version
-    if (!RemoteUpdate.higherVersion(data.version, pref[id].version)) {
+    if (!App.higherVersion(data.version, pref[id].version)) {
       App.notify(browser.i18n.getMessage('noNewUpdate'), name);
       return;
     }

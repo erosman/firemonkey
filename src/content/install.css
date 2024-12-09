@@ -1,0 +1,56 @@
+
+/* ----- Dark Theme ----- */
+:root {
+  --bg: #333;
+  --border: #555;
+}
+
+/* ----- Light Theme ----- */
+@media screen and (prefers-color-scheme: light) {
+  :root {
+    --bg: #eee;
+    --border: #ccc;
+  }
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+pre {
+  padding: 1em;
+}
+
+div.fm {
+  display: grid;
+  justify-content:
+  right; gap: 0.5em;
+  padding: 0.5em 1em;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--bg);
+
+  h2 {
+    margin: 0;
+  }
+
+  h2::before {
+    content: '';
+    background: url('../image/icon.svg') no-repeat center / contain;
+    display: inline-block;
+    height: 1.2em;
+    width: 1.2em;
+    margin-right: 0.3em;
+    vertical-align: text-bottom;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  button {
+    justify-self: end;
+    font-size: 1.2em;
+    padding: 0.2em 1em;
+  }
+}

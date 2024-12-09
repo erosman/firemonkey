@@ -12,14 +12,6 @@ article {
   transition: padding 0.5s ease-in-out;
 }
 
-#sidebar:checked ~ article {
-  padding-left: calc(var(--aside) + 1em);
-}
-
-#sidebar:checked ~ aside {
-  transform: translateX(0);
-}
-
 aside {
   margin: 0;
   padding: 0;
@@ -37,6 +29,14 @@ aside {
   display: grid;
   grid-auto-flow: row;
   grid-template-rows: auto 1fr auto auto;
+}
+
+#sidebar:checked ~ article {
+  padding-left: calc(var(--aside) + 1em);
+}
+
+#sidebar:checked ~ aside {
+  transform: translateX(0);
 }
 
 .list {

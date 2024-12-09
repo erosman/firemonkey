@@ -14,7 +14,7 @@
     <div><a href="#how-to-use">How to Use</a>
       <ul>
         <li><a href="#toolbar">Toolbar Icon</a></li>
-        <li><a href="#page-menu">Page Context Menu</a></li>
+        <!-- <li><a href="#page-menu">Page Context Menu</a></li> -->
         <li><a href="#install">Script/CSS Install</a></li>
         <li><a href="#android">Firefox on Android</a></li>
       </ul>
@@ -425,12 +425,12 @@
 
 
   </dl>
-
+<!--
   <h2 id="page-menu">Page Context Menu <span>(not available on Android)</span></h2>
 
   <h3>Install Stylish Style</h3>
   <p>Install styles on <i>userstyles.org</i></p>
-
+ -->
 
   <h2 id="install">Script/CSS Install</h2>
 
@@ -2200,7 +2200,7 @@ body {
 
       <tr>
         <th>👥 Firefox Users</th>
-        <td>1610</td>
+        <td>1750</td>
         <td>197k</td>
         <td>590k</td>
         <td>74k</td>
@@ -2297,7 +2297,7 @@ body {
 
       <tr>
         <th>👥 Firefox Users</th>
-        <td>1610</td>
+        <td>1750</td>
         <td>84k</td>
         <td>42k</td>
         <td>275</td>
@@ -4473,16 +4473,17 @@ if(... condition ...) { sendMessage(data); }`</span>;
   </ul>
 
   <p class="note"><code>@-moz-document regexp()</code> is not supported as Regular Expressions are not supported by Firefox API.</p>
-
+<!--
   <h3>Installing Styles from userstyles.org <span>(v2.0)</span></h3>
   <p>Right-click context-menu on the style page and FireMonkey will create a UserStyle based on the details. UserCSS/UserStyle are by far more efficient and use less resources than a UserScript only for injecting CSS/Style.</p>
 
-  <p class="note"><i>userstyles.org</i> is sometimes slow and may time out.</p>
-
+  <p class="note"><i>userstyles.org</i> is sometimes slow and may time out. <br>
+  I noticed that the site is Firefox unfriendly and changing the user-agent to Chrome makes the site load properly.</p>
+ -->
 
   <h3>ℹ️ Stylish/Stylus/xStyle Type UserStyle</h3>
 
-  <p>Since Firefox 61, extensions can not use <a href="https://developer.mozilla.org/docs/Web/CSS/@document" target="_blank">@-moz-document</a> (never supported on Chrome & other browsers) and therefore extensions would have to:</p>
+  <p>Since Firefox 61 (released 2018-03-13), extensions can not use <a href="https://developer.mozilla.org/docs/Web/CSS/@document" target="_blank">@-moz-document</a> (never supported on Chrome & other browsers) and therefore extensions would have to:</p>
 
   <ul>
     <li>Break each UserStyle into sections for each <code>@-moz-document</code></li>
@@ -4508,6 +4509,9 @@ if(... condition ...) { sendMessage(data); }`</span>;
 
     <cite><a href="https://developer.mozilla.org/docs/Web/CSS/@document" target="_blank">@document</a></cite>
   </blockquote>
+
+  <!-- <p>In Dart Sass 2.0, @-moz-document will be treated as an unknown at-rule. <a href="https://sass-lang.com/documentation/breaking-changes/moz-document/" title="Breaking Change: -moz-document" target="_blank">ⓘ</a></p> -->
+
 
   <h3>Converting UserStyle @-moz-document to UserCSS @match</h3>
   <p>The first 3 are quite straight forward and easy to convert. The only difficulty is with the <code>regexp()</code>. The more complex the regexp (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Guide/Regular_Expressions" target="_blank">Regular Expressions</a>), the more <code>@match</code> may be needed, but once done, it is easy to read and maintain.</p>
@@ -4576,7 +4580,7 @@ ReferenceError: abc is not defined[Learn More]                        1f0135df-f
     <dd>You can see the actual blob JavaScript in <a href="https://developer.mozilla.org/docs/Tools" target="_blank">Developer Tools</a> (<kbd>F12</kbd>) <b>Debugger</b> tab under <code>FireMonkey://userscript/</code> (v2.68) (<code>user-script://FireMonkey/</code> pre-2.68) (you may have to refresh the page)</dd>
     <dd>See also:
       <ul>
-        <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1824910" target="_blank">Display inconsistency of folder & file</a> (Fixed in Firefox 114)</li>
+        <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1824910" target="_blank">Display inconsistency of folder & file</a> (fixed in Firefox 114)</li>
         <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1829460" target="_blank">Display inconsistency of sourceURL containing a URL</a></li>
       </ul>
       </dd>
@@ -4683,7 +4687,7 @@ ReferenceError: abc is not defined[Learn More]                        1f0135df-f
   </table>
 
   <h1 id="Support"><img src="../image/help.svg" alt=""> Support</h1>
-  <p>Please use the GitHub Community <a href="https://github.com/erosman/support" target="_blank">Support</a>.</p>
+  <p>Please use the GitHub Community <a href="https://github.com/erosman/firemonkey" target="_blank">Support</a>.</p>
 
   </article>
   </body>

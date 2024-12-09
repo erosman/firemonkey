@@ -441,7 +441,8 @@ export class Meta {                                         // bg, options
     const opt = p2.slice(1, -1).trim().split(/\sEOT;/);     // prevent error with empty dropdown value e.g. yes "Yes (default)*" <<<EOT EOT;
     opt.forEach(item => {
       if (!item.trim()) { return; }
-      const [, id, label, valueString] = item.match(/(\S+)\s+"([^<]+)"\s+<<<EOT\s*([\S\s]+)/) || [];
+      // const [, id, label, valueString]
+      const [, , label, valueString] = item.match(/(\S+)\s+"([^<]+)"\s+<<<EOT\s*([\S\s]+)/) || [];
       label && (obj[label] = valueString.trim());
     });
 
@@ -454,7 +455,8 @@ export class Meta {                                         // bg, options
     opt.forEach(item => {
       item = item.trim();
       if (!item) { return; }
-      const [, id, label, valueString] = item.match(/(\S+)\s+"(.+)"\s+"(.+)"/);
+      // const [, id, label, valueString]
+      const [, , label, valueString] = item.match(/(\S+)\s+"(.+)"\s+"(.+)"/);
       label && (obj[label] = valueString);
     });
     return Object.keys(obj)[0] ? p1 + JSON.stringify(obj) : '';

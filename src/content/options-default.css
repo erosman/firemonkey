@@ -30,6 +30,10 @@ body {
   overflow: hidden;
 }
 
+img {
+  vertical-align: text-bottom;
+}
+
 nav label img {
   filter: var(--img-filter);
 }
@@ -58,10 +62,6 @@ iframe {
   height: 99%;
 }
 
-img {
-  vertical-align: text-bottom;
-}
-
 label[for],
 input[type="checkbox"],
 summary,
@@ -72,7 +72,6 @@ summary,
 label > input[type="checkbox"] {
   margin-right: 0.5em;
 }
-
 
 input[type="number"] {
   width: 4em;

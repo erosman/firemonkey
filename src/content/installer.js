@@ -6,197 +6,16 @@ import {RemoteUpdate} from './remote-update.js';
 class Installer {
 
   static {
+    // message from content scripts
+    browser.runtime.onMessage.addListener(e =>
+      e.api === 'install' && this.processResponse(e.text, e.name, e.updateURL));
+
     RemoteUpdate.callback = this.processResponse.bind(this);
-
-    // --- Web/Direct Installer
-    browser.webRequest.onBeforeRequest.addListener(e => this.webInstall(e), {
-        urls: [
-          'https://update.greasyfork.org/scripts/*.user.js',
-          'https://update.greasyfork.org/scripts/*.user.css',
-          'https://update.sleazyfork.org/scripts/*.user.js',
-          'https://update.sleazyfork.org/scripts/*.user.css',
-          'https://update.openuserjs.org/install/*.user.js',
-        ],
-        types: ['main_frame']
-      },
-      ['blocking']
-    );
-
-    // extraParameters not supported on Android
-    App.android ?
-      browser.tabs.onUpdated.addListener((...e) => this.directInstall(...e)) :
-      browser.tabs.onUpdated.addListener((...e) => this.directInstall(...e), {
-        urls: [
-          '*://*/*.user.js',
-          '*://*/*.user.css',
-          'file:///*.user.js',
-          'file:///*.user.css'
-       ],
-       properties: ['status']
-      });
 
     // --- Remote Update
     this.cache = [];
     browser.idle.onStateChanged.addListener(state => this.onIdle(state));
-
-    // --- Stylish context-menu
-    if (browser.menus) {                                    // menus not supported on Android
-      const contextMenus = [
-        {id: 'stylish', contexts: ['all'], documentUrlPatterns: ['https://userstyles.org/styles/*/*']}
-      ];
-      contextMenus.forEach(item => {
-        if (item.id) {
-          !item.title && (item.title = browser.i18n.getMessage(item.id)); // always use the same ID for i18n
-        }
-        browser.menus.create(item);
-      });
-
-      // prepare for manifest v3
-      browser.menus.onClicked.addListener((info, tab) =>
-        info.menuItemId === 'stylish' && this.stylish(tab.url));
-    }
   }
-
-  // ---------- Web/Direct Installer -----------------------
-  static webInstall(e) {
-    if (!e.originUrl) { return; }
-
-    let q;
-    switch (true) {
-      // --- GreasyFork & SleazyFork
-      case e.originUrl.startsWith('https://greasyfork.org/') && e.url.startsWith('https://update.greasyfork.org/'):
-      case e.originUrl.startsWith('https://sleazyfork.org/') && e.url.startsWith('https://update.sleazyfork.org/'):
-        q = 'header h2';
-        break;
-
-      // --- OpenUserJS
-      case [e.originUrl, e.url].every(i => i.startsWith('https://openuserjs.org/')):
-        q = 'a[class="script-name"]';
-        break;
-    }
-    if (!q) { return; }
-
-    const code = `(() => {
-      const name = document.querySelector('${q}')?.textContent || document.title;
-      return confirm(browser.i18n.getMessage('installConfirm', name)) && name;
-    })();`;
-
-    browser.tabs.executeScript({code})
-    .then((result = []) => result[0] && RemoteUpdate.getScript({updateURL: e.url, name: result[0]}))
-    .catch(error => App.log('webInstall', `${e.url} ➜ ${error.message}`, 'error'));
-
-    return {cancel: true};
-  }
-
-  static directInstall(tabId, changeInfo, tab) {
-    if (changeInfo.status !== 'complete') { return; }
-    if (App.android && !/^(https?|file):.+\.user\.(js|css)/i.test(tab.url)) { return; }
-
-    // not on these URLs
-    if (tab.url.startsWith('https://github.com/')) { return; }
-    if (tab.url.startsWith('https://gitee.com/') && !tab.url.includes('/raw/')) { return; }
-    if (tab.url.startsWith('https://gitlab.com/') && !tab.url.includes('/raw/')) { return; }
-    if (tab.url.startsWith('https://codeberg.org/') && !tab.url.includes('/raw/')) { return; }
-
-    const code = String.raw`(() => {
-      const text = document.body?.textContent;
-      if (!text?.trim()) {
-        alert(browser.i18n.getMessage('metaError'));
-        return;
-      }
-      const name = text.match(/(?:\/\/)?\s*@name\s+([^\r\n]+)/)?.[1];
-      if (!name) {
-        alert(browser.i18n.getMessage('metaError'));
-        return;
-      }
-      return confirm(browser.i18n.getMessage('installConfirm', name)) && [text, name];
-    })();`;
-
-    browser.tabs.executeScript(tabId, {code})
-    .then((result = []) => result[0] && this.processResponse(...result[0], tab.url))
-    .catch(error => {
-      // App.log('directInstall', `${tab.url} ➜ ${error.message}`, 'error');
-      this.installConfirm(tab);
-    });
-  }
-
-  static async installConfirm(tab) {
-    const text = await fetch(tab.url)
-    .then(response => response.text())
-    .catch(error => App.log('installConfirm fetch error', `${tab.url} ➜ ${error.message}`, 'error'));
-
-    const name = text?.match(/(?:\/\/)?\s*@name\s+([^\r\n]+)/)?.[1];
-    if (!name) {
-      App.log('installConfirm', `${tab.url} ➜ ${browser.i18n.getMessage('metaError')}`, 'error');
-      App.notify(`installConfirm fetch error\n${tab.url}`);
-      return;
-    }
-
-    // workaround for
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=1411641
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=1267027
-    const {id} = await browser.tabs.create({url: '/content/install.html'});
-
-    const code = `(() => {
-      document.querySelector('pre').textContent = ${JSON.stringify(text)};
-      return confirm(browser.i18n.getMessage('installConfirm', ${JSON.stringify(name)}));
-    })();`;
-
-    browser.tabs.executeScript(id, {code})
-    .then((result = []) => {
-      result[0] && this.processResponse(text, name, tab.url);
-      browser.tabs.remove(id);
-      browser.tabs.update(tab.id, {active: true});
-    });
-  }
-
-  static async stylish(url) {
-    // userstyles.org
-    if (!/^https:\/\/userstyles\.org\/styles\/\d+/.test(url)) { return; }
-
-    const code = String.raw`(() => {
-      const name = document.querySelector('meta[property="og:title"]').content.trim();
-      const description = document.querySelector('meta[name="twitter:description"]').content.trim()
-          .replace(/\s*<br>\s*/g, '').replace(/\s\s+/g, ' ');
-      const author = document.querySelector('#style_author a').textContent.trim();
-      const lastUpdate = document.querySelector('#left_information > div:last-of-type > div:last-of-type').textContent.trim();
-      const updateURL = (document.querySelector('link[rel="stylish-update-url"]') || {href: ''}).href;
-      return {name, description, author, lastUpdate, updateURL};
-    })();`;
-
-    const [{name, description, author, lastUpdate, updateURL}] = await browser.tabs.executeScript({code});
-    if (!name || !updateURL) {
-      App.notify(browser.i18n.getMessage('error'));
-      return;
-    }
-
-    const version = lastUpdate ? new Date(lastUpdate).toLocaleDateString("en-GB").split('/').reverse().join('') : '';
-
-    const metaData =
-`/*
-==UserStyle==
-@name           ${name}
-@description    ${description}
-@author         ${author}
-@version        ${version}
-@homepage       ${url}
-==/UserStyle==
-*/`;
-
-    fetch(updateURL)
-    .then(response => response.text())
-    .then(text => {
-      if (text.includes('@-moz-document')) {
-        this.processResponse(metaData + '\n\n' + text, name, updateURL);
-        App.notify(`${name}\nInstalled version ${version}`);
-      }
-      else {
-        App.notify(browser.i18n.getMessage('error'));       // <head><title>504 Gateway Time-out</title></head>
-      }
-    })
-    .catch(error => App.log(name, `stylish ${updateURL} ➜ ${error.message}`, 'error'));
-  }
-  // ---------- /Web|Direct Installer ----------------------
 
   // ---------- Remote Update ------------------------------
   static async onIdle(state) {
@@ -218,7 +37,7 @@ class Installer {
     !this.cache[0] && browser.storage.local.set({autoUpdateLast: now}); // update saved pref
   }
 
-  static async processResponse(text, name, updateURL) {            // from class RemoteUpdate.callback
+  static async processResponse(text, name, updateURL) {     // from class RemoteUpdate.callback
     const pref = await browser.storage.local.get();
     const data = Meta.get(text, pref);
     if (!data) {
@@ -241,7 +60,7 @@ class Installer {
 
     // --- check version, if update existing, not for local files
     if (!updateURL.startsWith('file:///') && pref[id] &&
-          !RemoteUpdate.higherVersion(data.version, pref[id].version)) { return; }
+          !App.higherVersion(data.version, pref[id].version)) { return; }
 
     // --- check for Web Install, set install URL
     if (!data.updateURL && !updateURL.startsWith('file:///')) {

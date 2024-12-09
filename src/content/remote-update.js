@@ -1,15 +1,10 @@
-// https://update.greasyfork.org/scripts/1/GreasemonkeyTampermonkeyViolentmonkey%20test%20style.user.js
-// https://update.greasyfork.org/scripts/1/GreasemonkeyTampermonkeyViolentmonkey%20test%20style.meta.js
-
 // The Accept header is not read - what you get is solely based on the extension.
-
-// The old URLs in the form
-
+// old format
 // https://greasyfork.org/scripts/1-greasemonkey-tampermonkey-violentmonkey-test-style/code/GreasemonkeyTampermonkeyViolentmonkey%20test%20style.user.js
 // https://greasyfork.org/scripts/1-greasemonkey-tampermonkey-violentmonkey-test-style/code/GreasemonkeyTampermonkeyViolentmonkey%20test%20style.meta.js
-
-// https://update.greasyfork.org/scripts/369400/Local%20YouTube%20Downloader.user.js
-// https://update.greasyfork.org/scripts/369400/Local%20YouTube%20Downloader.meta.js
+// new format
+// https://update.greasyfork.org/scripts/1/GreasemonkeyTampermonkeyViolentmonkey%20test%20style.user.js
+// https://update.greasyfork.org/scripts/1/GreasemonkeyTampermonkeyViolentmonkey%20test%20style.meta.js
 
 import {App} from './app.js';
 
@@ -77,7 +72,7 @@ export class RemoteUpdate {                                 // bg options
 
   static needUpdate(text, item) {
     const version = text.match(/@version\s+(\S+)/);         // check version
-    return version && this.higherVersion(version[1], item.version);
+    return version && App.higherVersion(version[1], item.version);
   }
 
   static getScript(item) {                                  // here bg
@@ -87,7 +82,7 @@ export class RemoteUpdate {                                 // bg options
     .catch(error => App.log(item.name, `getScript ${item.updateURL} ➜ ${error.message}`, 'error'));
   }
 
-  static higherVersion(a, b) {                              // here bg opt
-    return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}) > 0;
-  }
+  // static higherVersion(a, b) {                              // here bg opt
+  //   return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}) > 0;
+  // }
 }

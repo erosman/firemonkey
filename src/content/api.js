@@ -253,8 +253,8 @@ browser.userScripts.onBeforeScript.addListener(script => {
     // --- log from background
     static log(message, type = 'error') {
       browser.runtime.sendMessage({
-        name,
         api: 'log',
+        name,
         data: {message, type}
       });
     }
@@ -363,8 +363,8 @@ browser.userScripts.onBeforeScript.addListener(script => {
 
       // update async storage
       return browser.runtime.sendMessage({
-        name,
         api: 'setValue',
+        name,
         data: obj
       });
     },
@@ -381,8 +381,8 @@ browser.userScripts.onBeforeScript.addListener(script => {
 
       // update async storage
       return browser.runtime.sendMessage({
-        name,
         api: 'deleteValue',
+        name,
         data: arr
       });
     },
@@ -411,8 +411,8 @@ browser.userScripts.onBeforeScript.addListener(script => {
       if (!url) { return Promise.reject(); }
 
       return browser.runtime.sendMessage({
-        name,
         api: 'download',
+        name,
         data: {url, filename}
       });
     },
@@ -423,8 +423,8 @@ browser.userScripts.onBeforeScript.addListener(script => {
       const txt = text?.text || text;
       if (typeof txt !== 'string' || !txt.trim()) { return; }
       return browser.runtime.sendMessage({
-        name,
         api: 'notification',
+        name,
         data: typeof text === 'string' ? {text, title, image, onclick} : text
       });
     },
@@ -437,8 +437,8 @@ browser.userScripts.onBeforeScript.addListener(script => {
       // Error: Return value not accessible to the userScript
       // resolve -> tab object | reject -> undefined
       const tab = await browser.runtime.sendMessage({
-        name,
         api: 'openInTab',
+        name,
         data: {url, active}
       });
       return !!tab; // true/false
@@ -458,8 +458,8 @@ browser.userScripts.onBeforeScript.addListener(script => {
       else if (type === 'html') { type = 'text/html'; }
 
       return browser.runtime.sendMessage({
-        name,
         api: 'setClipboard',
+        name,
         data: {data, type}
       });
     },
@@ -484,8 +484,8 @@ browser.userScripts.onBeforeScript.addListener(script => {
       API.prepareInit(data.init);
 
       const response = await browser.runtime.sendMessage({
-        name,
         api: 'fetch',
+        name,
         data
       });
 
@@ -516,8 +516,8 @@ browser.userScripts.onBeforeScript.addListener(script => {
       API.prepareInit(data);
 
       const response = await browser.runtime.sendMessage({
-        name,
         api: 'xmlHttpRequest',
+        name,
         data
       });
       if (!response) { throw 'There was an error with the xmlHttpRequest request.'; }

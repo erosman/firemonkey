@@ -64,4 +64,8 @@ export class App {
 
     return [grantKeep, grantRemove];
   }
+
+  static higherVersion(a, b) {                              // here bg opt
+    return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}) > 0;
+  }
 }

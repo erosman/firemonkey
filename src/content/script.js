@@ -62,8 +62,8 @@ export class Script {
     options[type] = [];
 
     // --- prepare for include/exclude
-    // will be fixed in: Implement matches OR includeGlobs semantics for MV3 userScripts API
     // https://bugzilla.mozilla.org/show_bug.cgi?id=1911834
+    // will be : Implement matches OR includeGlobs semantics for MV3 userScripts API
     !script.matches[0] && (script.includes[0] || script.excludes[0] || script.includeGlobs[0] || script.excludeGlobs[0]) &&
     (options.matches = ['*://*/*', 'file:///*']);
     options.matches = [...new Set(options.matches)];        // remove duplicates
