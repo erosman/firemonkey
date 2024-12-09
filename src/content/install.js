@@ -28,12 +28,8 @@ class Install {
 
       case 'update.greasyfork.org':
       case 'update.sleazyfork.org':
-      // https://greasyfork.org/en/scripts/431691-bypass-all-shortlinks
-      // https://update.greasyfork.org/scripts/431691/Bypass%20All%20Shortlinks.user.js
-      // https://greasyfork.org/scripts/406535/
-
         const id = location.href.match(/\/scripts\/(\d+)/)?.[1];
-        const back = id && `https://greasyfork.org/scripts/${id}/`;
+        const back = id && `https://${location.hostname.replace('update.', '')}/scripts/${id}/`;
         this.process(back);
         break;
 
