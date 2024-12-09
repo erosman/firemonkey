@@ -38,6 +38,18 @@
       ],
       "js": ["content/greasyfork.js"],
       "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "*://*/*.user.js",
+        "*://*/*.user.css",
+        "file:///*.user.js",
+        "file:///*.user.css"
+      ],
+      "exclude_matches": [
+        "https://github.com/*"
+      ],
+      "js": ["content/install.js"]
     }
   ],
 
