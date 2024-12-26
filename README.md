@@ -2,7 +2,8 @@
 
 [![license](https://img.shields.io/github/license/erosman/firemonkey.svg)](https://github.com/erosman/firemonkey/blob/master/LICENSE)
 ![GitHub repo size](https://img.shields.io/github/repo-size/erosman/firemonkey?logo=github&logoColor=fff)
-![ECMAScript](https://img.shields.io/badge/ECMAScript-2022_(ES13)-blue?style=plastic&logo=javascript)
+![ECMAScript](https://img.shields.io/badge/ECMAScript-2022_(ES13)[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ferosman%2Ffiremonkey.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Ferosman%2Ffiremonkey?ref=badge_shield)
+-blue?style=plastic&logo=javascript)
 
 [About/Changelog](https://erosman.github.io/firemonkey/src/content/about.html) | [Help](https://erosman.github.io/firemonkey/src/content/help.html) | [Issues](https://github.com/erosman/firemonkey/issues)
 
@@ -69,3 +70,7 @@
     </tr>
   </tbody>
 </table>
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ferosman%2Ffiremonkey.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Ferosman%2Ffiremonkey?ref=badge_large)
