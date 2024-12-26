@@ -74,4 +74,6 @@
 
 
 ## License
+This project is open source under the MPL-2.0 license license.  
+
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ferosman%2Ffiremonkey.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Ferosman%2Ffiremonkey?ref=badge_large)
