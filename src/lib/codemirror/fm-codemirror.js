@@ -77,7 +77,7 @@
     else if (content) { for (var i = 0; i < content.length; ++i) { e.appendChild(content[i]); } }
     // FireMonkey add class
     if(e.classList.contains('cm-fm-color')) {
-      const color = [...e.classList].find(item => item.startsWith('cm-fm-value-'));
+      const color = [...e.classList].find(i => i.startsWith('cm-fm-value-'));
       if (color) {
         e.style.setProperty('--fm-color', color.substring(12).replace(/-/g, ' '));
         e.classList.remove(color);
