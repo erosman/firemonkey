@@ -105,12 +105,13 @@
   <article>
 
   <h1 id="preamble">Preamble</h1>
-  <p><i>FireMonkey</i> is a totally new combined user-script and user-style manager. While it has similar functions to other user-Script managers like <i>Greasemonkey/Tampermonkey/Violentmonkey</i>, and user-style managers like <i>Stylish/Stylus/xStyle</i>, there are also differences. Similar to other userscript managers, scripts (or CSS) are injected in tabs when tab is reloading. <s>The behaviour differs from <i>Stylus</i> which can inject CSS into a tab and remove it without having to reload the tab.</s> <a href="#Live-update">ⓘ</a> To make permanent changes without reloading the tab is not possible with the current API but changes are planned as part of <a href="https://blog.mozilla.org/addons/2021/05/27/manifest-v3-update/" target="_blank">Manifest v3 update</a>.</p>
+  <p><i>FireMonkey</i> is a totally new combined user-script and user-style manager. While it has similar functions to other user-Script managers like <i>Greasemonkey/Tampermonkey/Violentmonkey</i>, and user-style managers like <i>Stylish/Stylus/xStyle</i>, there are also differences. Similar to other userscript managers, scripts (or CSS) are injected in tabs when tab is reloading.</p>
 
-
-  <p class="note">Injection into <code>page</code> context are prevented by Firefox on sites with restrictive Content Security Policy (CSP) e.g. github.com, gitee.com, twitter.com, mail.google.com (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1411641" title="CSP 'sandbox' directive prevents content scripts from matching, due to unique origin, breaking also browser features" target="_blank">Bug 1411641</a> fixed in Firefox 128), as well as certain <a href="#blocked">domains</a>.</p>
+  <!-- <p><s>The behaviour differs from <i>Stylus</i> which can inject CSS into a tab and remove it without having to reload the tab.</s> <a href="#Live-update">ⓘ</a> To make permanent changes without reloading the tab is not possible with the current API but changes are planned as part of <a href="https://blog.mozilla.org/addons/2021/05/27/manifest-v3-update/" target="_blank">Manifest v3 update</a>.</p> -->
 
   <p><i>FireMonkey</i> v2.44 is expected to be fully compatible with all <i>Greasemonkey</i> GM4 compatible userscripts, and 90% of other userscripts. (You can post the issues to the <a href="#Support">Support</a>.)</p>
+
+  <p class="note">Injection into <code>page</code> context are prevented by Firefox on sites with restrictive Content Security Policy (CSP) e.g. github.com, gitee.com, twitter.com, mail.google.com (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1411641" title="CSP 'sandbox' directive prevents content scripts from matching, due to unique origin, breaking also browser features" target="_blank">Bug 1411641</a> fixed in Firefox 128), as well as certain <a href="#blocked">domains</a>.</p>
 
   <p class="note">Many userscripts declare <code>@grant</code> for GM APIs that they don't use.</p>
 
@@ -166,7 +167,7 @@
 
       <tr><th>@var checkbox</th><td>Requires JavaScript to process logical <i>true/false</i> which is not part of CSS</td><td class="unknown"></td></tr>
       <tr><th>@preprocessor less</th><td>Requires <a href="https://lesscss.org/" target="_blank">Less</a> JavaScript Library</td><td class="unknown"></td></tr>
-      <tr><th>@preprocessor stylus</th><td>If uses JavaScript or features which are not part of CSS</td><td class="unknown"></td></tr>
+      <tr><th>@preprocessor stylus</th><td><a href="https://stylus-lang.com/" target="_blank">Stylus</a> uses JavaScript or features which are not part of CSS</td><td class="unknown"></td></tr>
       <tr><th>@-moz-document regexp</th><td class="fail">not supported by Firefox API</td><td class="unknown"></td></tr>
     </tbody>
   </table>
@@ -223,29 +224,29 @@
   <h2 id="manifest-v3">Manifest V3</h2>
   <p>Changes introduced by Chrome in manifest v3 (MV3) will have considerable effect on the extensions.</p>
 
-  <blockquote><p>With the info available so far, ManifestV3 will kill Violentmonkey, Tampermonkey, Stylus, Stylish, and similar extensions. Google's engineers are either lying or evading such questions when asked directly. There's nothing we can do about that.</p>
+  <!-- <blockquote><p>With the info available so far, ManifestV3 will kill Violentmonkey, Tampermonkey, Stylus, Stylish, and similar extensions. Google's engineers are either lying or evading such questions when asked directly. There's nothing we can do about that.</p>
     <cite><a href="https://github.com/violentmonkey/violentmonkey/issues/505" target="_blank">Violentmonkey and manifest V3</a></cite>
-  </blockquote>
+  </blockquote> -->
 
 
   <dl class="plain">
     <dt>1. Executing arbitrary strings</dt>
     <dd><p>Chrome MV3 initially removed the option to execute arbitrary strings which is needed to inject userscripts.</p>
 
-      <blockquote>
+      <!-- <blockquote>
         <p>In Manifest V2, it was possible to execute an arbitrary string of code using <code>tabs.executeScript()</code> and the code property on the options object. Manifest V3 does not allow arbitrary code execution. In order to adapt to this requirement, extension developers can use the <code>scripting.executeScript()</code> method to either inject a static file or a function.</p>
 
         <cite><a href="https://developer.chrome.com/docs/extensions/mv3/mv3-migration/#executing-arbitrary-strings" target="_blank">Executing arbitrary strings</a></cite>
-      </blockquote>
+      </blockquote> -->
 
-      <p>Chrome has since changed its position on supporting userscript managers.</p>
+      <p>Chrome has since changed its position on supporting userscript managers via <a href="https://developer.chrome.com/docs/extensions/reference/api/userScripts" target="_blank">userScripts</a> API. There is no support for userStyles at the moment.</p>
 
-      <blockquote>
+      <!-- <blockquote>
         <p><b>Summary:</b> Userscript managers cannot inject scripts that are not included in the extension's package due to platform and policy changes that prevent arbitrary code execution. To address this, the Manifest V3 platform will be expanded to specifically support user-authored scripts and styles.</p>
 
         <p><b>Estimated timeline:</b> <s>Canary support around October, 2022.</s> Targeting Canary support in the first quarter of 2023.</p>
         <cite><a href="https://developer.chrome.com/docs/extensions/mv3/known-issues/#userscript-managers-support" target="_blank">Known issues when migrating to Manifest V3</a></cite>
-      </blockquote>
+      </blockquote> -->
 
       <h4>See also</h4>
       <ul>
@@ -254,14 +255,14 @@
       </ul>
     </dd>
 
-    <dt>2. includeGlobs/excludeGlobs</dt>
-    <dd>Chrome MV3 has removed <code>includeGlobs/excludeGlobs</code> parameters which affects the use of <code>include/exclude</code>. <a href="#include">ⓘ</a></dd>
+    <!-- <dt>2. includeGlobs/excludeGlobs</dt>
+    <dd>Chrome MV3 has removed <code>includeGlobs/excludeGlobs</code> parameters which affects the use of <code>include/exclude</code>. <a href="#include">ⓘ</a></dd> -->
 
-    <dt>3. Setting Cookie, Host, Origin, Referer</dt>
-    <dd>UserScript managers have been using <code>webRequest.onBeforeSendHeaders</code> to implement setting, <i>Cookie, Host, Origin, Referer</i>. While Firefox continues to support <code>'blocking'</code> in <code>`webRequest`</code>, Chrome does not. It odes not appears to be achievable with DNR (<a href="https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/declarativeNetRequest" target="_blank">declarativeNetRequest</a>).</dd>
+    <dt>2. Setting Cookie, Host, Origin, Referer</dt>
+    <dd>UserScript managers have been using <code>webRequest.onBeforeSendHeaders</code> to implement setting, <i>Cookie, Host, Origin, Referer</i>. While Firefox continues to support <code>'blocking'</code> in <code>`webRequest`</code>, Chrome does not. It does not appears to be achievable with DNR (<a href="https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/declarativeNetRequest" target="_blank">declarativeNetRequest</a>) yet.</dd>
 
 
-    <dt>4. GM xmlHttpRequest</dt>
+    <dt>3. GM xmlHttpRequest</dt>
     <dd><p><code>GM xmlHttpRequest</code> was created to bypass CORS restrictions. The API is performed from the background script where CORS does not apply. Additionally, it can set a few <a href="#forbidden-header-name">Forbidden header name</a> which might not be possible in Chrome MV3 due to the removal of blocking version of the Web Request API. <a href="https://developer.chrome.com/docs/extensions/mv3/mv3-migration/#modifying-network-requests" target="_blank">ⓘ</a>.</p>
 
       <ul>
@@ -271,20 +272,20 @@
 
       <p>The future of <code>GM xmlHttpRequest</code> in Chrome for <i>Tampermonkey</i> & <i>Violentmonkey</i> will be subject to change.</p>
 
-      <blockquote>
+      <!-- <blockquote>
         <p>An example of a cross-origin request: the front-end JavaScript code served from <code>https://domain-a.com</code> uses <a href="https://developer.mozilla.org/docs/Web/API/XMLHttpRequest" target="_blank">XMLHttpRequest</a> to make a request for <code>https://domain-b.com/data.json</code>.</p>
 
         <p>For security reasons, browsers restrict cross-origin HTTP requests initiated from scripts. For example, <code>XMLHttpRequest</code> and the <a href="https://developer.mozilla.org/docs/Web/API/Fetch_API" target="_blank">Fetch API</a> follow the <a href="https://developer.mozilla.org/docs/Web/Security/Same-origin_policy" target="_blank">same-origin policy</a>. This means that a web application using those APIs can only request resources from the same origin the application was loaded from unless the response from other origins includes the right CORS headers.</p>
 
         <cite><a href="https://developer.mozilla.org/docs/Web/HTTP/CORS" target="_blank">Cross-Origin Resource Sharing (CORS)</a></cite>
-      </blockquote>
+      </blockquote> -->
 
 
-      <blockquote>
+      <!-- <blockquote>
         <p>To improve security, cross-origin fetches will soon be disallowed from content scripts in Chrome Extensions. Such requests can be made from extension background pages instead, and relayed to content scripts when needed. [The document has been edited on 2020-09-17 to reflect that CORS-for-content-scripts has successfully launched in Chrome 85*.]</p>
 
         <cite><a href="https://www.chromium.org/Home/chromium-security/extension-content-script-fetches/" target="_blank">Changes to Cross-Origin Requests in Chrome Extension Content Scripts</a></cite>
-      </blockquote>
+      </blockquote> -->
 
       <blockquote>
         <p>⚠️ <b>Warning</b></p>
@@ -299,7 +300,7 @@
 
 
   <h4>See also</h4>
-  <ul>
+  <ul style="columns: 2; font-size: 0.9em;">
     <li><a href="https://blog.mozilla.org/addons/2022/05/18/manifest-v3-in-firefox-recap-next-steps/" target="_blank">Manifest v3 in Firefox: Recap & Next Steps</a></li>
     <li><a href="https://github.com/Tampermonkey/tampermonkey/issues/644" target="_blank">[Chrome] Manifest V3: examine the effects</a></li>
     <li><a href="https://github.com/w3c/webextensions/issues/51" target="_blank">Requiring Service Workers for extensions fundamentally user hostile</a></li>
@@ -434,12 +435,21 @@
 
   <h2 id="install">Script/CSS Install</h2>
 
-  <h3>Web Install</h3>
-  <p>Web Install is available from <i>greasyfork.org</i> & <i>openuserjs.org</i>. Script install URL will be set for script update.</p>
+  <!-- <h3>Web Install</h3>
+  <p>Web Install is available from <i>greasyfork.org</i> & <i>openuserjs.org</i>. Script install URL will be set for script update.</p> -->
 
   <h3>Direct Install</h3>
-  <p>Scripts can be directly installed from any script ending in <code>.user.js/.user.css</code> (remote or local file system) if loaded into a tab (open or drag & drop). In case of HTTP/s links, the same link will be set for script update. (v2.57)</p>
-  <p><s>Due to sandbox CSP header on <code>https://raw.githubusercontent.com/........uers.js</code> tab is forwarded to <code>cdn.jsdelivr.net</code> mirror.</s> (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1411641" title="CSP 'sandbox' directive prevents content scripts from matching, due to unique origin, breaking also browser features" target="_blank">Bug 1411641</a>).</p>
+  <p>Scripts can be directly installed from any script ending in <code>.user.js/.user.css</code> (remote or local file system) if loaded into a tab (open or drag & drop). In case of HTTP/S links, the same link will be set for script update. (v2.57)</p>
+
+  <dl>
+    <dt>Install</dt>
+    <dd>Click to install the script/CSS</dd>
+
+    <dt class="experimental">Convert to UserCSS</dt>
+    <dd>Click to convert a UserStyle to a UserCSS <i>(if possible programmatically)</i>. The Install button would then install the converted UserCSS.</dd>
+  </dl>
+
+  <!-- <p><s>Due to sandbox CSP header on <code>https://raw.githubusercontent.com/........uers.js</code> tab is forwarded to <code>cdn.jsdelivr.net</code> mirror.</s> (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1411641" title="CSP 'sandbox' directive prevents content scripts from matching, due to unique origin, breaking also browser features" target="_blank">Bug 1411641</a>).</p> -->
 
   <h3>Using External Editors</h3>
   <p>It is not possible to directly edit the userscripts with an external editor, however, you can try the following:</p>
@@ -1357,7 +1367,20 @@ element.<span class="property">innerHTML</span> = dom;
         <td>USER_SCRIPT</td>
         <td>USER_SCRIPT</td>
       </tr>
-
+      <tr>
+        <th>@grant <span style="margin: 0 2em;"></span> ***</th>
+        <td>USER_SCRIPT</td>
+        <td>USER_SCRIPT</td>
+        <td>USER_SCRIPT</td>
+        <td>USER_SCRIPT</td>
+      </tr>
+      <tr>
+        <th>@grant <span style="margin: 0 2em;"></span> none</th>
+        <td>MAIN</td>
+        <td>MAIN</td>
+        <td>MAIN</td>
+        <td>MAIN</td>
+      </tr>
     </tbody>
   </table>
 
@@ -2142,7 +2165,7 @@ body {
 
       <tr><th>&nbsp;</th><td colspan="5"></td></tr>
 
-      <tr><th>window.external</th><td class="fail"><a href="https://github.com/erosman/support/issues/582" title="Please add FireMonkey to window.external" target="_blank">ⓘ</a></td><td class="fail"></td><td class="pass callback experimental">v4.2 <a href="https://www.tampermonkey.net/changelog.php?more=true&show=dhdg#v4.2" target="_blank">ⓘ</a></td><td class="pass async">v2.12.8 <a href="https://github.com/violentmonkey/violentmonkey/releases/tag/v2.12.8" target="_blank">ⓘ</a></td><td>n/a</td></tr>
+      <tr><th>window.external <sup>5</sup></th><td class="pass sync">v2.74</td><td class="fail"></td><td class="pass callback experimental">v4.2 <a href="https://www.tampermonkey.net/changelog.php?more=true&show=dhdg#v4.2" target="_blank">ⓘ</a></td><td class="pass async">v2.12.8 <a href="https://github.com/violentmonkey/violentmonkey/releases/tag/v2.12.8" target="_blank">ⓘ</a></td><td>n/a</td></tr>
 
 
       <tr><th>&nbsp;</th><td colspan="5"></td></tr>
@@ -2162,7 +2185,7 @@ body {
 
       <tr><th>&nbsp;</th><td colspan="5"></td></tr>
       <tr>
-        <th>log match userscript line</th>
+        <th>log matches the userscript line</th>
         <td class="pass"></td>
         <td class="pass"></td>
         <td class="fail"></td>
@@ -2200,7 +2223,7 @@ body {
 
       <tr>
         <th>👥 Firefox Users</th>
-        <td>1750</td>
+        <td>1850</td>
         <td>197k</td>
         <td>590k</td>
         <td>74k</td>
@@ -2209,10 +2232,10 @@ body {
 
       <tr>
         <th>🔄 Last Update</th>
-        <td>2023</td>
-        <td>2021</td>
-        <td>2023</td>
-        <td>2023</td>
+        <td>2024</td>
+        <td>2024</td>
+        <td>2024</td>
+        <td>2024</td>
         <td></td>
       </tr>
 
@@ -2225,6 +2248,7 @@ body {
   <p><sup>3</sup> <code>window.focus</code> grant results is overwriting the global <a href="https://developer.mozilla.org/docs/Web/API/Window/focus" target="_blank">window.focus()</a>. Such grant could be disruptive in cases where user is playing a game or in the middle of something in another window/tab and the userscript in the background causes its window/tab to become active and come to the foreground. Furthermore, the choice to focus a window/tab, should remain with the user.</p>
   <p><sup>4</sup> <code>window.onurlchange</code> is an experimental implementation in Tampermonkey 4.11.6120 (2020-09-17).</p>
   <p class="note">Alternative: <a href="#detecting-javascript-navigation">Detecting JavaScript Navigation</a></p>
+  <p><sup>5</sup> Safer synchronous <code>window.external</code> for GreasyFork only provides the version number for the script user is on. <a href="https://github.com/erosman/support/issues/582" title="Please add Firemonkey to window.external" target="_blank">ⓘ</a> <a href="https://github.com/greasyfork-org/greasyfork/issues/1348" title="FireMonkey: window.external" target="_blank">ⓘ</a></p>
 
 
 
@@ -2297,18 +2321,18 @@ body {
 
       <tr>
         <th>👥 Firefox Users</th>
-        <td>1750</td>
-        <td>84k</td>
-        <td>42k</td>
-        <td>275</td>
+        <td>1850</td>
+        <td>116k</td>
+        <td>31k</td>
+        <td>230</td>
       </tr>
 
       <tr>
         <th>🔄 Last Update</th>
-        <td>2023</td>
-        <td>2023</td>
-        <td>2018</td>
-        <td>2018</td>
+        <td>2024</td>
+        <td>2024</td>
+        <td>2024</td>
+        <td>2024</td>
       </tr>
 
     </tbody>
@@ -4462,7 +4486,9 @@ if(... condition ...) { sendMessage(data); }`</span>;
 
   <h2 id="userStyle"><img src="../image/css.svg" alt=""> UserStyle</h2>
 
-  <p>Partial compatibility with standard CSS <a href="https://developer.mozilla.org/docs/Web/CSS/Syntaxp" target="_blank">syntax</a> UserStyle <code>==UserStyle== ... ==/UserStyle==</code> is available. All <code>url()</code>, <code>url-prefix()</code> & <code>domain()</code> are processed. Few very basic <code>regexp()</code> are converted to match pattern but other sections with <code>regexp()</code> are ignored since browser API does not support Regular Expression.</p>
+  <p class="note"><a href="https://github.com/openstyles/stylus" target="_blank">Stylus</a> (<i>a fork of Stylish © 2005-2014 Jason Barnabe</i>) supports standard CSS as well as <a href="https://userstyles.org/help/coding" target="_blank">uso</a>, <a href="https://lesscss.org/" target="_blank">less</a> & <a href="https://stylus-lang.com/" target="_blank">stylus</a>. Supporting similar features goes beyond the intended scope in FireMonkey. While partial compatibility has been provided, future developments will concentrate only on FireMonkey's native userCSS format.</p>
+
+  <p>Partial compatibility with UserStyle <code>==UserStyle== ... ==/UserStyle==</code> is available. All <code>url()</code>, <code>url-prefix()</code> & <code>domain()</code> are processed. Few very basic <code>regexp()</code> are converted to match pattern but other sections with <code>regexp()</code> are ignored since browser API does not support Regular Expression.</p>
 
   <p>The default <code>'run-at'</code> is set to <code>'document-start'</code> for UserStyles.</p>
 
@@ -4473,6 +4499,8 @@ if(... condition ...) { sendMessage(data); }`</span>;
   </ul>
 
   <p class="note"><code>@-moz-document regexp()</code> is not supported as Regular Expressions are not supported by Firefox API.</p>
+
+
 <!--
   <h3>Installing Styles from userstyles.org <span>(v2.0)</span></h3>
   <p>Right-click context-menu on the style page and FireMonkey will create a UserStyle based on the details. UserCSS/UserStyle are by far more efficient and use less resources than a UserScript only for injecting CSS/Style.</p>
@@ -4492,20 +4520,22 @@ if(... condition ...) { sendMessage(data); }`</span>;
     <li>If there is a match, inject the style section into the tab/iframe</li>
   </ul>
 
-  <p>In reality, <code>@-moz-document</code> segments are separate styles that have been written under one name.</p>
+  <p>In reality, <code>@-moz-document</code> segments are separate styles pit together in one file.</p>
   <p>Above process is considerably more resource intensive than using the dedicated API to inject Style/CSS.</p>
+
+  <p class="note"><i>userstyles.org</i> loads fine with Chrome but is slow and often times out with Firefox. I tested by changing the Firefox's user-agent to Chrome and the site loaded quickly which might suggest that the slowness is intentional. Furthermore, when clicking "Show CSS" or using the API, it no longer displays the actual CSS. For these reasons, installation from <i>userstyles.org</i> was dropped in v2.74.</p>
 
 
   <blockquote>
     <p><a href="https://www.w3.org/TR/2012/WD-css3-conditional-20120911/#at-document" target="_blank">Initially</a> in Level 3, <code>@document</code> was <a href="https://www.w3.org/TR/2012/WD-css3-conditional-20121213/#changes" target="_blank">postponed</a> to Level 4, but then subsequently removed.</p>
-
+<!--
     <p>...</p>
 
     <p>-x- Implemented with the vendor prefix: `-moz-`</p>
 
     <p>* Notes Disabled by default in web pages, except for an empty <code>url-prefix()</code> value, which is supported due to its use in Firefox browser detection. Still supported in user stylesheets.</p>
 
-    <p>🏴 Disabled From version 61: this feature is behind the <code>layout.css.moz-document.content.enabled</code> preference (needs to be set to <code>true</code>). To change preferences in Firefox, visit <code>about:config</code>.</p>
+    <p>🏴 Disabled From version 61: this feature is behind the <code>layout.css.moz-document.content.enabled</code> preference (needs to be set to <code>true</code>). To change preferences in Firefox, visit <code>about:config</code>.</p> -->
 
     <cite><a href="https://developer.mozilla.org/docs/Web/CSS/@document" target="_blank">@document</a></cite>
   </blockquote>

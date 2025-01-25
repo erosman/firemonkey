@@ -4,9 +4,9 @@ import {Meta} from './meta.js';
 // ---------- Register Content Script|CSS ------------------
 export class Script {
 
-  static FMUrl = browser.runtime.getURL('');               // used for sourceURL
-  static FMV = browser.runtime.getManifest().version;      // FireMonkey version
-  static registered = {};                                   // not needed in MV3 scripting.registerContentScripts()
+  static FMUrl = browser.runtime.getURL('');                // used for sourceURL
+  static FMV = browser.runtime.getManifest().version;       // FireMonkey version
+  static registered = {};                                   // not needed in MV3 userScripts.register()
 
   static async init() {
     this.platformInfo = await browser.runtime.getPlatformInfo();
@@ -45,16 +45,26 @@ export class Script {
   //   return JSON.parse(JSON.stringify(script));              // deep clone to prevent changes to the original
   // }
 
-  static getOptions(script, globalScriptExcludeMatches) {
+  // gExclude = globalScriptExcludeMatches
+  static getOptions(script, gExclude) {
     // --- prepare script options
+    // https://searchfox.org/mozilla-central/rev/8b7843220e6d24f10fcd21d79a52b0b091d0e98f/toolkit/components/extensions/schemas/user_scripts.json#55-66
+    // https://searchfox.org/mozilla-central/rev/8b7843220e6d24f10fcd21d79a52b0b091d0e98f/toolkit/components/extensions/schemas/content_scripts.json#17-22
+    // empty array of excludeMatches (reject), includeGlobs/excludeGlobs (silently) cause register error in MV2 contentScripts/userScripts
+
+    // // --- add Global Script Exclude Matches
+    const excludeMatches = [...script.excludeMatches, ...(gExclude ? gExclude.split(/\s+/) : [])];
+    const {includeGlobs, excludeGlobs} = script;
+
     const options = {
       matches: script.matches,
-      excludeMatches: script.excludeMatches,
-      includeGlobs: script.includeGlobs,
-      excludeGlobs: script.excludeGlobs,
       matchAboutBlank: script.matchAboutBlank,
       allFrames: script.allFrames,
-      runAt: script.runAt
+      runAt: script.runAt,
+
+      ...(excludeMatches[0] && {excludeMatches}),
+      ...(includeGlobs[0] && {includeGlobs}),
+      ...(excludeGlobs[0] && {excludeGlobs}),
     };
 
     // --- add CSS & JS
@@ -62,21 +72,17 @@ export class Script {
     options[type] = [];
 
     // --- prepare for include/exclude
+    // matches is mandatory in MV2 contentScripts/userScripts
     // https://bugzilla.mozilla.org/show_bug.cgi?id=1911834
-    // will be : Implement matches OR includeGlobs semantics for MV3 userScripts API
+    // Implement matches OR includeGlobs semantics for MV3 userScripts API (fixed FF134)
+    // public scripts should not be suitable for file:///*
     !script.matches[0] && (script.includes[0] || script.excludes[0] || script.includeGlobs[0] || script.excludeGlobs[0]) &&
-    (options.matches = ['*://*/*', 'file:///*']);
+    (options.matches = ['*://*/*']);
     options.matches = [...new Set(options.matches)];        // remove duplicates
 
     // --- contextual identity container
     script.container?.[0] && this.containerSupport[type] &&
         (options.cookieStoreId = script.container.map(i => `firefox-${i}`));
-
-    // --- add Global Script Exclude Matches
-    globalScriptExcludeMatches && options.excludeMatches.push(...globalScriptExcludeMatches.split(/\s+/));
-
-    // --- remove empty arrays (causes error)
-    ['excludeMatches', 'includeGlobs', 'excludeGlobs'].forEach(i => !options[i][0] && delete options[i]);
 
     return options;
   }

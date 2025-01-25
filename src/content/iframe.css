@@ -40,7 +40,7 @@ img {
   vertical-align: text-top;
 }
 
-img[src$=".svg"]:not([src$="js.svg"]):not([src$="css.svg"]) {
+img[src$=".svg"]:not([src$="js.svg"], [src$="css.svg"]) {
   filter: var(--img-filter);
 }
 
@@ -96,14 +96,14 @@ dt {
   margin-bottom: 0.2em;
 }
 
+dd + dt {
+  margin-top: 0.5em;
+}
+
 dl.plain dt {
   color: var(--color);
   background-color: unset;
   font-weight: bold;
-}
-
-dd + dt {
-  margin-top: 0.5em;
 }
 
 dd > dl {
@@ -141,8 +141,7 @@ article li img {
 div.grid-2 {
   display: grid;
   grid-template-columns: max-content max-content;
-  column-gap: 1em;
-  row-gap: 1em;
+  gap: 1em;
 }
 
 a[href^="http"]::after {

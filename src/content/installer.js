@@ -62,7 +62,7 @@ class Installer {
     if (!updateURL.startsWith('file:///') && pref[id] &&
           !App.higherVersion(data.version, pref[id].version)) { return; }
 
-    // --- check for Web Install, set install URL
+    // --- check for Direct Install, set install URL
     if (!data.updateURL && !updateURL.startsWith('file:///')) {
       data.updateURL = updateURL;
       data.autoUpdate = true;

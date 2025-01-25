@@ -19,22 +19,24 @@
     <dl>
 
       <dt>2.74</dt>
+      <dd>Added "Convert to UserCSS" option to Direct Install (where applicable)</dd>
       <dd>Added <code>window.external</code> for GreasyFork (support/issues/582)</dd>
+      <dd>Dropped <code>userstyles.org</code> Web Install & remote update processes due site errors</dd>
+      <dd>Dropped Web Install in favour of Direct Install</dd>
+      <dd>Updated Direct Install user-interface (#2, support/issues/627)</dd>
       <dd>Updated GreasyFork's processed install URLs</dd>
-      <dd>Removed userstyles.org install process due site errors</dd>
-      <dd>Removed GreasyFork's web-install in favour of direct install</dd>
-      <dd></dd>
 
       <dt>2.73</dt>
       <dd>Added <code>GM.info.isIncognito</code> & <code>GM.info.script.isIncognito</code></dd>
-      <dd>Fixed a typo error in GM getResourceUrl (#659) (from 2.68)</dd>
-      <dd>Fixed an issue with Custom Options CSS process (#293)</dd>
-      <dd>Removed openerTabId from GM openInTab on Android</dd>
-      <dd>Suppressed error logging on failure to inject installation confirmation (#601)</dd>
+      <dd>Fixed a typo error in <code>GM getResourceUrl</code> (support/issues/659) (from 2.68)</dd>
+      <dd>Fixed an issue with Custom Options CSS process (support/issues/293)</dd>
+      <dd>Moved source code & support to a new Github repository</dd>
+      <dd>Removed openerTabId from <code>GM openInTab</code> on Android</dd>
+      <dd>Suppressed error logging on failure to inject installation confirmation (support/issues/601)</dd>
       <dd>Upgraded js-beautify to 1.15.1</dd>
 
       <dt>2.72</dt>
-      <dd>Added 'blob:' protocol support in relevant GM APIs</dd>
+      <dd>Added "blob:" protocol support in relevant GM APIs</dd>
       <dd>Fixed an issue with URL hash in Tab Scripts display (#576)</dd>
       <dd>Updated <code>GM xmlHttpRequest</code> to accept <code>headers: null</code> (#569)</dd>
 
@@ -96,7 +98,7 @@
       <dd>Updated Options page navigation</dd>
       <dd>Updated Toggle comment keyboard shortcut from <code>Ctrl-Q</code> to <code>Ctrl-/</code> (like VS Code) due to conflict with Firefox Quit</dd>
       <dd>Updated UI style</dd>
-      <dd>Updated unsuccessful GM fetch return to <code>undefined</code> (was <code>null</code>)</dd>
+      <dd>Updated unsuccessful <code>GM fetch</code> return to <code>undefined</code> (was <code>null</code>)</dd>
       <dd>Upgraded CodeMirror to 5.65.13</dd>
       <dd>Upgraded js-beautify to 1.14.7</dd>
       <dd>Upgraded JSHint to 2.13.6</dd>
@@ -126,7 +128,7 @@
       <dt>2.60</dt>
       <dd>Fixed <code>GM.getResourceText</code> issue (#429#issuecomment-1200339171) (from 2.41)</dd>
       <dd>Fixed <code>GM.xmlHttpRequest</code> response issue (#497)</dd>
-      <dd>Fixed raw.githubusercontent.com install issue (#496) (from 2.57)</dd>
+      <dd>Fixed <code>raw.githubusercontent.com</code> install issue (#496) (from 2.57)</dd>
       <dd>Updated <code>GM.fetch</code> to log and return parse errors (#497)</dd>
 
       <dt>2.59</dt>
@@ -195,8 +197,8 @@
       <dd>Removed a debugging console.log</dd>
 
       <dt>2.48</dt>
-      <dd>Added object 'active' compatibility in GM openInTab</dd>
-      <dd>Added return value to GM openInTab (experimental)</dd>
+      <dd>Added object 'active' compatibility in <code>GM openInTab</code></dd>
+      <dd>Added return value to <code>GM openInTab</code> (experimental)</dd>
       <dd>Fixed an iframe theme setting error (#435)</dd>
       <dd>Updated GM APIs' return values</dd>
 
@@ -204,16 +206,16 @@
       <dd>Fixed an issue with the JavaScript execution order (#435)</dd>
 
       <dt>2.46</dt>
-      <dd>Fixed a typo with GM setClipboard (from 2.45) (#435)</dd>
-      <dd>Updated GM setClipboard for TM|VM full compatibility</dd>
+      <dd>Fixed a typo with <code>GM setClipboard</code> (from 2.45) (#435)</dd>
+      <dd>Updated <code>GM setClipboard</code> for TM|VM full compatibility</dd>
       <dd>Updated the work-around for loading script from CSP sandbox sites (bug 1411641)</dd>
 
       <dt>2.45</dt>
-      <dd>Added <code>@grant</code> requirement for GM registerMenuCommand</dd>
-      <dd>Added <i>cdn.bootcdn.net</i> to processed URLs</dd>
-      <dd>Added <i>lf*-cdn-tos.bytecdntp.com</i> to processed URLs</dd>
+      <dd>Added <code>@grant</code> requirement for <code>GM registerMenuCommand</code></dd>
+      <dd>Added <code>cdn.bootcdn.net</code> to processed URLs</dd>
+      <dd>Added <code>lf*-cdn-tos.bytecdntp.com</code> to processed URLs</dd>
       <dd>Added complete dark theme for Help & About pages</dd>
-      <dd>Added data option to GM setClipboard</dd>
+      <dd>Added data option to <code>GM setClipboard</code></dd>
       <dd>Added History link to the Log Updates</dd>
       <dd>Added storage to Statistic Info display</dd>
       <dd>Added storage view/edit feature (#429#issuecomment-1063275408)</dd>
@@ -221,20 +223,20 @@
       <dd>Fixed an issue with mixed match/include (#429#issuecomment-1067484735)</dd>
       <dd>Fixed an issue with responseXML (#430)</dd>
       <dd>Removed TLD wildcard for <code>@matches</code></dd>
-      <dd>Set JavaScript <code>window.close()</code> to work in tabs opened with GM openIntab (#429#issuecomment-1073011484)</dd>
+      <dd>Set JavaScript <code>window.close()</code> to work in tabs opened with <code>GM openIntab</code> (#429#issuecomment-1073011484)</dd>
       <dd>Updated <code>@require</code> CSS in userScript process</dd>
       <dd>Updated <code>@require</code> in userCSS to use <code>@import</code></dd>
       <dd>Upgraded jQuery-ui library to 1.13.1</dd>
 
       <dt>2.44</dt>
       <dd>Fixed a typo in <code>GM_getResourceText</code> (from 2.43)</dd>
-      <dd>Updated GM addElement to return the element</dd>
+      <dd>Updated <code>GM addElement</code> to return the element</dd>
 
       <dt>2.43</dt>
       <dd>Added CodeMirror Key Maps (#423)</dd>
       <dd>Added experimental live userCSS update of open tabs (#295)</dd>
       <dd>Added experimental Sync storage compatibility (#98)</dd>
-      <dd>Added GM addElement</dd>
+      <dd>Added <code>GM addElement</code></dd>
       <dd>Fixed an issue with disabled Auto-Update Interval</dd>
       <dd>Fixed an issue with Regular Expressions in <code>@include</code></dd>
       <dd>Fixed F11 & sidebar</dd>
@@ -279,22 +281,22 @@
 
       <dt>2.38</dt>
       <dd>Added Brazilian Portuguese (pt_BR) locale</dd>
-      <dd>Fixed GM getResourceText due to fetch returning an object (from 2.33)</dd>
+      <dd>Fixed <code>GM getResourceText</code> due to fetch returning an object (from 2.33)</dd>
       <dd>Fixed match pattern validation error (#391)</dd>
-      <dd>Removed <i>include/exclude Converter</i> feature due to added auto-conversion in v2.35</dd>
+      <dd>Removed <code>include/exclude Converter</code> feature due to added auto-conversion in v2.35</dd>
 
       <dt>2.37</dt>
       <dd>Fixed transferring storage (from 2.25) & user metadata (from 2.35) when updating scripts (#387)</dd>
 
       <dt>2.36</dt>
       <dd>Changed the processing order of user metadata to before auto-conversion (#383)</dd>
-      <dd>Fixed an error with setting responseType in GM fetch (from 2.35) (#386)</dd>
+      <dd>Fixed an error with setting responseType in <code>GM fetch</code> (from 2.35) (#386)</dd>
 
       <dt>2.35</dt>
       <dd>Added "cookies" permission to deal with container/incognito cookie isolation</dd>
       <dd>Added <code>@website</code> and <code>@source</code> as homepage link to popup Info page</dd>
-      <dd>Added anonymous flag to GM xmlHttpRequest & fetch</dd>
-      <dd>Added container/incognito cookie isolation for GM xmlHttpRequest/fetch/download (#378)</dd>
+      <dd>Added anonymous flag to <code>GM xmlHttpRequest</code> & fetch</dd>
+      <dd>Added container/incognito cookie isolation for <code>GM xmlHttpRequest/fetch/download</code> (#378)</dd>
       <dd>Added feature to remove overlapping patterns</dd>
       <dd>Added limited <code>@include/@exclude</code> to <code>@match/@exclude-match</code> auto-conversion (#304)</dd>
       <dd>Added match pattern check when saving Script/CSS (#384)</dd>
@@ -302,7 +304,7 @@
       <dd>Close popup after script command (#382)</dd>
       <dd>Database Migrate to move user run-at/matches/exclude matches to User Metadata</dd>
       <dd>Fixed <code>*://*/*</code> showing matched to <code>file:///</code></dd>
-      <dd>Fixed a bug in GM addValueChangeListener (from 2.25 database migrate) (#381)</dd>
+      <dd>Fixed a bug in <code>GM addValueChangeListener</code> (from 2.25 database migrate) (#381)</dd>
       <dd>Fixed an error with quotation mark when inject-to page (#377)</dd>
       <dd>Removed FTP support due to Firefox Stopping FTP support in Firefox 90</dd>
       <dd>Removed user run-at/matches/exclude matches, in favour of User Metadata</dd>
@@ -312,14 +314,14 @@
       <dd>Added <code>homepage</code> link to popup Info page (if available) (#370)</dd>
       <dd>Added <code>support</code> link to popup Info page (if available)</dd>
       <dd>Added Bootstrap 5 library (v5.1.3)</dd>
-      <dd>Added object support to GM setValue (#376)</dd>
-      <dd>Fixed an error when setting the same key & value in GM setValue</dd>
+      <dd>Added object support to <code>GM setValue</code> (#376)</dd>
+      <dd>Fixed an error when setting the same key & value in <code>GM setValue</code></dd>
       <dd>Fixed an issue when cancelling confirm discard changes (#373)</dd>
       <dd>Updated Locale Maker to v1.4</dd>
 
       <dt>2.33</dt>
       <dd>Updated Dark Mode implementation for Private Window (#367)</dd>
-      <dd>Updated GM fetch API to return an object (breaking change) (#364)</dd>
+      <dd>Updated <code>GM fetch</code> API to return an object (breaking change) (#364)</dd>
 
       <dt>2.32</dt>
       <dd>Removed Android export test code (#359)</dd>
@@ -351,7 +353,7 @@
       <dd>Updated storage sync process (from 2.25)</dd>
 
       <dt>2.27</dt>
-      <dd>Added check for userstyles.org HTML timeout response</dd>
+      <dd>Added check for <code>userstyles.org</code> HTML timeout response</dd>
       <dd>Fixed storage sync not removing deleted scripts (from 2.25)</dd>
       <dd>Suppressed CSSLint Custom Properties <code>--*</code> error</dd>
 
@@ -365,7 +367,7 @@
       <dd>Added error reason to info temporary insertion</dd>
       <dd>Added type indicator to toolbar icon mouse-over title</dd>
       <dd>Fixed an error when setting CodeMirror extraKeys</dd>
-      <dd>GM addScript will appear under the userScript name in debugger</dd>
+      <dd><code>GM addScript</code> will appear under the userScript name in debugger</dd>
       <dd>Popup enable/disable toggle will reflect on open options page</dd>
       <dd>Redesigned script menu as a sidebar</dd>
       <dd>Removed some styling in preparation for Proton in Firefox 89 (2021-06-01)</dd>
@@ -402,7 +404,7 @@
       <dd>Added user <code>run-at</code> to popup Info page</dd>
       <dd>New JS icon</dd>
       <dd>Updated the <code>GM.fetch</code> API to return response object on HEAD request</dd>
-      <dd>Updated userstyles.org process</dd>
+      <dd>Updated <code>userstyles.org</code> process</dd>
 
       <dt>2.19</dt>
       <dd>Added CodeMirror <code>match-highlighter</code> addon (off by default)</dd>
@@ -410,7 +412,7 @@
       <dd>Added Dutch (nl) locale</dd>
       <dd>Added option to add custom <code>extraKeys</code> to CodeMirror editor</dd>
       <dd>Added support for <code>exportFunction()</code> and <code>cloneInto()</code></dd>
-      <dd>Added Web Install option for <i>sleazyfork.org</i></dd>
+      <dd>Added Web Install option for <code>sleazyfork.org</code></dd>
       <dd>Changed Pin Menu default to pinned</dd>
       <dd>Enable/Disable updates Option page if open</dd>
       <dd>Fixed pop-up not matching hostname with port</dd>
@@ -540,7 +542,7 @@
       <dd>Added Statistic Info to Script & CSS</dd>
       <dd>Added Tabs to Spaces</dd>
       <dd>Added Trim Trailing Spaces</dd>
-      <dd>Added Web Install option for styles from <i>userstyles.org</i></dd>
+      <dd>Added Web Install option for styles from <code>userstyles.org</code></dd>
       <dd>Changed default UserCSS insertion to <code>document-start</code></dd>
       <dd>Fixed <code>unsafeWindow</code> bug (from 1.47)</dd>
       <dd>Restructured database (migrate pre-2.0 storage)</dd>
@@ -630,7 +632,7 @@
       <dd>Added Direct Install option for files loaded into tab ending in <code>*.user.css</code></dd>
       <dd>Added Stylus Style UserStyle handler (but no regexp())</dd>
       <dd>Added update version checking via <code>.meta.css</code></dd>
-      <dd>Added Web Install option for <code>*.user.css</code> from <i>greasyfork.org</i></dd>
+      <dd>Added Web Install option for <code>*.user.css</code> from <code>greasyfork.org</code></dd>
       <dd>Fixed an issue with importing userMatches/userExcludeMatches when importing script</dd>
       <dd>Fixed and issue with GM getValue/listValues (from 1.27)</dd>
       <dd>Fixed Global Script Exclude Matches applying to both Script & CSS</dd>
@@ -676,20 +678,20 @@
       <dd>Fixed an issue with sync</dd>
 
       <dt>1.27</dt>
-      <dd>Added <code>@require</code> parsing to ignore <i>gm4-polyfill...js</i> as it is not applicable</dd>
-      <dd>Added <code>@require</code> parsing to include <i>bootstrapp.js</i> from included library</dd>
-      <dd>Added <code>@require</code> parsing to include <i>moment.js</i> from included library</dd>
-      <dd>Added <code>@require</code> parsing to include <i>underscore.js</i> from included library</dd>
+      <dd>Added <code>@require</code> parsing to ignore <code>gm4-polyfill...js</code> as it is not applicable</dd>
+      <dd>Added <code>@require</code> parsing to include <code>bootstrapp.js</code> from included library</dd>
+      <dd>Added <code>@require</code> parsing to include <code>moment.js</code> from included library</dd>
+      <dd>Added <code>@require</code> parsing to include <code>underscore.js</code> from included library</dd>
       <dd>Added <code>@resource</code> processing</dd>
       <dd>Added <code>GM getResourceText</code></dd>
       <dd>Added <code>GM getResourceUrl</code></dd>
       <dd>Added <code>GM registerMenuCommand</code></dd>
-      <dd>Added <i>ajax.aspnetcdn.com</i> to processed URLs</dd>
-      <dd>Added <i>apps.bdimg.com</i> to processed URLs</dd>
-      <dd>Added <i>cdn.staticfile.org</i> to processed URLs</dd>
-      <dd>Added <i>lib.baomitu.com</i> to processed URLs</dd>
-      <dd>Added <i>libs.baidu.com</i> to processed URLs</dd>
-      <dd>Added <i>pagecdn.io</i> to processed URLs</dd>
+      <dd>Added <code>ajax.aspnetcdn.com</code> to processed URLs</dd>
+      <dd>Added <code>apps.bdimg.com</code> to processed URLs</dd>
+      <dd>Added <code>cdn.staticfile.org</code> to processed URLs</dd>
+      <dd>Added <code>lib.baomitu.com</code> to processed URLs</dd>
+      <dd>Added <code>libs.baidu.com</code>to processed URLs</dd>
+      <dd>Added <code>pagecdn.io</code> to processed URLs</dd>
       <dd>Added Direct Install option for files loaded into tab ending in <code>*.user.js</code></dd>
       <dd>Added Help to toolbar contextmenu</dd>
       <dd>Added remote <code>@require</code> processing <i>(experimental)</i></dd>
@@ -700,7 +702,7 @@
 
      <dt>1.26</dt>
       <dd>Added update version checking via <code>.meta.js</code></dd>
-      <dd>Added Web Install option for <i>openuserjs.org</i></dd>
+      <dd>Added Web Install option for <code>openuserjs.org</code></dd>
       <dd>Fixed an error with Web Install & User Matches & User Exclude Matches</dd>
 
       <dt>1.25</dt>
@@ -717,7 +719,7 @@
       <dd>Added <code>GM addStyle</code></dd>
       <dd>Added <code>unsafeWindow</code> support</dd>
       <dd>Fixed a layout issue when syntax highlighting is disabled</dd>
-      <dd>Fixed a XMLHttpRequest returning <i>null</i></dd>
+      <dd>Fixed a XMLHttpRequest returning <code>null</code></dd>
 
       <dt>1.23</dt>
       <dd>Added <code>@require</code> to enable requiring other saved scripts</dd>
@@ -735,8 +737,8 @@
 
       <dt>1.19</dt>
       <dd>Added Direct Install option for files loaded into tab for <code>https://greasyfork.org/scripts/*.user.js</code> & <code>file:///*/*.user.js</code></dd>
-      <dd>Added Web Install option for <i>greasyfork.org</i></dd>
-      <dd>Changed to use <i>@downloadURL/@installURL</i> (if present) for Script/CSS update</dd>
+      <dd>Added Web Install option for <code>greasyfork.org</code></dd>
+      <dd>Changed to use <code>@downloadURL/@installURL</code> (if present) for Script/CSS update</dd>
 
       <dt>1.18</dt>
       <dd>Added feature to modify 'Cookie', 'Host', 'Origin', 'Referer' forbidden headers (requires webRequest & webRequestBlocking permission)</dd>
@@ -745,13 +747,13 @@
       <dd>Added option to disable Syntax Highlighting</dd>
 
       <dt>1.16</dt>
-      <dd>Added GM <i>info</i> support</dd>
+      <dd>Added GM info support</dd>
 
       <dt>1.15</dt>
       <dd>Added a workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1583159</dd>
 
       <dt>1.14</dt>
-      <dd>Added <i>responseType</i> support to <i>GM.xmlHttpRequest/GM_xmlhttpRequest</i></dd>
+      <dd>Added <code>responseType</code> support to <code>GM.xmlHttpRequest/GM_xmlhttpRequest</code></dd>
 
       <dt>1.13</dt>
       <dd>Fixed a bug with match pattern in Metadata Block <code>/* ... *://*/* ... */</code></dd>
@@ -762,10 +764,10 @@
 
       <dt>1.11</dt>
       <dd>Import Preferences now updates the Script/CSS display</dd>
-      <dd>Stylus Import sets <i>run-at</i> to <i>document-start</i></dd>
+      <dd>Stylus Import sets <code>run-at</code> to <code>document-start</code></dd>
 
       <dt>1.10</dt>
-      <dd>Fixed a typo that prevented the <i>run-at</i> changes from being applied</dd>
+      <dd>Fixed a typo that prevented the <code>run-at</code> changes from being applied</dd>
 
       <dt>1.9</dt>
       <dd>Prevent saving JS/CSS without a name</dd>

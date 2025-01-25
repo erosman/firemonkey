@@ -1,19 +1,7 @@
 // ---------- Direct Installer -----------------------------
 // URLs ending in user.js & user.css
-
-// https://bugzilla.mozilla.org/show_bug.cgi?id=1451545
-// Support loading content scripts as ES6 modules
-// https://bugzilla.mozilla.org/show_bug.cgi?id=1536094
-// Dynamic module import doesn't work in webextension content script (fixed in FF89)
-// https://bugzilla.mozilla.org/show_bug.cgi?id=1803950
-// Dynamic import fails in content script in MV3 extension
-
 // alert/confirm/prompt not working in raw.githubusercontent.com | gist.githubusercontent.com
-
-// https://bugzilla.mozilla.org/show_bug.cgi?id=1411641
-// CSP 'sandbox' directive prevents content scripts from matching (fixed in FF128)
-// https://bugzilla.mozilla.org/show_bug.cgi?id=1267027
-// [meta] Page CSP should not apply to content inserted by content scripts (V2 issue)
+/* global CodeMirror */
 
 class Install {
 
@@ -26,11 +14,21 @@ class Install {
         location.pathname.includes('/raw/') && this.process();
         break;
 
+      case 'raw.githubusercontent.com':
+      case 'gist.githubusercontent.com':
+        this.process(true);
+        break;
+
       case 'update.greasyfork.org':
       case 'update.sleazyfork.org':
-        const id = location.href.match(/\/scripts\/(\d+)/)?.[1];
-        const back = id && `https://${location.hostname.replace('update.', '')}/scripts/${id}/`;
+        const back = location.href.replace('://update.', '://').replace(/(\/scripts\/\d+\/).+/, '$1');
+        this.convertedFrom = back;
         this.process(back);
+        break;
+
+      case 'userstyles.world':
+        this.convertedFrom = location.href.replace('/api/', '/').replace('.user.css', '/');
+        this.process();
         break;
 
       default:
@@ -38,46 +36,89 @@ class Install {
     }
   }
 
-  static process(back) {
-    // add install DOM
-    this.makeDOM();
+  static async process(back) {
+    this.pre = document.querySelector('pre');
+    if (!this.pre) { return; }
 
-    const text = document.body?.textContent?.trim() || '';
+    // add install DOM
+    this.addDOM();
+
+    let updateURL = location.href;
+    let text = this.pre.textContent.trim();
     const name = text.match(/\s*@name\s+([^\r\n]+)/)?.[1];
     if (!text || !name) {
       this.p.textContent = browser.i18n.getMessage('metaError');
-      document.body.prepend(this.div);
-      this.button.disabled = true;
+      this.install.disabled = true;
       return;
     }
 
     this.p.innerText = browser.i18n.getMessage('installConfirm', name);
-    this.button.addEventListener('click', () => {
-      browser.runtime.sendMessage({api: 'install', name, text, updateURL: location.href});
-      this.button.disabled = true;
-      back && (location.href = back);
+    this.install.addEventListener('click', () => {
+      browser.runtime.sendMessage({api: 'install', name, text, updateURL});
+      this.install.disabled = true;
+      this.convert.disabled = true;
+      back && (typeof back === 'string' ? location.href = back : history.back());
     });
 
-    document.body.prepend(this.div);
+    // highlight syntax
+    this.highlight(text);
+
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=1536094
+    // Dynamic module import doesn't work in webextension content scripts (fixed in FF89)
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=1803950
+    // Dynamic import fails in content script in MV3 extension
+    // --- convert to UserCSS
+    if (location.pathname.endsWith('.user.css')) {
+      const {UserStyle} = await import(browser.runtime.getURL('content/userstyle.js'));
+      const userCSS = UserStyle.process(text, this.convertedFrom);
+      if (userCSS) {
+        this.convert.style.visibility = 'visible';
+        this.convert.addEventListener('click', () => {
+          text = userCSS;
+          this.highlight(text);
+          this.convert.disabled = true;
+          updateURL = '';                                     // disable remote update
+        });
+      }
+    }
   }
 
-  static makeDOM() {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = browser.runtime.getURL('content/install.css');
-    document.head.append(link);
-
-    this.div = document.createElement('div');
-    this.div.className = 'fm';
+  static addDOM() {
+    const div = document.createElement('div');
+    div.className = 'fm';
 
     const h = document.createElement('h2');
     h.textContent = 'FireMonkey';
 
     this.p = document.createElement('p');
 
-    this.button = document.createElement('button');
-    this.button.textContent = browser.i18n.getMessage('install');
+    this.install = document.createElement('button');
+    this.install.textContent = browser.i18n.getMessage('install');
+    this.install.className = 'install';
 
-    this.div.append(h, this.p, this.button);
+    this.convert = this.install.cloneNode();
+    this.convert.textContent = browser.i18n.getMessage('convertToUserCSS');
+    this.convert.className = 'convert';
+
+    const p = this.p.cloneNode();
+    p.className = 'buttons';
+    p.append(this.convert, this.install);
+
+    div.append(h, this.p, p);
+    document.body.prepend(div);
+
+    // add a second pre
+    this.cm = document.createElement('pre');
+    this.cm.className = 'cm-s-default';
+    document.body.appendChild(this.cm);
+  }
+
+  static highlight(text) {
+    this.pre.style.display = 'none';
+    this.cm.textContent = '';
+
+    globalThis.GM = {};                                     // avoid GM is not defined
+    const mode = /==UserScript==/i.test(text) ? 'javascript' : 'css';
+    CodeMirror.runMode(text, mode, this.cm, {tabSize: 2});
   }
 }

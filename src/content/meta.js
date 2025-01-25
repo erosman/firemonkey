@@ -1,9 +1,10 @@
 import {App} from './app.js';
+import {Pattern} from './pattern.js';
 
 // ---------- Parse Metadata Block -------------------------
 export class Meta {                                         // bg, options
 
-  static regEx = /==(UserScript|UserCSS|UserStyle)==([\s\S]+?)==\/\1==/i;
+  static regEx = /==(UserScript|UserCSS|UserStyle)==(.+?)==\/\1==/is;
   static lineRegex = /^[\s/]*@([\w:-]+)(?:\s+(.+))?/;
 
   static get(str, pref) {
@@ -436,13 +437,15 @@ export class Meta {                                         // bg, options
     return jp ? p1 + JSON.stringify(jp) : '';               // remove if not valid JSON
   }
 
+  // xStyle @advanced  dropdown
   static prepareDropdown(m, p1, p2) {
     const obj = {};
-    const opt = p2.slice(1, -1).trim().split(/\sEOT;/);     // prevent error with empty dropdown value e.g. yes "Yes (default)*" <<<EOT EOT;
+    // prevent error with empty dropdown value e.g. yes "Yes (default)*" <<<EOT EOT;
+    const opt = p2.slice(1, -1).trim().split(/\sEOT;/);
     opt.forEach(item => {
       if (!item.trim()) { return; }
       // const [, id, label, valueString]
-      const [, , label, valueString] = item.match(/(\S+)\s+"([^<]+)"\s+<<<EOT\s*([\S\s]+)/) || [];
+      const [, , label, valueString] = item.match(/(\S+)\s+"([^<]+)"\s+<<<EOT\s*(.+)/s) || [];
       label && (obj[label] = valueString.trim());
     });
 
@@ -484,7 +487,7 @@ export class Meta {                                         // bg, options
   // --- attempt to convert to match pattern
   static convertPattern(p) {
     // test match pattern validity
-    if (this.validPattern(p)) { return p; }
+    if (Pattern.validMatchPattern(p)) { return p; }
 
     switch (true) {
       case p.startsWith('/') && p.endsWith('/'):            // cant convert Regular Expression
@@ -507,7 +510,7 @@ export class Meta {                                         // bg, options
     }
 
     // test match pattern validity
-    if (this.validPattern(p)) { return p; }
+    if (Pattern.validMatchPattern(p)) { return p; }
 
     let [scheme, host, ...path] = p.split(/:\/{2,3}|\/+/);
 
@@ -526,15 +529,15 @@ export class Meta {                                         // bg, options
     if (!path[0] && !p.endsWith('/')) { p += '/'; }         // fix trailing slash
 
     // test match pattern validity
-    if (this.validPattern(p)) { return p; }
+    if (Pattern.validMatchPattern(p)) { return p; }
   }
 
-  // --- test match pattern validity
-  static validPattern(p) {
-    return p === '<all_urls>' ||
-          /^(https?|\*):\/\/(\*|\*\.[^*:/]+|[^*:/]+)\/.*$/i.test(p) ||
-          /^file:\/\/\/.+$/i.test(p);
-  }
+  // // --- test match pattern validity
+  // static validMatchPattern(p) {
+  //   return p === '<all_urls>' ||
+  //         /^(https?|\*):\/\/(\*|\*\.[^*:/]+|[^*:/]+)\/.*$/i.test(p) ||
+  //         /^file:\/\/\/.+$/i.test(p);
+  // }
 
   static checkOverlap(arr) {
     if (arr.includes('<all_urls>')) {

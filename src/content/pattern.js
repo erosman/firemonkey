@@ -1,33 +1,33 @@
 import {App} from './app.js';
-import {Meta} from './meta.js';
+// import {Meta} from './meta.js';
 
-// ---------- Match Pattern Tester -------------------------
+// ---------- Match Pattern --------------------------------
 export class Pattern {
 
-  // used for globalScriptExcludeMatches in options
-  static validate(node) {
-    node.classList.remove('invalid');
-    node.value = node.value.trim();
-    if (!node.value) { return true; }                       // empty
+  // // used for globalScriptExcludeMatches in options
+  // static validate(node) {
+  //   node.classList.remove('invalid');
+  //   node.value = node.value.trim();
+  //   if (!node.value) { return true; }                       // empty
 
-    // sort to make it easy to compare changes in processPrefUpdate
-    const array = node.value.split(/\s+/).sort();
-    node.value = array.join('\n');
+  //   // sort to make it easy to compare changes in processPrefUpdate
+  //   const array = node.value.split(/\s+/).sort();
+  //   node.value = array.join('\n');
 
-    // use for loop to be able to break early
-    for (const item of array) {
-      const error = this.hasError(item);
-      if (error) {
-        node.classList.add('invalid');
-        App.notify(`${browser.i18n.getMessage(node.id)}\n${item}\n${error}`);
-        return false;                                       // end execution
-      }
-    }
-    return true;
-  }
+  //   // use for loop to be able to break early
+  //   for (const item of array) {
+  //     const error = this.hasError(item);
+  //     if (error) {
+  //       node.classList.add('invalid');
+  //       App.notify(`${browser.i18n.getMessage(node.id)}\n${item}\n${error}`);
+  //       return false;                                       // end execution
+  //     }
+  //   }
+  //   return true;
+  // }
 
   static hasError(p) {
-    if (Meta.validPattern(p)) { return false; }
+    if (this.validMatchPattern(p)) { return false; }
 
     if (!p.includes('://')) { return 'Invalid Pattern'; }
     p = p.toLowerCase();
@@ -60,5 +60,12 @@ export class Pattern {
       default:
         return 'Invalid Pattern';
     }
+  }
+
+  // --- test match pattern validity
+  static validMatchPattern(p) {
+    return p === '<all_urls>' ||
+          /^(https?|\*):\/\/(\*|\*\.[^*:/]+|[^*:/]+)\/.*$/i.test(p) ||
+          /^file:\/\/\/.+$/i.test(p);
   }
 }

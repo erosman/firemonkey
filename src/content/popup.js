@@ -76,11 +76,11 @@ class Popup {
       case !li?.id:
         break;
 
-      case e.target.classList.contains('enable'):
+      case e.target.matches('.enable'):
         this.toggleState(li);
         break;
 
-      case e.target.classList.contains('name'):
+      case e.target.matches('.name'):
         Info.show(li);
         break;
     }
@@ -104,7 +104,7 @@ class Popup {
   static toggleState(li) {
     const id = li.id;
     li.classList.toggle('disabled');
-    pref[id].enabled = !li.classList.contains('disabled');
+    pref[id].enabled = !li.matches('.disabled');
     browser.storage.local.set({[id]: pref[id]});            // update saved pref
   }
 

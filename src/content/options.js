@@ -49,7 +49,7 @@ class Options {
 
   static check() {
     // --- check Global Script Exclude Matches
-    if (!Pattern.validate(this.globalScriptExcludeMatches)) { return; }
+    if (!this.validate(this.globalScriptExcludeMatches)) { return; }
 
     // Custom CodeMirror Options
     const cmOptionsNode = document.querySelector('#cmOptions');
@@ -69,6 +69,28 @@ class Options {
 
     // --- save options
     this.process(true);
+  }
+
+  // used for globalScriptExcludeMatches
+  static validate(node) {
+    node.classList.remove('invalid');
+    node.value = node.value.trim();
+    if (!node.value) { return true; }                       // empty
+
+    // sort to make it easy to compare changes in processPrefUpdate
+    const array = node.value.split(/\s+/).sort();
+    node.value = array.join('\n');
+
+    // use for loop to be able to break early
+    for (const item of array) {
+      const error = Pattern.hasError(item);
+      if (error) {
+        node.classList.add('invalid');
+        App.notify(`${browser.i18n.getMessage(node.id)}\n${item}\n${error}`);
+        return false;                                       // end execution
+      }
+    }
+    return true;
   }
 
   static importFromUrl() {
@@ -170,7 +192,7 @@ class Script {
     const divUser = document.querySelector('.menu details div.user');
     divUser.parentElement.addEventListener('toggle', e => !e.target.open && divUser.classList.remove('expand'));
     divUser.querySelectorAll('textarea').forEach(i =>
-      i.addEventListener('focus', () => divUser.classList.toggle('expand', true))
+      i.addEventListener('focus', () => divUser.classList.add('expand'))
     );
 
     // --- CodeMirror & Theme
@@ -291,7 +313,7 @@ class Script {
   }
 
   static setCodeMirror() {
-    const js = this.legend.classList.contains('js');
+    const js = this.legend.matches('.js');
     const jshint = {
         browser: true,
         curly: true,
@@ -384,7 +406,7 @@ class Script {
       const node = e.explicitOriginalTarget;
       if (node.nodeName === '#text') { return; }
       e.stopPropagation();
-      node.classList.contains('cm-fm-color') && this.colorPicker(node);
+      node.matches('.cm-fm-color') && this.colorPicker(node);
     });
   }
 
@@ -444,7 +466,7 @@ class Script {
         break;
 
       case 'wrapIIFE':
-        if (!this.legend.classList.contains('js')) { return; } // only for JS
+        if (!this.legend.matches('.js')) { return; } // only for JS
 
         text = '(() => { ' + this.cm.getValue() + '\n\n})();';
         this.cm.setValue(text);
@@ -457,11 +479,13 @@ class Script {
     if (!this.cm) { return; }
 
     const options = {
-      "indent_size": this.cm.getOption('tabSize')
+      'indent_size': this.cm.getOption('tabSize'),
+      'selector-separator-newline': false,
+      'space_around_combinator': true,
     };
 
     let text = this.cm.getValue();
-    text = this.legend.classList.contains('js') ? js_beautify(text, options) : css_beautify(text, options);
+    text = this.legend.matches('.js') ? js_beautify(text, options) : css_beautify(text, options);
     this.cm.setValue(text);
     this.makeStats(text);
   }
@@ -532,7 +556,7 @@ class Script {
         else if (st && stEnd) { end = true; }
         !stEnd && item.classList.toggle('on', st && !end);
         // remove hidden items
-        item.classList.contains('on') && window.getComputedStyle(item).display === 'none' && item.classList.toggle('on', false);
+        item.matches('.on') && window.getComputedStyle(item).display === 'none' && item.classList.remove('on');
       });
       return;
     }
@@ -553,7 +577,7 @@ class Script {
     const id = li.id;
     box.id = id;
     this.legend.textContent = pref[id].name;
-    this.legend.className = li.classList.contains('js') ? 'js' : 'css';
+    this.legend.className = li.matches('.js') ? 'js' : 'css';
     pref[id].enabled || this.legend.classList.add('disabled');
 
     // --- i18n
@@ -826,7 +850,7 @@ class Script {
       this.addScript(data);
       const index = [...this.navUL.children].findIndex(i => Intl.Collator().compare(i.id, id) > 0);
       index !== -1 ? this.navUL.insertBefore(this.docFrag, this.navUL.children[index]) : this.navUL.appendChild(this.docFrag);
-      this.navUL.children[index !== -1 ? index : 0].classList.toggle('on', true);
+      this.navUL.children[index !== -1 ? index : 0].classList.add('on');
     }
     else {                                                  // existing script
       // --- check type conversion UserStyle to UserCSS & vice versa

@@ -17,7 +17,7 @@ class Menus {
 
     contextMenus.forEach(item => {
       if (item.id) {
-        !item.title && (item.title = browser.i18n.getMessage(item.id)); // always use the same ID for i18n
+        item.title ||= browser.i18n.getMessage(item.id);    // always use the same ID for i18n
       }
       item.contexts = ['browser_action'];
       browser.menus.create(item);

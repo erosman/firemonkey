@@ -16,12 +16,16 @@ export class RemoteUpdate {                                 // bg options
       // --- get meta.js
       case item.updateURL.startsWith('https://greasyfork.org/scripts/'):
       case item.updateURL.startsWith('https://sleazyfork.org/scripts/'):
+      case item.updateURL.startsWith('https://update.greasyfork.org/scripts/'):
+      case item.updateURL.startsWith('https://update.sleazyfork.org/scripts/'):
       case item.js && item.updateURL.startsWith('https://openuserjs.org/install/'):
         this.getMeta(item, manual);
         break;
 
-      case /^https:\/\/userstyles\.org\/styles\/\d+\/.+\.css/.test(item.updateURL):
-        this.getStylishVersion(item, manual);
+      // drop userstyles.org update
+      // case /^https:\/\/userstyles\.org\/styles\/\d+\/.+\.css/.test(item.updateURL):
+      //   this.getStylishVersion(item, manual);
+      case item.updateURL.startsWith('https://userstyles.org/styles/'):
         break;
 
       // --- direct update
@@ -39,36 +43,36 @@ export class RemoteUpdate {                                 // bg options
     .catch(error => App.log(item.name, `getMeta ${url} ➜ ${error.message}`, 'error'));
   }
 
-  static getStylishVersion(item, manual) {
-    const url = item.updateURL.replace(/(\d+\/.+)css/i, 'userjs/$1user.js');
-    fetch(url)
-    .then(response => response.text())
-    .then(text => {
-      const m = text.match(/@version\s+(\S+)/);
-      const version = m ? m[1].substring(2, 10) : '';
-      version > item.version ? this.getStylish(item, version) :
-        manual && App.notify(browser.i18n.getMessage('noNewUpdate'), item.name);
-    })
-    .catch(error => App.log(item.name, `getMeta ${url} ➜ ${error.message}`, 'error'));
-  }
+  // static getStylishVersion(item, manual) {
+  //   const url = item.updateURL.replace(/(\d+\/.+)css/i, 'userjs/$1user.js');
+  //   fetch(url)
+  //   .then(response => response.text())
+  //   .then(text => {
+  //     const m = text.match(/@version\s+(\S+)/);
+  //     const version = m ? m[1].substring(2, 10) : '';
+  //     version > item.version ? this.getStylish(item, version) :
+  //       manual && App.notify(browser.i18n.getMessage('noNewUpdate'), item.name);
+  //   })
+  //   .catch(error => App.log(item.name, `getMeta ${url} ➜ ${error.message}`, 'error'));
+  // }
 
-  static getStylish(item, version) {
-    const metaData =
-`/*
-==UserStyle==
-@name           ${item.name}
-@description    ${item.description}
-@author         ${item.author}
-@version        ${version}
-@homepage       ${item.updateURL.replace(/\.css(\?.*|$)/, '')}
-==/UserStyle==
-*/`;
+//   static getStylish(item, version) {
+//     const metaData =
+// `/*
+// ==UserStyle==
+// @name           ${item.name}
+// @description    ${item.description}
+// @author         ${item.author}
+// @version        ${version}
+// @homepage       ${item.updateURL.replace(/\.css(\?.*|$)/, '')}
+// ==/UserStyle==
+// */`;
 
-    fetch(item.updateURL)
-    .then(response => response.text())
-    .then(text => !text.trim().startsWith('<') && this.callback(metaData + '\n\n' + text, item.name, item.updateURL)) // check HTML timeout response
-    .catch(error => App.log(item.name, `getStylish ${item.updateURL} ➜ ${error.message}`, 'error'));
-  }
+//     fetch(item.updateURL)
+//     .then(response => response.text())
+//     .then(text => !text.trim().startsWith('<') && this.callback(metaData + '\n\n' + text, item.name, item.updateURL)) // check HTML timeout response
+//     .catch(error => App.log(item.name, `getStylish ${item.updateURL} ➜ ${error.message}`, 'error'));
+//   }
 
   static needUpdate(text, item) {
     const version = text.match(/@version\s+(\S+)/);         // check version

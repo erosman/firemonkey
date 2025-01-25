@@ -19,38 +19,78 @@ body {
 }
 
 pre {
+  margin: 0;
   padding: 1em;
 }
 
 div.fm {
   display: grid;
-  justify-content:
-  right; gap: 0.5em;
+  justify-content: right;
+  gap: 0.5em;
   padding: 0.5em 1em;
   border-bottom: 1px solid var(--border);
   background-color: var(--bg);
+}
 
-  h2 {
-    margin: 0;
-  }
+.fm h2 {
+  margin: 0;
+}
 
-  h2::before {
-    content: '';
-    background: url('../image/icon.svg') no-repeat center / contain;
-    display: inline-block;
-    height: 1.2em;
-    width: 1.2em;
-    margin-right: 0.3em;
-    vertical-align: text-bottom;
-  }
+.fm h2::before {
+  content: '';
+  background: url('../image/icon.svg') no-repeat center / contain;
+  display: inline-block;
+  height: 1.2em;
+  width: 1.2em;
+  margin-right: 0.3em;
+  vertical-align: text-bottom;
+}
 
-  p {
-    margin: 0;
-  }
+.fm p {
+  margin: 0;
+}
 
-  button {
-    justify-self: end;
-    font-size: 1.2em;
-    padding: 0.2em 1em;
-  }
+.fm p.buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.fm button {
+  font-size: 1.2em;
+  padding: 0.2em 1em;
+}
+
+.fm button.install {
+  justify-self: end;
+}
+
+.fm button.convert {
+  justify-self: start;
+  font-size: 0.9em;
+  visibility: hidden;
+}
+
+
+/* ----- Dark Theme ----- */
+/* for CodeMirror based on 3024-night */
+@media screen and (prefers-color-scheme: dark) {
+  .cm-s-default span.cm-comment { color: #cdab53; }
+  .cm-s-default span.cm-atom { color: #a16a94; }
+  .cm-s-default span.cm-number { color: #a16a94; }
+
+  .cm-s-default span.cm-property, .cm-s-default span.cm-attribute { color: #01a252; }
+  .cm-s-default span.cm-keyword { color: #db2d20; }
+  .cm-s-default span.cm-string { color: #fded02; }
+
+  .cm-s-default span.cm-variable { color: #01a252; }
+  .cm-s-default span.cm-variable-2 { color: #01a0e4; }
+  .cm-s-default span.cm-def { color: #e8bbd0; }
+  .cm-s-default span.cm-bracket { color: #d6d5d4; }
+  .cm-s-default span.cm-tag { color: #db2d20; }
+  .cm-s-default span.cm-link { color: #a16a94; }
+
+  .cm-s-default span.cm-error { color: #f90; }
+  .cm-s-default span.cm-string-2 { color: #ccc; }
+  .cm-s-default .cm-qualifier {color: #aaa;}
+  .cm-s-default .cm-builtin {color: #05f;}
 }

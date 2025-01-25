@@ -1,5 +1,6 @@
 // ---------- CodeMirror Extra Config (Side Effect) --------
 /* global CodeMirror */
+
 class Config {
 
   static {
@@ -51,7 +52,7 @@ class Config {
   static lint(cm, annotationsNotSorted) {
     const text = cm.getValue();
     const js = cm.options.mode === 'javascript';
-    const meta = text.match(/^([\s\S]+)==(UserScript|UserCSS|UserStyle)==([\s\S]+)==\/\2==/i) || ['', '', '', ''];
+    const meta = text.match(/^(.+)==(UserScript|UserCSS|UserStyle)==(.+)==\/\2==/is) || ['', '', '', ''];
     const b4 = meta[1].split(/\r?\n/).length;
     const end = b4 + meta[3].split(/\r?\n/).length;
 

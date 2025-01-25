@@ -11,20 +11,20 @@ class WebRequest {
   }
 
   static onBeforeSendHeaders(e) {
-    if (!e.originUrl?.startsWith(this.FMUrl)) { return; }    // not from FireMonkey
+    if (!e.originUrl?.startsWith(this.FMUrl)) { return; }   // not from FireMonkey
 
     const cookies = [];
     const idx = [];
-    e.requestHeaders.forEach((item, index) => {             // userscript + contextual cookies
-      if (item.name.startsWith('FM-')) {
-        item.name = item.name.substring(3);
-        if (['Cookie', 'Contextual-Cookie'].includes(item.name)) {
-           item.value && cookies.push(item.value);
+    e.requestHeaders.forEach((i, index) => {                // userscript + contextual cookies
+      if (i.name.startsWith('FM-')) {
+        i.name = i.name.substring(3);
+        if (['Cookie', 'Contextual-Cookie'].includes(i.name)) {
+           i.value && cookies.push(i.value);
            idx.push(index);
         }
       }
-      else if (item.name === 'Cookie') {                    // original Firefox cookie
-        cookies.push(item.value);
+      else if (i.name === 'Cookie') {                       // original Firefox cookie
+        cookies.push(i.value);
         idx.push(index);
       }
     });

@@ -13,127 +13,6 @@ browser.userScripts.onBeforeScript.addListener(script => {
     info.script.isIncognito = true;
   }
 
-  // --- check @require CSS
-  remoteCSS.forEach(i => GM.addElement('link', {href: i, rel: 'stylesheet'}));
-
-  // --- GM popup CSS
-  const popupCSS =
-`:host, *, ::before, ::after {
-  box-sizing: border-box;
-}
-
-:host {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  margin: 0;
-  position: fixed;
-  z-index: 10000;
-  transition: all 0.5s ease-in-out;
-}
-
-:host(.on) {
-  display: grid;
-}
-
-.content {
-  background: #f9f9fb;
-  padding: 0.5em;
-}
-
-.content.center,
-.content[class*="slide-"] {
-  min-width: 10em;
-  min-height: 10em;
-}
-
-.close {
-  color: #ccc;
-  margin: 0.1em 0.3em;
-  float: right;
-  font-size: 1.5em;
-  border: 0px solid #ddd;
-  border-radius: 2em;
-  cursor: pointer;
-}
-
-.close:hover { color: #f70; }
-.panel-right .close { float: left; }
-.panel-top .close, .panel-bottom .close { margin-right: 0.5em; }
-
-:host(.panel-left), :host(.panel-right), .panel-left, .panel-right { min-width: 14em; height: 100%; }
-:host(.panel-top), :host(.panel-bottom), .panel-top, .panel-bottom { width: 100%; min-height: 4em; }
-
-:host(.panel-left)        { top: 0; left: 0; justify-content: start; }
-:host(.panel-right)       { top: 0; right: 0; justify-content: end; }
-:host(.panel-top)         { top: 0; left: 0; align-items: start; }
-:host(.panel-bottom)      { bottom: 0; left: 0; align-items: end; }
-
-:host(.on) .center        { animation: center 0.5s ease-in-out; }
-:host(.on) .slide-top     { animation: slide-top 0.5s ease-in-out; }
-:host(.on) .slide-bottom  { animation: slide-bottom 0.5s ease-in-out; }
-:host(.on) .slide-left    { animation: slide-left 0.5s ease-in-out; }
-:host(.on) .slide-right   { animation: slide-right 0.5s ease-in-out; }
-
-:host(.on) .panel-top     { animation: panel-top 0.5s ease-in-out; }
-:host(.on) .panel-bottom  { animation: panel-bottom 0.5s ease-in-out; }
-:host(.on) .panel-left    { animation: panel-left 0.5s ease-in-out; }
-:host(.on) .panel-right   { animation: panel-right 0.5s ease-in-out; }
-
-:host(.modal) {
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background: #0008;
-}
-
-@keyframes center {
-    0% { transform: scale(0.8); }
-  100% { transform: scale(1); }
-}
-
-@keyframes slide-top {
-    0% { transform: translateY(-200%) scale(0.8); }
-  100% { transform: translateY(0) scale(1); }
-}
-
-@keyframes slide-bottom {
-    0% { transform: translateY(200%) scale(0.8); }
-  100% { transform: translateY(0) scale(1); }
-}
-
-@keyframes slide-left {
-    0% { transform: translateX(-200%) scale(0.8); }
-  100% { transform: translateX(0) scale(1); }
-}
-
-@keyframes slide-right {
-    0% { transform: translateX(200%) scale(0.8); }
-  100% { transform: translateX(0) scale(1); }
-}
-
-@keyframes panel-top {
-    0% { transform: translateY(-100%); }
-  100% { transform: translateY(0); }
-}
-
-@keyframes panel-bottom {
-    0% { transform: translateY(100%); }
-  100% { transform: translateY(0); }
-}
-
-@keyframes panel-left {
-    0% { transform: translateX(-100%); }
-  100% { transform: translateX(0); }
-}
-
-@keyframes panel-right {
-    0% { transform: translateX(100%); }
-  100% { transform: translateX(0); }
-}`;
-
   class API {
 
     static {
@@ -591,11 +470,7 @@ browser.userScripts.onBeforeScript.addListener(script => {
       const shadow = host.attachShadow({mode: 'closed'});   // closed: inaccessible from the outside
 
       const style = document.createElement('style');
-      // support use_dynamic_url in web_accessible_resources
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=1713196
-      // userscript can access UUID in element's textContent
-      // style.textContent = `@import "${FMUrl}content/api-popup.css";`;
-      style.textContent = popupCSS;
+      style.textContent = `@import "${FMUrl}content/api-popup.css";`;
       shadow.appendChild(style);
 
       const content = document.createElement('div');        // main content
@@ -629,13 +504,13 @@ browser.userScripts.onBeforeScript.addListener(script => {
 
         show() {
           host.style.opacity = 1;
-          host.classList.toggle('on', true);
+          host.classList.add('on');
         },
 
         hide(e) {
           if (!e || [host, close].includes(e.originalTarget)) {
             host.style.opacity = 0;
-            setTimeout(() => host.classList.toggle('on', false), 500);
+            setTimeout(() => host.classList.remove('on'), 500);
           }
         },
 
@@ -731,6 +606,9 @@ browser.userScripts.onBeforeScript.addListener(script => {
 
   // auto-disable sync GM API if async GM API are granted
   grantRemove.forEach(i => delete globals[i]);
+
+  // --- check @require CSS
+  remoteCSS.forEach(i => GM.addElement('link', {href: i, rel: 'stylesheet'}));
 
   script.defineGlobals(globals);
 });

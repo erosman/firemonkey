@@ -7,8 +7,8 @@ class GreasyFork {
   }
 
   static async check() {
-    // get id from location.href
-    const id = location.href.match(/\/scripts\/(\d+)/)?.[1];
+    // get id from location
+    const id = location.pathname.match(/\/scripts\/(\d+)/)?.[1];
     const hostname = location.hostname;
 
     const FM = {
@@ -17,10 +17,19 @@ class GreasyFork {
 
     if (id) {
       const result = await browser.storage.local.get();
-      FM.installedScriptVersion = Object.values(result).find(i =>
+      const item = Object.values(result).find(i =>
         i.updateURL?.startsWith(`https://update.${hostname}/scripts/${id}/`) || // new update URL format
         i.updateURL?.startsWith(`https://${hostname}/scripts/${id}-`)           // old update URL format
-      )?.version;
+      );
+
+      if (item?.js) {
+        FM.installedScriptVersion = item.version;
+      }
+      else if (item?.css) {
+        /==UserStyle==/i.test(item.css) ?
+          FM.installedStyleVersion = item.version :
+            FM.installedCSSVersion = item.version;
+      }
     }
 
     // set window.external
