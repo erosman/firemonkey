@@ -2,7 +2,7 @@
 
 [![license](https://img.shields.io/github/license/erosman/firemonkey.svg)](https://github.com/erosman/firemonkey/blob/master/LICENSE)
 [![GitHub repo size](https://img.shields.io/github/repo-size/erosman/firemonkey?logo=github&logoColor=fff)](https://github.com/erosman/firemonkey)
-[![ECMAScript](https://img.shields.io/badge/ECMAScript-2022_(ES13)-blue?style=plastic&logo=javascript)](https://262.ecma-international.org/13.0/index.html)
+[![ECMAScript](https://img.shields.io/badge/ECMAScript-2022_(ES13)-blue?logo=javascript)](https://262.ecma-international.org/13.0/index.html)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ferosman%2Ffiremonkey.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Ferosman%2Ffiremonkey?ref=badge_shield)
 
 
