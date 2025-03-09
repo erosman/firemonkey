@@ -1,5 +1,5 @@
 /* ----- FireMonkey ----- */
-table#api tbody td:last-of-type {
+table#userscript-api-comparison tbody td:last-of-type {
   color: var(--dim);
   text-align: right;
 }

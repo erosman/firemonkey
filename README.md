@@ -8,7 +8,7 @@
 
 [About/Changelog](https://erosman.github.io/firemonkey/src/content/about.html) | [Help](https://erosman.github.io/firemonkey/src/content/help.html) | [Issues](https://github.com/erosman/firemonkey/issues)
 
-<i>FireMonkey</i> is a totally new combined user-script and user-style manager. While it has similar functions to other user-Script managers like <i>Greasemonkey/Tampermonkey/Violentmonkey</i>, and user-style managers like <i>Stylish/Stylus/xStyle</i>, there are also differences.
+<i>FireMonkey</i> is a totally new combined user-script and user-style manager. While it has similar functions to other user-Script managers like <i>Greasemonkey/Tampermonkey/Violentmonkey</i>, and user-style managers like <i>Stylish/Stylus/xStyle</i>, there are also differences (see main comparison tables for [UserScript](https://erosman.github.io/firemonkey/src/content/help.html#userscript-api-comparison) and [UserCSS](https://erosman.github.io/firemonkey/src/content/help.html#usercss-api-comparison) extensions).
 
 ## Permissions
 

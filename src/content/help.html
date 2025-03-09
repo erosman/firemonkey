@@ -105,7 +105,7 @@
   <article>
 
   <h1 id="preamble">Preamble</h1>
-  <p><i>FireMonkey</i> is a totally new combined user-script and user-style manager. While it has similar functions to other user-Script managers like <i>Greasemonkey/Tampermonkey/Violentmonkey</i>, and user-style managers like <i>Stylish/Stylus/xStyle</i>, there are also differences. Similar to other userscript managers, scripts (or CSS) are injected in tabs when tab is reloading.</p>
+  <p><i>FireMonkey</i> is a totally new combined user-script and user-style manager. While it has similar functions to other user-Script managers like <i>Greasemonkey/Tampermonkey/Violentmonkey</i>, and user-style managers like <i>Stylish/Stylus/xStyle</i>, there are also differences (see main comparison tables for <a href="https://erosman.github.io/firemonkey/src/content/help.html#userscript-api-comparison">UserScript</a> and <a href="https://erosman.github.io/firemonkey/src/content/help.html#usercss-api-comparison">UserCSS</a> extensions). Similar to other userscript managers, scripts (or CSS) are injected in tabs when tab is reloading.</p>
 
   <!-- <p><s>The behaviour differs from <i>Stylus</i> which can inject CSS into a tab and remove it without having to reload the tab.</s> <a href="#Live-update">ⓘ</a> To make permanent changes without reloading the tab is not possible with the current API but changes are planned as part of <a href="https://blog.mozilla.org/addons/2021/05/27/manifest-v3-update/" target="_blank">Manifest v3 update</a>.</p> -->
 
@@ -130,8 +130,8 @@
       <!-- <tr><th>GM_getResourceText</th><td>If loading anything other than CSS<br>e.g. JavaScript/JSON/HTML <a href="#getResourceText">ⓘ</a></td><td>954 / 63,435 (1.5%) scripts use the API<br>127 / 63,435 (<b>0.2%</b>) scripts incompatible</td></tr>
       <tr><th>GM.getResourceUrl</th><td>If userscript processes the result before applying it <a href="#getResourceUrl">ⓘ</a></td><td>30 / 63,435 (0.05%) scripts use the API<br>all are compatible</td></tr>
       <tr><th>GM_getResourceURL</th><td>if userscript processes the result before applying it <a href="#getResourceUrl">ⓘ</a></td><td>355 / 63,435 (0.56%) scripts use the API<br>24 / 63,435 (<b>0.03%</b>) scripts incompatible</td></tr> -->
-      <tr><th>uncommon @grant</th><td><code>GM_cookie</code>, <code>GM_getTab</code>, <code>GM_getTabs</code>, <code>GM_saveTab</code> <a href="#api">ⓘ</a></td><td>55 / 63,435 (<b>0.08%</b>) scripts use these APIs</td></tr>
-      <tr><th>uncommon @grant</th><td><code>window.close</code>, <code>window.focus</code>, <code>window.onurlchange</code> <a href="#api">ⓘ</a></td><td>483 / 63,435 (<b>0.76%</b>) scripts use these APIs<br>Probably a lot less as there would be duplicates</td></tr>
+      <tr><th>uncommon @grant</th><td><code>GM_cookie</code>, <code>GM_getTab</code>, <code>GM_getTabs</code>, <code>GM_saveTab</code> <a href="#userscript-api-comparison">ⓘ</a></td><td>55 / 63,435 (<b>0.08%</b>) scripts use these APIs</td></tr>
+      <tr><th>uncommon @grant</th><td><code>window.close</code>, <code>window.focus</code>, <code>window.onurlchange</code> <a href="#userscript-api-comparison">ⓘ</a></td><td>483 / 63,435 (<b>0.76%</b>) scripts use these APIs<br>Probably a lot less as there would be duplicates</td></tr>
       <tr>
         <th>Content Security Policy (CSP)</th>
         <td><code>unsafeWindow</code> or <code>page</code> context injection on pages with strict CSP that may only work with <i>Tampermonkey</i> due to CSP relaxation <a href="#inject-into">ⓘ</a> <a href="https://github.com/Tampermonkey/tampermonkey/issues/1845" title="[CSP] Modify existing content security policy not work" target="_blank">ⓘ</a>
@@ -2046,7 +2046,7 @@ body {
   <p><i>FireMonkey</i> supports both GM3 & GM4 style (i.e. GM.* & GM_*) APIs.</p>
 
 
-  <table id="api">
+  <table id="userscript-api-comparison">
     <caption>UserScript API Comparison</caption>
     <thead>
     <tr>
@@ -2252,7 +2252,7 @@ body {
 
 
 
-  <table>
+  <table id="usercss-api-comparison">
     <caption>UserCSS API Comparison</caption>
     <thead>
     <tr>
