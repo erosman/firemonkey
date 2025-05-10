@@ -10,6 +10,10 @@
 
 <i>FireMonkey</i> is a totally new combined user-script and user-style manager. While it has similar functions to other user-Script managers like <i>Greasemonkey/Tampermonkey/Violentmonkey</i>, and user-style managers like <i>Stylish/Stylus/xStyle</i>, there are also differences.
 
+[User Script API Comparison](https://erosman.github.io/firemonkey/src/content/help.html#user-script-api-comparison) | 
+[User CSS/Style API Comparison](https://erosman.github.io/firemonkey/src/content/help.html#user-css-style-api-comparison)
+
+
 ## Permissions
 
 - **Input data to the clipboard**: Used to Copy to Clipboard
