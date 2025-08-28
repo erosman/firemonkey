@@ -76,6 +76,34 @@
   </tbody>
 </table>
 
+## Beta Installation Guide
+- Backup your FireMonkey settings
+- Download repo *(or use `git`)*
+  - *(this page)* -> Code *(green button)* -> Download ZIP
+  - Unzip the downloaded file
+
+
+- **Firefox** *(Nightly/Beta/Developer Edition)*
+  - Go to `about:debugging#/runtime/this-firefox`
+  - Click "Load Temporary Add-on..."
+  - Select `manifest.json`
+
+- **Firefox for Android**
+  - Install Firefox Nightly
+    - [Firefox Nightly for Developers](https://play.google.com/store/apps/details?id=org.mozilla.fenix&hl=en&gl=US)
+  - Enable Debug Menu
+    - Go to: menu -> Settings ->  About Firefox Nightly
+    - Tap a few times on the Firefox icon to enable debug menu
+    - Go to: `about:config`
+    - Find `xpinstall.signatures.required`
+    - Toggle to `false`
+  - Install Beta version
+    - Prepare `src` for Firefox as mentioned above
+    - Create a zip file from the content of `src`
+    - Make the file available to the Android device
+  - Install add-on from file
+    - Go to: menu -> Settings -> Advanced -> Install add-on from file
+
 
 ## License
 This project is open source under the MPL-2.0 license license.  
