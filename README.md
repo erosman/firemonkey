@@ -64,12 +64,19 @@
 <table>
   <thead>
     <tr>
+      <th>version</th>
       <th>Firefox</th>
       <th>Firefox for Android</th>
     </tr>
   </thead>
   <tbody>
     <tr>
+      <td>2.0 - </td>
+      <td>version 128<br><i>(released 2024-07-09)</i></td>
+      <td>version 128<br><i>(released 2024-07-09)</i></td>
+    </tr>
+    <tr>
+      <td>2.68 - 2.74</td>
       <td>version 93<br><i>(released 2021-10-05)</i></td>
       <td>version 113 (manifest)<br><i>(API minimum 102)</i></td>
     </tr>
