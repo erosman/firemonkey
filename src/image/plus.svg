@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" transform="scale(0.7)">
+  <style>@media (prefers-color-scheme: dark) {path {fill: #fff;}}</style>
+  <path d="M75,0 V75 H0 V125 H75 V200 H125 V125 H200 V75 H125 V0 H75 z"/>
+</svg>
