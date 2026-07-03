@@ -1,174 +1,126 @@
-﻿// ---------- Locale Maker ---------------------------------
-// Locale Maker requires "downloads" permission to save the generated locale in folders
-// minimum version Firefox 93 (released 2021-10-05)
+// ---------- Locale Maker ---------------------------------
+// Locale Maker with "downloads" permission can save the generated locale in folders
+// minimum version Firefox 128 (released 2024-07-09)
 
 class LocaleMaker {
 
   static {
-    // --- import/export
-    document.getElementById('file').addEventListener('change', e => this.import(e));
-    document.getElementById('export').addEventListener('click', () => this.export());
-    document.getElementById('exportAll').addEventListener('click', () => this.exportAll());
-
     // --- select
-    this.locales = {};
-    this.select = document.querySelector('#locale');
-    this.select.addEventListener('change', e => {
-      if (!e.target.value) { return; }
-      const lang = e.target.value;
-      this.locales[lang] && this.setLocale(this.locales[lang]);
-    });
+    this.select = document.querySelector('select');
+    this.select.addEventListener('change', e => this.showTarget(e));
 
-    // --- main content
-    this.content = document.querySelector('div.content')
-
-    // --- help popup
-    const details = document.querySelector('details');
-    document.body.addEventListener('click', e =>
-      !details.contains(e.explicitOriginalTarget) && (details.open = false)
-    );
-
-    this.process();
-    this.getPaste();
+    this.showSource();
   }
 
-  static getPaste() {
-    document.body.addEventListener('paste', e => {
-      if (e.target.nodeName !== 'INPUT') { return; }
-
-      const text = e.clipboardData.getData('text/plain');
-      const lines = text.trim().split(/[\r\n]+/);
-      if (!lines[0]) { return; }
-
-      e.preventDefault();
-      const idx = [...this.inputs].indexOf(e.target);
-      this.inputs.forEach((item, index) => index >= idx && lines[0] && (item.value = lines.shift().trim()));
-    });
-  }
-
-  static get(lang) {
-    return fetch(`/_locales/${lang}/messages.json`)
-    .then(response => response.json())
-    .catch(() => {});                                       // suppress error
-  }
-
-  static async process() {
-    // --- default locale
-    this.defaultLocale = browser.runtime.getManifest().default_locale;
-    if (!this.defaultLocale) {
+  static async showSource() {
+    // --- source language: default locale
+    const src = browser.runtime.getManifest().default_locale;
+    if (!src) {
       alert('"default_locale" is not set');
       return;
     }
 
     // --- get default locale first to display
-    const data = await this.get(this.defaultLocale);
+    const data = await this.get(src);
     if (!data) {
       alert('"default_locale" is not available');
       return;
     }
 
-    this.locales[this.defaultLocale] = data;
-    this.showDefault(data);
-
-    // --- get other available locales
-    [...this.select.options].forEach(item => {
-      if (!item.value) { return; }
-
-      const lang = item.value;
-      if (lang === this.defaultLocale) {
-        item.prepend('✅ ');
-        return;
-      }
-
-      this.get(lang).then(data => {
-        if (data) {
-          item.prepend('✔ ');
-          this.locales[lang] = data;
-        }
-      });
-    });
-  }
-
-  static showDefault(data) {
     const docFrag = document.createDocumentFragment();
-    const rowTemplate = document.querySelector('template').content;
+    const template = document.querySelector('template').content;
 
     Object.entries(data).forEach(([key, value]) => {
+      const row = template.cloneNode(true);
+      const [label, input] = row.children;
+      label.textContent = this.showSpecial(value.message);
+      input.id = key;
+      // keep extension name
       if (key === 'extensionName') {
-        document.title += ' - ' + value.message;
-        return;                                             // keep extension name
+        input.value = label.textContent;
+        input.disabled = true;
       }
-
-      const row = rowTemplate.cloneNode(true);
-      row.children[0].textContent = this.showSpecial(value.message);
-      row.children[1].id = key;
-      docFrag.appendChild(row);
+      docFrag.append(row);
     });
-    this.content.appendChild(docFrag);
 
-    // --- cache inputs
-    this.inputs = document.querySelectorAll('.content input');
+    // main content
+    document.querySelector('main').append(docFrag);
+
+    // cache inputs
+    this.inputs = document.querySelectorAll('main input');
   }
 
-  static setLocale(data) {
-    this.inputs.forEach(item => item.value = data[item.id] ? this.showSpecial(data[item.id].message) : '');
+  static async showTarget(e) {
+    if (!e.target.value) { return; }
+
+    const data = await this.get(e.target.value);
+    if (!data) { return; }
+
+    this.inputs.forEach(i =>
+      data[i.id] && (i.value = this.showSpecial(data[i.id].message)));
   }
 
-  static showSpecial(str) {
+  static showSpecial(str = '') {
     return JSON.stringify(str).slice(1, -1);
   }
 
-  // ---------- Import/Export ------------------------------
-  static import(e) {
+  static async get(lang) {
+    return fetch(`/_locales/${lang}/messages.json`)
+    .then(r => r.json())
+    .catch(() => {});
+    // suppress error
+  }
+
+  // ---------- import export ------------------------------
+  static {
+    document.getElementById('export').addEventListener('click', () => this.export());
+    document.getElementById('file').addEventListener('change', e => {
+      FS.import(e).then(data => data && this.showTarget(data));
+    });
+  }
+
+  static export() {
+    let data = {};
+    this.inputs.forEach(i => i.value && (data[i.id] = {message: JSON.parse(`"${i.value}"`)}));
+    data = JSON.stringify(data, null, 2);
+    const filename = this.select.value ? this.select.value + '/messages.json' : 'messages.json';
+    FS.writeFile({data, filename, saveAs: true, type: 'application/json'});
+  }
+}
+
+// ---------- import export --------------------------------
+class FS {
+
+  static async import(e) {
     const file = e.target.files[0];
     switch (true) {
       case !file:
         this.notify('There was an error with the operation.');
         return;
 
-      case !['text/plain', 'application/json'].includes(file.type): // check file MIME type
+      // check file MIME type
+      case !['text/plain', 'application/json'].includes(file.type):
         this.notify('Unsupported File Format.');
         return;
     }
 
-    const reader  = new FileReader();
-    reader.onloadend = () => {
-      try { this.setLocale(JSON.parse(reader.result)); }    // Parse JSON
-      catch(e) { alert(e.message ); }                       // display the error
-    };
-    reader.onerror = () => alert('There was an error with reading the file.');
-    reader.readAsText(file);
+    const data = await this.readFile(e.target.files[0]);
+    try { return JSON.parse(data); }
+    catch (e) { alert(e); }
   }
 
-  static export() {
-    const defaultLocale = this.locales[this.defaultLocale];
-    if (!defaultLocale) { return; }
-
-    let data = this.deepClone(defaultLocale);
-    this.inputs.forEach(item => item.value && (data[item.id].message = JSON.parse(`"${item.value}"`))); // update from inputs
-    const filename = this.select.value ? this.select.value + '/messages.json' : 'messages.json';
-    data = JSON.stringify(data, null, 2);
-    this.saveFile({data, filename});
-  }
-
-  static exportAll() {
-    const defaultLocale = this.locales[this.defaultLocale];
-    if (!defaultLocale) { return; }
-
-    const locales = this.deepClone(this.locales);
-    const defaultString = JSON.stringify(defaultLocale);
-    const folder = !browser.downloads ? '' : 'locale-maker/';
-
-    Object.entries(locales).forEach(([lang, langData]) => {
-      let data = JSON.parse(defaultString);                 // deep clone
-      Object.entries(langData).forEach(([key, value]) => key !== 'extensionName' && value && (data[key] = value));
-      const filename = `${folder}${lang}/messages.json`;
-      data = JSON.stringify(data, null, 2);
-      this.saveFile({data, filename, saveAs: false});
+  // --- read file
+  static readFile(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = e => reject(e);
+      reader.readAsText(file);
     });
   }
 
-  static saveFile({data, filename, saveAs = true, type = 'text/plain'}) {
+  // ----- write file
+  static writeFile({data, filename, saveAs, type = 'text/plain'}) {
     if (!browser.downloads) {
       const a = document.createElement('a');
       a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(data);
@@ -177,18 +129,15 @@ class LocaleMaker {
       return;
     }
 
+    const android = navigator.userAgent.includes('Android');
     const blob = new Blob([data], {type});
     browser.downloads.download({
       url: URL.createObjectURL(blob),
       filename,
-      saveAs,
-      conflictAction: 'uniquify'
+      // Firefox for Android raises an error if saveAs is set to true
+      ...(!android && saveAs && {saveAs: true}),
     })
-    .catch(() => {});                                       // Suppress Error: Download canceled by the user
+    .catch(() => {});
+    // catch() to suppress error: Download canceled by the user
   }
-
-  static deepClone(obj) {
-    return JSON.parse(JSON.stringify(obj));
-  }
-  // ---------- /Import/Export -----------------------------
 }
