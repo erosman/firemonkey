@@ -3,9 +3,9 @@
 
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
-  "version": "2.74",
+  "version": "3.0",
   "default_locale": "en",
-  "homepage_url": "https://github.com/erosman/support",
+  "homepage_url": "https://github.com/erosman/firemonkey",
   "author": "erosman",
 
   "icons": {
@@ -16,8 +16,26 @@
     "128": "image/icon.svg"
   },
 
+  "browser_action": {
+    "default_icon": "image/icon.svg",
+    "default_popup": "content/popup.html",
+    "default_title": "__MSG_extensionName__"
+  },
+
+  "sidebar_action": {
+    "default_icon": "image/icon.svg",
+    "default_panel": "content/options.html?sidebar",
+    "default_title": "__MSG_extensionName__"
+  },
+
+  "options_ui": {
+    "open_in_tab": true,
+    "page": "content/options.html"
+  },
+
   "background": {
-    "page": "content/background.html"
+    "scripts": ["content/background.js"],
+    "type": "module"
   },
 
   "content_scripts": [
@@ -54,10 +72,9 @@
         "content/install.css"
       ],
       "js": [
-        "lib/codemirror/addon/runmode/runmode-standalone.js",
-        "lib/codemirror/mode/fm-css.js",
-        "lib/codemirror/mode/fm-javascript.js",
-        "lib/js-beautify/beautify-css.js",
+        "lib/codemirror/runmode-standalone.js",
+        "lib/codemirror/css.js",
+        "lib/codemirror/javascript.js",
         "content/install.js"
       ]
     }
@@ -65,19 +82,6 @@
 
   "user_scripts": {
     "api_script": "content/api.js"
-  },
-
-  "options_ui": {
-    "browser_style": false,
-    "open_in_tab": true,
-    "page": "content/options.html"
-  },
-
-  "browser_action": {
-    "browser_style": false,
-    "default_icon": "image/icon.svg",
-    "default_popup": "content/popup.html",
-    "default_title": "__MSG_extensionName__"
   },
 
   "permissions": [
@@ -96,10 +100,21 @@
     "<all_urls>"
   ],
 
+  "commands": {
+    "_execute_browser_action": { },
+    "_execute_sidebar_action": { }
+  },
+
   "browser_specific_settings": {
     "gecko": {
       "id": "firemonkey@eros.man",
-      "strict_min_version": "93.0"
+      "strict_min_version": "128.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    },
+    "gecko_android": {
+      "strict_min_version": "128.0"
     }
   }
 }
