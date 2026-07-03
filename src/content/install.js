@@ -1,4 +1,4 @@
-// ---------- Direct Installer -----------------------------
+// ---------- direct installer -----------------------------
 // URLs ending in user.js & user.css
 // alert/confirm/prompt not working in raw.githubusercontent.com | gist.githubusercontent.com
 /* global CodeMirror */
@@ -6,8 +6,8 @@
 class Install {
 
   static {
-    // not on these URLs
     switch (location.hostname) {
+      // only some URLs
       case 'gitee.com':
       case 'gitlab.com':
       case 'codeberg.org':
@@ -43,8 +43,8 @@ class Install {
     // add install DOM
     this.addDOM();
 
-    let updateURL = location.href;
-    let text = this.pre.textContent.trim();
+    const updateURL = location.href;
+    const text = this.pre.textContent.trim();
     const name = text.match(/\s*@name\s+([^\r\n]+)/)?.[1];
     if (!text || !name) {
       this.p.textContent = browser.i18n.getMessage('metaError');
@@ -53,34 +53,15 @@ class Install {
     }
 
     this.p.innerText = browser.i18n.getMessage('installConfirm', name);
+
     this.install.addEventListener('click', () => {
-      browser.runtime.sendMessage({api: 'install', name, text, updateURL});
+      browser.runtime.sendMessage({install: true, name, text, updateURL});
       this.install.disabled = true;
-      this.convert.disabled = true;
       back && (typeof back === 'string' ? location.href = back : history.back());
     });
 
     // highlight syntax
     this.highlight(text);
-
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=1536094
-    // Dynamic module import doesn't work in webextension content scripts (fixed in FF89)
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=1803950
-    // Dynamic import fails in content script in MV3 extension
-    // --- convert to UserCSS
-    if (location.pathname.endsWith('.user.css')) {
-      const {UserStyle} = await import(browser.runtime.getURL('content/userstyle.js'));
-      const userCSS = UserStyle.process(text, this.convertedFrom);
-      if (userCSS) {
-        this.convert.style.visibility = 'visible';
-        this.convert.addEventListener('click', () => {
-          text = userCSS;
-          this.highlight(text);
-          this.convert.disabled = true;
-          updateURL = '';                                     // disable remote update
-        });
-      }
-    }
   }
 
   static addDOM() {
@@ -94,30 +75,19 @@ class Install {
 
     this.install = document.createElement('button');
     this.install.textContent = browser.i18n.getMessage('install');
-    this.install.className = 'install';
 
-    this.convert = this.install.cloneNode();
-    this.convert.textContent = browser.i18n.getMessage('convertToUserCSS');
-    this.convert.className = 'convert';
-
-    const p = this.p.cloneNode();
-    p.className = 'buttons';
-    p.append(this.convert, this.install);
-
-    div.append(h, this.p, p);
+    div.append(h, this.p, this.install);
     document.body.prepend(div);
 
     // add a second pre
     this.cm = document.createElement('pre');
     this.cm.className = 'cm-s-default';
-    document.body.appendChild(this.cm);
+    document.body.append(this.cm);
   }
 
   static highlight(text) {
     this.pre.style.display = 'none';
     this.cm.textContent = '';
-
-    globalThis.GM = {};                                     // avoid GM is not defined
     const mode = /==UserScript==/i.test(text) ? 'javascript' : 'css';
     CodeMirror.runMode(text, mode, this.cm, {tabSize: 2});
   }

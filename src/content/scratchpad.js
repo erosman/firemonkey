@@ -1,24 +1,30 @@
 import {App} from './app.js';
 
-// ---------- Scratchpad (Side Effect) ---------------------
+// ---------- scratchpad (side effect) ---------------------
 class Scratchpad {
 
   static {
-    // this.scratchpad = document.querySelector('div.scratchpad');
     this.js = document.querySelector('#js');
-    this.js.value = localStorage.getItem('scratchpadJS') || ''; // recall last entry
     this.css = document.querySelector('#css');
-    this.css.value = localStorage.getItem('scratchpadCSS') || ''; // recall last entry
+    this.origin = document.querySelector('#origin');
 
-    document.querySelectorAll('.scratchpad button').forEach(i => i.addEventListener('click', e => this.processButtons(e)));
+    // recall previous values
+    this.js.value = localStorage.getItem('scratchpadJS') || '';
+    this.css.value = localStorage.getItem('scratchpadCSS') || '';
+
+    // remember entered values
+    this.js.addEventListener('change', () => localStorage.setItem('scratchpadJS', this.js.value.trim()));
+    this.css.addEventListener('change', () => localStorage.setItem('scratchpadCSS', this.css.value.trim()));
+
+    document.querySelectorAll('.scratchpad button').forEach(i =>
+      i.addEventListener('click', e => this.processButtons(e)));
   }
 
   static processButtons(e) {
     const id = e.target.dataset.i18n;
     switch (id) {
       case 'run':
-      case 'delete|title':
-        this[e.target.id]();
+        e.target.id === 'run-js' ? this.runJS() : this.runCSS();
         break;
 
       case 'undo':
@@ -31,34 +37,23 @@ class Scratchpad {
     const code = this.js.value.trim();
     if (!code) { return; }
 
-    localStorage.setItem('scratchpadJS', code);             // save last entry
     browser.tabs.executeScript({code})
-    .catch(error => App.notify('JavaScript: ' + browser.i18n.getMessage('insertError') + '\n\n' + error.message));
+    .catch(e => App.notify(`JavaScript: ${e}`));
   }
 
   static runCSS() {
     const code = this.css.value.trim();
     if (!code) { return; }
 
-    localStorage.setItem('scratchpadCSS', code);            // save last entry
-    browser.tabs.insertCSS({code})
-    .catch(error => App.notify('CSS: ' + browser.i18n.getMessage('insertError') + '\n\n' + error.message));
+    browser.tabs.insertCSS({code, cssOrigin: this.origin.value})
+    .catch(e => App.notify(`CSS: ${e}`));
   }
 
   static undo() {
     const code = this.css.value.trim();
     if (!code) { return; }
-    browser.tabs.removeCSS({code})
-    .catch(error => App.notify('CSS\n' + error.message));
-  }
 
-  static clearJS() {
-    this.js.value = '';
-    localStorage.removeItem('scratchpadJS');
-  }
-
-  static clearCSS() {
-    this.css.value = '';
-    localStorage.removeItem('scratchpadCSS');
+    browser.tabs.removeCSS({code, cssOrigin: this.origin.value})
+    .catch(e => App.notify(`CSS: ${e}`));
   }
 }

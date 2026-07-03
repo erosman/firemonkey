@@ -1,0 +1,39 @@
+/* ----- toggle switch ----- */
+/* round() FF118, Ch125 */
+input.toggle {
+  --toggle-bg: light-dark(#06f, #0af);
+  --toggle-dot: 10px;
+  --toggle-dot-margin: 2px;
+  --toggle-wh-ratio: 2.4;
+  --toggle-w: calc(round(var(--toggle-dot) * var(--toggle-wh-ratio), 1px) + var(--toggle-dot-margin) * 2);
+  --toggle-h: calc(var(--toggle-dot) + var(--toggle-dot-margin) * 2);
+  --toggle-trans: calc(var(--toggle-w) - var(--toggle-h));
+
+  appearance: none;
+  width: var(--toggle-w);
+  height: var(--toggle-h);
+  position: relative;
+  border-radius: 50px;
+  background-color: #ccc;
+  margin: 0;
+
+  &::before {
+    content: '';
+    display: block;
+    margin: var(--toggle-dot-margin);
+    width: var(--toggle-dot);
+    height: var(--toggle-dot);
+    background-color: #fff;
+    border-radius: 50%;
+    color: #fff;
+    transition: 0.3s;
+  }
+
+  &:checked {
+    background-color: var(--toggle-bg);
+
+    &::before {
+      transform: translateX(var(--toggle-trans));
+    }
+  }
+}

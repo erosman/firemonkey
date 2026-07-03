@@ -1,0 +1,373 @@
+/* ----- scripts ----- */
+:root {
+  --aside: 13.5rem;
+}
+
+/* override nav.css */
+nav:has(#nav4:checked) ~ article section:nth-of-type(4) {
+  display: grid;
+}
+
+section.scripts {
+  /* aside | content */
+  grid-template-columns: auto 1fr;
+  padding-bottom: 0.5em;
+
+  .content {
+    display: grid;
+    /* header | settings + editor */
+    grid-template-rows: auto 1fr;
+    padding: 0 1em;
+  }
+}
+
+/* ----- editor ----- */
+.editor {
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+}
+/* ----- /editor ----- */
+
+/* ----- fullscreen controls ----- */
+aside.off {
+  display: none;
+  width: 0;
+
+  ~ .content {
+    grid-column: span 2;
+  }
+}
+/* ----- /fullscreen controls ----- */
+
+/* ----- settings show/hie ----- */
+.scripts .settings {
+  display: none;
+
+  > label {
+    display: block;
+    margin-top: 1em;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  select {
+    width: auto;
+  }
+}
+
+#settings:checked {
+  ~ .menu label[for="settings"] {
+    background-color: var(--btn-hover);
+  }
+
+  ~ .settings {
+    display: block;
+  }
+
+  ~ fieldset {
+    display: none;
+  }
+}
+/* ----- /settings show/hie ----- */
+
+/* ----- list togglers ----- */
+.scripts .list {
+  display: grid;
+  grid-auto-flow: column;
+  place-content: start;
+  gap: 3px;
+  padding: 0.1em 0.5em;
+
+  label {
+    padding: 0;
+    border: 0;
+    line-height: 1;
+  }
+
+  label img {
+    width: 1.5em;
+  }
+
+  input {
+    display: none;
+  }
+
+  input:checked ~ img {
+    opacity: 0.5;
+  }
+
+  input.list-disable ~ img {
+    filter: grayscale(1);
+  }
+
+  &:has(.list-enable:checked) ~ ul li:not(.disabled),
+  &:has(.list-disable:checked) ~ ul li.disabled,
+  &:has(.list-js:checked) ~ ul li.js,
+  &:has(.list-css:checked) ~ ul li.css {
+    display: none;
+  }
+}
+/* ----- /list togglers ----- */
+
+/* ----- aside counter ----- */
+aside {
+  ul {
+    counter-reset: n;
+
+    li {
+      counter-increment: n;
+    }
+  }
+
+  .counter {
+    text-align: right;
+    position: absolute;
+    top: 0.1em;
+    right: 0.5em;
+  }
+
+  .counter::after {
+    content: counter(n);
+  }
+}
+/* ----- /aside counter ----- */
+
+/* ----- aside scripts ----- */
+aside {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  font-size: 0.9em;
+  width: var(--aside);
+  overflow-x: auto;
+  position: relative;
+  background-color: var(--bg-alt);
+
+  .buttons {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 0.2em;
+    padding: 0 0.2em;
+
+    button,
+    label {
+      min-width: unset;
+    }
+  }
+
+  ul {
+    list-style: none;
+    margin: 0.5em 0;
+    padding: 0;
+    overflow: hidden auto;
+  }
+
+  li {
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    border-left: 4px solid transparent;
+    padding-left: 0.5em;
+    user-select: none;
+
+    &:hover {
+      background: var(--hover);
+    }
+
+    &::before {
+      content: '';
+      width: 1rem;
+      height: 1rem;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 0.5em;
+    }
+
+    &.js::before {
+      background: url('../image/js.svg');
+    }
+
+    &.css::before {
+      background: url('../image/css.svg');
+    }
+
+    &.disabled::before {
+      filter: grayscale(1);
+    }
+
+    &.disabled::first-line {
+      opacity: 0.5;
+    }
+
+    &.group {
+      border-color: var(--group);
+    }
+
+    &.on {
+      background-color: var(--selected-bg);
+      border-color: var(--highlight);
+    }
+
+    &.error::after {
+      content: '✘';
+      font-weight: 900;
+      display: inline-block;
+      vertical-align: text-bottom;
+      margin-left: 1em;
+      color: #f80;
+    }
+  }
+}
+/* ----- /aside scripts ----- */
+
+/* ----- action menu ----- */
+.scripts .menu {
+  display: grid;
+  grid-auto-flow: column;
+  place-content: center start;
+  gap: 3px;
+  padding: 0.2em 0;
+  font-size: 0.9em;
+
+  button,
+  label {
+    min-width: unset;
+    padding: 0.4em 0.5em;
+
+    img {
+      width: 1.4em;
+    }
+  }
+
+  label {
+    display: grid;
+    grid-auto-flow: column;
+    place-items: center;
+
+   .toggle {
+      margin: 0;
+    }
+  }
+}
+/* ----- /action menu ----- */
+
+/* ----- fieldset ----- */
+.scripts fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+
+  legend {
+    padding: 0.5em 0;
+    font-weight: bold;
+
+    &:is(.js, .css)::before {
+      content: '';
+      width: 1.2em;
+      height: 1.2em;
+      display: inline-block;
+      vertical-align: text-bottom;
+      margin-left: 0.2em;
+      margin-right: 0.5em;
+    }
+
+    &.js::before {
+      background: url('../image/js.svg');
+    }
+
+    &.css::before {
+      background: url('../image/css.svg');
+    }
+
+    &.disabled::before {
+      filter: grayscale(1);
+    }
+
+    span {
+      margin-left: 0.5em;
+      font-size: 0.9em;
+      color: #999;
+    }
+  }
+}
+/* ----- /fieldset ----- */
+
+/* ----- user var ----- */
+ul.user-var {
+  border: 1px solid var(--border);
+  border-radius: 0.3em;
+  margin: 0 0 0.5em;
+  padding: 0 0.5em;
+  min-height: 2em;
+
+  li {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0.3em 0.5em;
+    border-bottom: 1px solid var(--border);
+
+    &.range {
+      grid-template-columns: 2fr 1.5fr 0.5fr;
+
+      output {
+        justify-self: end;
+      }
+    }
+
+    &:last-of-type {
+      border: 0;
+    }
+
+    input[type="checkbox"] {
+      justify-self: start;
+    }
+
+    input[type="color"] {
+      border: 0;
+      width: 4em;
+      height: 1.7em;
+    }
+  }
+}
+/* ----- /user var ----- */
+
+/* ----- show/hide elements ----- */
+body.android {
+    --aside: 10rem;
+
+  .counter {
+    display: none;
+  }
+}
+
+body.sidebar {
+  --nav-height: 0;
+  --aside: 10rem;
+
+  nav,
+  .counter,
+  section.help,
+  section.about,
+  section.options,
+  section.log {
+    display: none;
+  }
+
+  section.scripts {
+    .menu {
+      [data-i18n="update|title"],
+      [data-i18n="upload|title"],
+      [data-i18n="autoUpdate|title"] {
+          display: none;
+      }
+    }
+
+    aside .buttons {
+      display: none;
+    }
+  }
+}
+/* ----- /show/hide elements ----- */

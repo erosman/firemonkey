@@ -1,7 +1,7 @@
 import {App} from './app.js';
 import {Match} from './match.js';
 
-// ---------- Script Counter -------------------------------
+// ---------- script counter -------------------------------
 export class Counter {
 
   static {
@@ -10,8 +10,8 @@ export class Counter {
     browser.browserAction.setBadgeTextColor({color: '#fff'});
   }
 
-  static init(pref) {                                       // pref from background.js
-    // this.pref = await browser.storage.local.get();       // self-contained module, runs on background.js start & storage.onChanged
+  // pref from background.js
+  static init(pref) {
     if (!pref.counter) {
       browser.tabs.onUpdated.removeListener(this.process);
       return;
@@ -30,7 +30,7 @@ export class Counter {
 
   static process(tabId, changeInfo, tab) {
     if (changeInfo.status !== 'complete') { return; }
-    if (App.android && !/^(http|file:)/i.test(tab.url)) { return; }
+    if (App.android && !/^(https?|file):/i.test(tab.url)) { return; }
 
     Match.process(tab, Counter.pref, 'bg')
     .then(count => {

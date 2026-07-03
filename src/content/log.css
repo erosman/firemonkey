@@ -1,0 +1,82 @@
+/* ----- log ----- */
+.log {
+  /* ----- counter ----- */
+  tbody {
+    counter-reset: n;
+  }
+
+  tbody tr td:first-child::before {
+    display: inline-block;
+    color: #aaa;
+    min-width: 1.5em;
+    text-align: right;
+    vertical-align: middle;
+    margin-right: 0.4em;
+    pointer-events: none;
+    counter-increment: n;
+    content: counter(n);
+    font-size: 0.8em;
+  }
+  /* ----- /counter ----- */
+
+  table {
+    border-collapse: collapse;
+    font-size: 0.9em;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  thead th {
+    padding: 0.5em;
+
+    &.message {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 0.5em;
+    }
+  }
+
+  tr {
+    border-bottom: 1px solid var(--border);
+
+    &.info td:nth-of-type(3)::before {
+      content: '⚠️';
+      margin-right: 0.5em;
+    }
+
+    &.error td:nth-of-type(3)::before {
+      content: '🛈';
+      margin-right: 0.5em;
+      color: #f00;
+    }
+  }
+
+  tbody tr {
+    font-size: 0.9em;
+
+    &:hover {
+      background: var(--hover);
+    }
+  }
+
+  td {
+    padding: 0.2em;
+    vertical-align: top;
+
+    &:nth-of-type(1) {
+      width: 15em;
+      white-space: nowrap;
+    }
+
+    &:nth-of-type(2) {
+      width: 15em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    a {
+      margin-left: 1em;
+    }
+  }
+}

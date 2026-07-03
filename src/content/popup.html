@@ -4,106 +4,124 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Popup</title>
-    <link rel="stylesheet" href="popup.css">
-    <script type="module" src="popup.js"></script>
+    <link href="popup.css" rel="stylesheet">
+    <script src="popup.js" type="module"></script>
 
     <!-- custom style -->
     <style></style>
   </head>
   <body>
-    <!-- Navigation -->
+    <!-- navigation -->
     <input type="radio" name="nav" id="main" checked>
     <input type="radio" name="nav" id="info">
     <input type="radio" name="nav" id="command">
     <input type="radio" name="nav" id="scratchpad">
-    <input type="radio" name="nav" id="findScript">
+    <input type="radio" name="nav" id="find">
 
     <article>
-
       <section class="main">
-        <!-- template -->
-        <template><li><span class="enable">✔</span><span class="name"></span></li></template>
+        <header class="tab-scripts list">
+          <span class="title" data-i18n="tabScripts"></span>
 
-        <input type="checkbox" id="listJS" class="control" checked>
-        <input type="checkbox" id="listCSS" class="control" checked>
+          <label><input type="checkbox" class="list-enable"><img src="../image/js.svg" alt=""><img src="../image/css.svg" alt=""></label>
+          <label><input type="checkbox" class="list-disable"><img src="../image/js.svg" alt=""><img src="../image/css.svg" alt=""></label>
+          <label><input type="checkbox" class="list-js"><img src="../image/js.svg" alt=""></label>
+          <label><input type="checkbox" class="list-css"><img src="../image/css.svg" alt=""></label>
 
-        <h3 class="list">
-          <span data-i18n="tabScript"></span>
-          <label for="listJS"><img src="../image/js.svg" alt=""></label>
-          <label for="listCSS"><img src="../image/css.svg" alt=""></label>
           <span class="frame">1</span>
-        </h3>
+        </header>
         <ul class="tab"></ul>
 
-        <h3 data-i18n="otherScript"></h3>
+        <header class="other-scritps">
+          <span class="title" data-i18n="otherScripts"></span>
+        </header>
         <ul class="other"></ul>
 
-        <h3 class="menu"><label for="command" data-i18n="scriptCommands">📣 </label></h3>
-        <h3 class="menu"><label for="scratchpad" data-i18n="scratchpad">📝 </label></h3>
-        <h3 class="menu"><label for="findScript" data-i18n="findScript">🔍 </label></h3>
+
+
 
         <div class="buttons">
-          <button type="button" data-i18n="options"><img src="../image/gear.svg" alt=""> </button>
-          <button type="button" data-i18n="newJS|title"><span class="plus">➕</span> <img src="../image/js.svg" alt=""></button>
-          <button type="button" data-i18n="newCSS|title"><span class="plus">➕</span> <img src="../image/css.svg" alt=""></button>
-          <button type="button" data-i18n="help"></button>
+          <button type="button" data-i18n="options|title"><img src="../image/settings.svg" alt=""></button>
+          <button type="button" data-i18n="newJS|title"><img src="../image/plus.svg" alt=""><img src="../image/js.svg" alt=""></button>
+          <button type="button" data-i18n="newCSS|title"><img src="../image/plus.svg" alt=""><img src="../image/css.svg" alt=""></button>
+          <button type="button" data-i18n="help|title"><img src="../image/help.svg" alt=""></button>
+
+          <label for="scratchpad" data-i18n="scratchpad|title"><img src="../image/clipboard.svg" alt=""></label>
+          <label for="command" data-i18n="scriptCommands|title"><img src="../image/desktop-notification.svg" alt=""></label>
+          <label for="find" data-i18n="findScript|title"><img src="../image/search.svg" alt=""></label>
         </div>
+
+        <!-- template -->
+        <template>
+          <li>
+            <span class="flag"><img src="../image/css.svg" alt=""><img src="../image/js.svg" alt=""></span>
+            <span class="name"></span>
+          </li>
+        </template>
+        <!-- /template -->
       </section>
 
-      <section class="info">
-        <h3><label for="main" data-i18n="back"><img src="../image/back.svg" alt=""> </label></h3>
+      <aside>
+        <header>
+          <label for="main" data-i18n="back"><img src="../image/back.svg" alt=""> </label>
+        </header>
 
-        <div class="infoList">
+        <section class="info">
+          <div>
+            <img src="../image/css.svg" alt="">
+            <img src="../image/js.svg" alt="">
+          </div>
           <dl></dl>
           <div class="buttons edit">
-            <button type="button" data-i18n="edit">🖌 </button>
+            <button type="button" data-i18n="edit"><img src="../image/edit-outline.svg" alt=""> </button>
             <button type="button" id="infoRun" data-i18n="run">▷ </button>
             <button type="button" id="infoUndo" data-i18n="undo">◁ </button>
           </div>
-        </div>
+        </section>
 
-        <div class="commandList">
-          <dl></dl>
-        </div>
+          <section class="command">
+            <dl></dl>
+          </section>
 
-        <div class="scratchpad">
-          <h2><img src="../image/js.svg" alt=""> JavaScript</h2>
-          <textarea id="js" rows="8" spellcheck="false"></textarea>
+          <section class="scratchpad">
+            <h2><img src="../image/js.svg" alt=""> JavaScript</h2>
+            <textarea id="js" rows="8" spellcheck="false"></textarea>
 
-          <div class="buttons">
-            <button type="button" id="runJS" data-i18n="run">▷ </button>
-            <button type="button" id="clearJS" class="bin" data-i18n="delete|title"><img src="../image/bin.svg" alt=""></button>
-          </div>
+            <div class="buttons">
+              <button type="button" id="run-js" data-i18n="run">▷ </button>
+            </div>
 
-          <h2><img src="../image/css.svg" alt=""> CSS</h2>
-          <textarea id="css" rows="8" spellcheck="false"></textarea>
+            <h2><img src="../image/css.svg" alt=""> CSS</h2>
+            <textarea id="css" rows="8" spellcheck="false"></textarea>
+            <select id="origin">
+              <option value="author" disabled selected>origin</option>
+              <option value="author">author</option>
+              <option value="user">user</option>
+            </select>
 
-          <div class="buttons">
-            <button type="button" id="runCSS" data-i18n="run">▷ </button>
-            <button type="button" id="undo" data-i18n="undo">◁ </button>
-            <button type="button" id="clearCSS" class="bin" data-i18n="delete|title"><img src="../image/bin.svg" alt=""></button>
-          </div>
-        </div>
+            <div class="buttons">
+              <button type="button" id="run-css" data-i18n="run">▷ </button>
+              <button type="button" id="undo" data-i18n="undo">◁ </button>
+            </div>
+          </section>
 
-        <div class="findScript">
-          <dl>
-            <dt>Scripts</dt>
-            <dd><a href="https://greasyfork.org/en/scripts/by-site/;domain;" target="_blank"><img src="../image/logo/greasyfork.svg" alt=""> GreasyFork</a></dd>
-            <dd><a href="https://sleazyfork.org/en/scripts/by-site/;domain;" target="_blank"><img src="../image/logo/greasyfork.svg" alt=""> SleazyFork</a></dd>
-            <dd><a href="https://www.userscript.zone/search?q=;domain;" target="_blank"><img src="../image/logo/userscript.zone.png" alt=""> Userscript.Zone</a></dd>
-            <dd><a href="https://openuserjs.org/?q=;domain;" target="_blank"><img src="../image/logo/openuserjs.svg" alt=""> OpenUserJS</a></dd>
+          <section class="find">
+            <dl>
+              <dt>Scripts</dt>
+              <dd><a href="https://greasyfork.org/en/scripts/by-site/;domain;" target="_blank"><img src="../image/logo/greasyfork.svg" alt=""> GreasyFork</a></dd>
+              <dd><a href="https://sleazyfork.org/en/scripts/by-site/;domain;" target="_blank"><img src="../image/logo/greasyfork.svg" alt=""> SleazyFork</a></dd>
+              <dd><a href="https://www.userscript.zone/search?q=;domain;" target="_blank"><img src="../image/logo/userscript.zone.png" alt=""> Userscript.Zone</a></dd>
+              <dd><a href="https://openuserjs.org/?q=;domain;" target="_blank"><img src="../image/logo/openuserjs.svg" alt=""> OpenUserJS</a></dd>
 
-            <dt>Styles</dt>
-            <dd><a href="https://greasyfork.org/en/scripts/by-site/;domain;?language=css" target="_blank"><img src="../image/logo/greasyfork.svg" alt=""> GreasyFork</a></dd>
-            <dd><a href="https://sleazyfork.org/en/scripts/by-site/;domain;?language=css" target="_blank"><img src="../image/logo/greasyfork.svg" alt=""> SleazyFork</a></dd>
-            <dd><a href="https://userstyles.org/styles/browse/;sld;" target="_blank"><img src="../image/logo/stylish.svg" alt=""> userstyles.org</a></dd>
-            <dd><a href="https://userstyles.world/search?q=;sld;" target="_blank"><img src="../image/logo/userstyles.world.svg" alt=""> UserStyles.world</a></dd>
-            <dd><a href="https://uso.kkx.one/browse/styles?search=;sld;" target="_blank"><img src="../image/logo/uso.kkx.one.png" alt=""> UserStyles.org Archive</a></dd>
-          </dl>
-        </div>
-
-      </section>
-
+              <dt>Styles</dt>
+              <dd><a href="https://greasyfork.org/en/scripts/by-site/;domain;?language=css" target="_blank"><img src="../image/logo/greasyfork.svg" alt=""> GreasyFork</a></dd>
+              <dd><a href="https://sleazyfork.org/en/scripts/by-site/;domain;?language=css" target="_blank"><img src="../image/logo/greasyfork.svg" alt=""> SleazyFork</a></dd>
+              <!-- <dd><a href="https://userstyles.org/styles/browse/;sld;" target="_blank"><img src="../image/logo/stylish.svg" alt=""> userstyles.org</a></dd> -->
+              <dd><a href="https://userstyles.world/search?q=;domain;" target="_blank"><img src="../image/logo/userstyles.world.svg" alt=""> UserStyles.world</a></dd>
+              <dd><a href="https://uso.kkx.one/browse/styles?search=;domain;" target="_blank"><img src="../image/logo/uso.kkx.one.png" alt=""> UserStyles.org Archive</a></dd>
+            </dl>
+          </section>
+      </aside>
     </article>
   </body>
 </html>

@@ -2,64 +2,75 @@ import {App} from './app.js';
 import {Meta} from './meta.js';
 import {RemoteUpdate} from './remote-update.js';
 
-// ----------------- Web/Direct Installer & Remote Update (Side Effect)
+// ----------------- installer (side effect) ---------------
 class Installer {
 
   static {
-    // message from content scripts
+    // message from install.js content script
     browser.runtime.onMessage.addListener(e =>
-      e.api === 'install' && this.processResponse(e.text, e.name, e.updateURL));
+      e.install && this.process(e.text, e.name, e.updateURL));
 
-    RemoteUpdate.callback = this.processResponse.bind(this);
-
-    // --- Remote Update
+    // --- auto-update on browser idle
     this.cache = [];
-    browser.idle.onStateChanged.addListener(state => this.onIdle(state));
+    browser.idle.onStateChanged.addListener(state => state === 'idle' && this.onIdle());
   }
 
-  // ---------- Remote Update ------------------------------
-  static async onIdle(state) {
-    if (state !== 'idle') { return; }
-
+  static async onIdle() {
     const pref = await browser.storage.local.get();
     const now = Date.now();
     const days = pref.autoUpdateInterval * 1;
-    if (!days || now <= pref.autoUpdateLast + (days * 86400000)) { return; } // 86400 * 1000 = 24hr
+    // 86400 * 1000 = 24hr
+    if (!days || now <= pref.autoUpdateLast + (days * 86_400_000)) { return; }
 
-    if (!this.cache[0]) {                                   // rebuild the cache if empty
-      this.cache = App.getIds(pref).filter(id => pref[id].autoUpdate && pref[id].updateURL && pref[id].version);
+    // rebuild cache if empty
+    if (!this.cache[0]) {
+      this.cache = App.getIds(pref).filter(i =>
+        pref[i].autoUpdate && pref[i].updateURL && pref[i].version);
     }
 
     // do 10 updates at a time & check if script wasn't deleted
-    this.cache.splice(0, 10).forEach(i => Object.hasOwn(pref, i) && RemoteUpdate.getUpdate(pref[i]));
+    this.cache.splice(0, 10).forEach(i => pref[i] &&
+      RemoteUpdate.get(pref[i])
+      .then(text => this.process(text, pref[i].name, pref[i].updateURL, pref))
+    );
 
     // set autoUpdateLast after updates are finished
-    !this.cache[0] && browser.storage.local.set({autoUpdateLast: now}); // update saved pref
+    !this.cache[0] && browser.storage.local.set({autoUpdateLast: now});
   }
 
-  static async processResponse(text, name, updateURL) {     // from class RemoteUpdate.callback
-    const pref = await browser.storage.local.get();
+  static async process(text, name, updateURL, pref) {
+    const direct = !pref;
+    pref ||= await browser.storage.local.get();
     const data = Meta.get(text, pref);
     if (!data) {
-      throw `${name}: Meta Data error`;
+      App.log(`${name}: Meta Data error`, 'error');
+      return;
     }
 
-    const id = `_${data.name}`;                             // set id as _name
+    // set id as _name
+    const id = `_${data.name}`;
     const oldId = `_${name}`;
 
     // --- check name, if update existing
-    if (pref[oldId] && data.name !== name) {                // name has changed
-      if (pref[id]) {                                       // name already exists
-        throw `${name}: Update new name already exists`;
+    if (pref[oldId] && data.name !== name) {
+      // name has changed
+      if (pref[id]) {
+        // name already exists
+        App.log(`${name}: Update new name already exists`, 'error');
+        return;
       }
-
-      pref[id] = pref[oldId];                               // copy to new id
-      delete pref[oldId];                                   // delete old id
-      browser.storage.local.remove(oldId);                  // remove old data (will get unregistered in processPrefUpdate)
+      // copy to new id
+      pref[id] = pref[oldId];
+      // delete old id
+      delete pref[oldId];
+      // remove old data
+      await browser.storage.local.remove(oldId);
+      // unregister old data message to background.js
+      browser.runtime.sendMessage({update: 'script', pref, ids: [oldId]});
     }
 
-    // --- check version, if update existing, not for local files
-    if (!updateURL.startsWith('file:///') && pref[id] &&
+    // --- check version, not for direct or local files
+    if (!direct && !updateURL.startsWith('file:///') && pref[id] &&
           !App.higherVersion(data.version, pref[id].version)) { return; }
 
     // --- check for Direct Install, set install URL
@@ -69,11 +80,13 @@ class Installer {
     }
 
     // --- log message to display in Options -> Log
-    const message = pref[id] ? `Updated version ${pref[id].version} ➜ ${data.version}` : `Installed version ${data.version}`;
+    const message = pref[id] ?
+      `Updated version ${pref[id].version} ➜ ${data.version}` :
+      `Installed version ${data.version}`;
     App.log(data.name, message, '', data.updateURL);
+    direct && App.notify(data.name + '\n' + message);
 
-    pref[id] = data;                                        // save to pref
-    browser.storage.local.set({[id]: pref[id]});            // update saved pref
+    pref[id] = data;
+    browser.storage.local.set({[id]: pref[id]});
   }
-  // ---------- /Remote Update -----------------------------
 }

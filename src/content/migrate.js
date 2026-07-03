@@ -1,70 +1,52 @@
-import {App} from './app.js';
-import {Meta} from './meta.js';
+import {FS} from './fs.js';
 
-// ---------- Migrate --------------------------------------
+// ---------- migrate --------------------------------------
 export class Migrate {
 
   static async init(pref) {
-    // --- 2.68 (2023-05-29)
-    localStorage.removeItem('migrate');
+    // --- 3.0
+    if (Object.hasOwn(pref, 'cmOptions')) {
+      // backup old database
+      FS.export(pref);
 
-    // --- fix typo
-    const js = localStorage.getItem('scraptchpadJS');
-    js && localStorage.setItem('scratchpadJS', js);
-    localStorage.removeItem('scraptchpadJS');
+      // remove unused data
+      localStorage.removeItem('dark');
+      localStorage.removeItem('theme');
 
-    const css = localStorage.getItem('scraptchpadCSS');
-    css && localStorage.setItem('scratchpadCSS', css);
-    localStorage.removeItem('scraptchpadCSS');
+      // add editor/linter Options & remove CodeMirror options
+      pref.editorOptions = '';
+      pref.linterOptions = '';
+      delete pref.cmOptions;
 
-    // covert userScript lib/*.jsm to original @require URL
-    const requireIds = App.getIds(pref).filter(id =>
-      pref[id].js && pref[id].require.some(i => i.startsWith('lib/')));
-    if (requireIds[0]) {
-      requireIds.forEach(id => pref[id].require = this.getRequire(pref[id].js));
+      // rename globalScriptExcludeMatches to globalExclude
+      pref.globalExclude = pref.globalScriptExcludeMatches;
+      delete pref.globalScriptExcludeMatches;
+
+      // add new properties
+      pref.cspExclude = '';
+
+      Object.keys(pref).forEach(id => {
+        if (!id.startsWith('_')) { return; }
+
+        // remove requireRemote
+        if (pref[id].requireRemote) {
+          pref[id].require.push(...pref[id].requireRemote);
+          delete pref[id].requireRemote;
+        }
+
+        // prepare script.style
+        typeof pref[id].style !== 'string' && (pref[id].style = '');
+
+        // @container support v2.41 (2022-01-22)
+        pref[id].container ||= [];
+
+        // @var support v2.56 (2022-05-09)
+        pref[id].userVar ||= {};
+      });
 
       // update database
+      await browser.storage.local.remove(['cmOptions', 'globalScriptExcludeMatches']);
       await browser.storage.local.set(pref);
     }
   }
-
-  static getRequire(js) {
-    const require = [];
-    const metaData = js.match(Meta.regEx);
-    metaData[2].split(/[\r\n]+/).forEach(item => {          // lines
-      const [, prop, value = ''] = item.trim().match(Meta.lineRegex) || [];
-      prop === 'require' && value && require.push(value);
-    });
-
-    return require;
-  }
 }
-
-/*
-  2023-05-14
-  FM version users
-  -----------------
-  1.47  1
-  2.32  1
-  2.55  1
-  2.56  4
-  2.59  1
-  2.60  1
-  2.62  2
-  2.64  1
-  2.65  1
-  2.66  6
-  ...
-
-  FF version users
-  -----------------
-  78.15.0  1
-  88.0    1
-  95.0.1  1
-  96.0    1
-  96.0.2  1
-  99.0    1
-  99.0.1  1
-  102.0    1
-  ...
-*/

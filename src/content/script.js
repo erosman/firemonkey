@@ -1,331 +1,126 @@
 import {App} from './app.js';
+import {UserScript} from './userscript.js';
+import {UserCSS} from './usercss.js';
+import {UserStyle} from './userstyle.js';
 import {Meta} from './meta.js';
+import {Match} from './match.js';
 
-// ---------- Register Content Script|CSS ------------------
+// ---------- register content script|css ------------------
 export class Script {
 
-  static FMUrl = browser.runtime.getURL('');                // used for sourceURL
-  static FMV = browser.runtime.getManifest().version;       // FireMonkey version
-  static registered = {};                                   // not needed in MV3 userScripts.register()
+  // registered cache, not needed in MV3 userScripts.register()
+  static registered = {};
 
-  static async init() {
-    this.platformInfo = await browser.runtime.getPlatformInfo();
-    this.browserInfo = await browser.runtime.getBrowserInfo();
-    const FFV = parseInt(this.browserInfo.version);         // Firefox versions number
-    this.containerSupport = {
-      css: FFV >= 97,                                       // firefox97 (2022-02-08) https://bugzilla.mozilla.org/show_bug.cgi?id=1470651
-      js: FFV >= 98                                         // firefox98 (2022-03-08) https://bugzilla.mozilla.org/show_bug.cgi?id=1738567
-    };
+  static async init(pref) {
+    await UserScript.init();
+    await UserCSS.init();
+
+    // register all
+    this.update(pref);
   }
 
   static update(pref, ids = App.getIds(pref)) {
-    ids.forEach(id => this.process(pref, id));
+    ids.forEach(id => this.register(id, pref));
   }
 
-  static remove(script) {
-    // --- unregister previously registered script & UserStyle Multi-segment CSS
-    const id = `_${script.name}`;
-    script.style?.[0] ? script.style.forEach((item, i) => this.unregister(id + 'style' + i)) : this.unregister(id);
-  }
+  // need complete pref for pref.globalExclude & @require & deleted scripts
+  static async register(id, pref) {
+    // unregister previously registered script
+    await this.unregister(id);
 
-  static async process(pref, id) {                          // need complete pref for pref.globalScriptExcludeMatches && @require
-    const script = {...pref[id]};                           // shallow clone
+    // deleted script
+    if (!pref[id]) { return; }
 
-    // --- reset previously registered UserStyle Multi-segment CSS
-    // script.style?.[0] ? script.style.forEach((item, i) => this.unregister(id + 'style' + i)) : this.unregister(id);
-    this.remove(script);
+    // shallow clone
+    const script = {...pref[id]};
 
-    // --- stop if script is not enabled or no mandatory matches
-    if (!script.enabled || (!script.matches[0] && !script.includes[0] && !script.includeGlobs[0] && !script.style?.[0])) { return; }
+    // end if not enabled OR no include
+    if (!script.enabled ||
+      (!script.matches[0] && !script.includes[0] && !script.includeGlobs[0])) { return; }
 
-    script.js ? this.prepareUserScript(pref, id) : this.prepareUserCSS(pref, id);
-  }
+    const options = await this.getOptions(script, pref);
 
-  // cloneScript(script) {
-  //   return JSON.parse(JSON.stringify(script));              // deep clone to prevent changes to the original
-  // }
+    // scripts with regex includes, includeGlobs to be handled by api-gm.js
+    if (script.includes[0]) {
+      options.matches.push('*://*/*');
+      delete options.includeGlobs;
+    }
 
-  // gExclude = globalScriptExcludeMatches
-  static getOptions(script, gExclude) {
-    // --- prepare script options
-    // https://searchfox.org/mozilla-central/rev/8b7843220e6d24f10fcd21d79a52b0b091d0e98f/toolkit/components/extensions/schemas/user_scripts.json#55-66
-    // https://searchfox.org/mozilla-central/rev/8b7843220e6d24f10fcd21d79a52b0b091d0e98f/toolkit/components/extensions/schemas/content_scripts.json#17-22
-    // empty array of excludeMatches (reject), includeGlobs/excludeGlobs (silently) cause register error in MV2 contentScripts/userScripts
-
-    // // --- add Global Script Exclude Matches
-    const excludeMatches = [...script.excludeMatches, ...(gExclude ? gExclude.split(/\s+/) : [])];
-    const {includeGlobs, excludeGlobs} = script;
-
-    const options = {
-      matches: script.matches,
-      matchAboutBlank: script.matchAboutBlank,
-      allFrames: script.allFrames,
-      runAt: script.runAt,
-
-      ...(excludeMatches[0] && {excludeMatches}),
-      ...(includeGlobs[0] && {includeGlobs}),
-      ...(excludeGlobs[0] && {excludeGlobs}),
-    };
-
-    // --- add CSS & JS
-    const type = script.js ? 'js' : 'css';
-    options[type] = [];
-
-    // --- prepare for include/exclude
     // matches is mandatory in MV2 contentScripts/userScripts
+    // https://searchfox.org/mozilla-central/source/toolkit/components/extensions/WebExtensionPolicy.cpp
+    // empty array of excludeMatches (reject), includeGlobs/excludeGlobs
+    // (silently) cause register error in MV2 contentScripts/userScripts
     // https://bugzilla.mozilla.org/show_bug.cgi?id=1911834
     // Implement matches OR includeGlobs semantics for MV3 userScripts API (fixed FF134)
     // public scripts should not be suitable for file:///*
-    !script.matches[0] && (script.includes[0] || script.excludes[0] || script.includeGlobs[0] || script.excludeGlobs[0]) &&
-    (options.matches = ['*://*/*']);
-    options.matches = [...new Set(options.matches)];        // remove duplicates
+    options.matches[0] || (options.matches = ['*://*/*']);
 
-    // --- contextual identity container
-    script.container?.[0] && this.containerSupport[type] &&
-        (options.cookieStoreId = script.container.map(i => `firefox-${i}`));
+    // register script
+    this.registerScript(id, pref, script, options);
 
-    return options;
+    // process open tabs
+    this.updateTabs(id, pref);
   }
 
-  static getVar(userVar, js) {
-    // --- add @var
-    const uv = Object.entries(userVar).map(([key, value]) => {
-      let val = value.user;
-      ['number', 'range'].includes(value.type) && value.value[4] && (val + value.value[4]);
-      value.type === 'select' && Array.isArray(value.value) && (val = val.replace(/\*$/, ''));
-      js && typeof val === 'string' && (val = JSON.stringify(val));
-      return `const ${key} = ${val};`;
-    }).join('\n');
-    return uv;
+  static getOptions(script, pref) {
+    const mod = script.js ? UserScript : /==UserCSS==/i.test(script.css) ? UserCSS : UserStyle;
+    return mod.getOptions(script, pref);
   }
 
-  static async prepareUserScript(pref, id) {
-    const script = pref[id];
-    const options = this.getOptions(script, pref.globalScriptExcludeMatches);
-    const {name, require, requireRemote, userVar = {}, includes, excludes, grant = []} = script;
-    const page = script.injectInto === 'page';
-    const pageURL = page ? 'inject-into-page/' : '';
-    const encodeName = encodeURI(name);
-
-    // re UUID when inject-into page
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=1717671
-    // Display inconsistency of sourceURL folder & file
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=1824910
-    // const sourceURL = `\n\n//# sourceURL=user-script:FireMonkey/${pageURL}${encodeName}/`; // before v2.68
-    const sourceURL = `\n\n//# sourceURL=${this.FMUrl}userscript/${pageURL}${encodeName}`;
-
-    // --- Regex include/exclude workaround
-    (includes[0] || excludes[0]) && options.js.push({code: `if (!matchURL()) { throw ''; }`});
-
-    // --- unsafeWindow implementation
-    // Mapping to window object as a temporary workaround for
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=1715249
-    !page && options.js.push({file: '/content/api-plus.js'});
-
-    // --- process grant
-    const [grantKeep, grantRemove] = App.sortGrant(grant);  // FM 2.42
-    const registerMenuCommand = ['GM_registerMenuCommand', 'GM.registerMenuCommand'].some(i => grant.includes(i)); // FM 2.45
-
-    // --- add @require
-    require.forEach(item => {
-      const id = `_${item}`;
-
-      if (pref[id]?.js) {                                   // require another userScript
-        let code = Meta.prepare(pref[id].js);
-        code += `${sourceURL}/@require/${encodeURI(item)}.user.js`;
-        page && (code = `GM.addScript(${JSON.stringify(code)})`);
-        options.js.push({code});
-      }
-      else if (pref[id]?.css) {                             // require another userCSS
-        let code = Meta.prepare(pref[id].css);
-        code = `GM.addStyle(${JSON.stringify(code)})`;
-        options.js.push({code});
-      }
-    });
-
-    // --- sort into JS & CSS, CSS @require injects via api
-    const remoteJS = [];
-    const remoteCSS = [];
-    const cssRegex = /^(https?:)?\/\/.+(\.css\b|\/css\d*\?)/i;
-    requireRemote.forEach(i => cssRegex.test(i) ? remoteCSS.push(i) : remoteJS.push(i));
-
-    // --- add @requireRemote
-    if (remoteJS[0]) {
-      const res = [];                                       // keep the order of @require
-      // Array.forEach: Uncaught (in promise) TypeError: can't convert undefined to object
-      // using Array.map to return a Promise
-      await Promise.all(remoteJS.map((url, index) =>
-        fetch(url)
-        .then(response => response.text())
-        .then(code => {
-          code += `${sourceURL}/@require/${encodeURI(url)}`;
-          page && (code = `GM.addScript(${JSON.stringify(code)})`);
-          res[index] = {code};
-        })
-        .catch(() => {})
-      ));
-      res.forEach(i => options.js.push(i));
+  static registerScript(id, pref, script, options) {
+    // userScripts API: userScript
+    // contentScripts API: userScript (inject-into page) | userCSS | userStyle
+    const api = (script.css || options.world) ? browser.contentScripts : browser.userScripts;
+    try {
+      // catch error thrown before the Promise reject
+      api.register(options)
+      .then(reg => this.registered[id] = reg)
+      .catch(e => App.log(id.substring(1), `Register ➜ ${e}`, 'error'));
     }
-
-    // --- add @resource for GM getResourceText
-    const getResourceText = ['GM_getResourceText', 'GM.getResourceText'].some(i => grant.includes(i)); // FM 2.68
-    const resourceData = {};
-    if (getResourceText) {
-       // not for image
-      const array = Object.entries(script.resource).filter(([, url]) => !/\.(jpe?g|png|gif|webp|svg|ico)\b/i.test(url));
-      // using Array.map to return a Promise
-      await Promise.all(array.map(([key, url]) =>
-        fetch(url)
-        .then(response => response.text())
-        .then(text => resourceData[key] = text)
-        .catch(() => {})
-      ));
-    }
-
-    // --- add @var
-    const uv = this.getVar(userVar, true);
-    if (uv) {
-      let code = '/* --- User Variables --- */\n\n' + uv;
-      code += `${sourceURL}/${encodeName}.var.user.js`;
-      page && (code = `GM.addScript(${JSON.stringify(code)})`);
-      options.js.push({code});
-    }
-
-    const runAt = script.runAt.replace('_', '-');
-    const metadata = script.js.match(Meta.regEx)[2].replace(/[/\s]+$/, '');
-
-    // --- scriptMetadata
-    options.scriptMetadata = {
-      grantRemove,
-      registerMenuCommand,
-      remoteCSS,                                            // css @require to inject by api.js
-      resourceData,                                         // resource text data for getResourceText
-      storage: script.storage,                              // script storage at the time of registration
-      FMUrl: this.FMUrl,
-      // name,                                                 // also in info.script.name
-      // resource: script.resource,                            // resource object {name, url}, also in info.script.resources
-      // injectInto: script.injectInto,                        // also in info.script.injectInto
-      // grant: grantKeep,                                     // also in info.script.grant
-
-      // GM info data
-      info: {
-        // application data
-        scriptHandler: 'FireMonkey',
-        version: this.FMV,
-        platform: this.platformInfo,                        // FM|VM, VM: includes browserName, browserVersion
-        browser: this.browserInfo,                          // FM only
-        isIncognito: false,
-
-        // script data
-        scriptMetaStr: metadata,                            // FM|GM|VM without start/end strings, TM with
-        script: {
-          name,
-          version: script.version,                          // FM|TM|VM: string, GM: string|null
-          description: script.description,
-          includes,
-          excludes,
-          matches: script.matches,
-          excludeMatches: script.excludeMatches,            // FM|VM
-          includeGlobs: script.includeGlobs,                // FM only
-          excludeGlobs: script.excludeGlobs,                // FM only
-          grant: grantKeep,                                 // FM|TM|VM
-          require: script.require,                          // FM|VM
-          resources: script.resource,                       // GM: { {...} }, TM: {...}, VM: [ {...} ]
-          'run-at': runAt,                                  // FM|TM
-          runAt,                                            // VM: runAt, GM: runAt: "end"
-          injectInto: script.injectInto,                    // FM|VM, VM: info.injectInto
-          namespace: '',                                    // FM|TM|VM: string, GM: string|null
-          metadata,
-          isIncognito: false,
-        }
-      }
-    };
-
-    // --- add sourceURL
-    let js = script.js + `${sourceURL}/${encodeName}.user.js`;
-
-    // --- process inject-into page context
-    if (page) {
-//       const str =
-// `((unsafeWindow, GM, GM_info = GM.info) => {(() => { ${js}
-// })();})(window, ${JSON.stringify({info:options.scriptMetadata.info})});`;
-
-//       js = `GM.addScript(${JSON.stringify(str)});`;
-      js = `injectIntoPage(${JSON.stringify(js)});`;
-    }
-    else if (['GM_getValue', 'GM_setValue', 'GM_deleteValue', 'GM_listValues'].some(i => grantKeep.includes(i))) {
-      js = `setStorage().then(() => { ${js}\n});`;
-    }
-
-    // --- add code
-    options.js.push({code: Meta.prepare(js)});
-
-    // --- register
-    this.register(pref, id, options);
-  }
-
-  static prepareUserCSS(pref, id) {
-    const script = pref[id];
-    const options = this.getOptions(script);
-    const {name, require, requireRemote, userVar = {}, style = []} = script;
-
-    // --- add @require
-    require.forEach(i =>
-      pref[`_${i}`]?.css && options.css.push({code: Meta.prepare(pref[`_${i}`].css)})
-    );
-
-    // --- add @requireRemote
-    requireRemote[0] && options.css.push({code:
-      `/* --- ${name}.user.css --- */\n\n` + requireRemote.map(i => `@import '${i}';`).join('\n')});
-
-    // --- add @var
-    let userVarCode = '';                                   // for script.style
-    const uv = this.getVar(userVar);
-    if (uv) {
-      const code = `/* --- ${name}.user.css --- */\n/* --- User Variables --- */\n\n:root {\n${uv}\n}`;
-      style[0] ? userVarCode = code : options.css.push({code});
-    }
-
-    // --- add code
-    !style[0] && options.css.push({code: Meta.prepare(script.css)});
-
-    // --- register
-    if (style[0]) {
-      // --- UserStyle Multi-segment CSS
-      style.forEach((item, i) => {
-        options.matches = item.matches;
-        userVarCode && options.css.push({code: userVarCode});
-        options.css.push({code: item.css});
-        this.register(pref, id + 'style' + i, options, id);
-      });
-    }
-    else {
-      this.register(pref, id, options);
-    }
-  }
-
-  static register(pref, id, options, originId) {
-    const API = options.js ? browser.userScripts : browser.contentScripts;
-    // --- register script
-    try {                                                   // catches error throws before the Promise
-      API.register(options)
-      .then(reg => this.registered[id] = reg)               // contentScripts.RegisteredContentScript object
-      .catch(error => App.log((originId || id).substring(1), `Register ➜ ${error.message}`, 'error'));
-    }
-    catch (error) {
-      this.processError(pref, originId || id, error.message);
+    catch (e) {
+      // store error message & log message to display in Options -> Log
+      pref[id].error = e;
+      browser.storage.local.set({[id]: pref[id]});
+      App.log(id.substring(1), `Register ➜ ${e}`, 'error');
     }
   }
 
   static async unregister(id) {
-    if (!this.registered[id]) { return; }
-    await this.registered[id].unregister();
-    delete this.registered[id];
+    if (this.registered[id]) {
+      await this.registered[id].unregister();
+      delete this.registered[id];
+    }
   }
 
-  static processError(pref, id, error) {
-    pref[id].error = error;                                 // store error message
-    browser.storage.local.set({[id]: pref[id]});            // update saved pref
-    App.log(id.substring(1), `Register ➜ ${error}`, 'error'); // log message to display in Options -> Log
+  // matching a single script against all tabs
+  static async updateTabs(id, pref) {
+    const {enabled, css, style, allFrames, origin} = pref[id];
+    // only for enabled userCSS (not userStyle)
+    if (!enabled || !css || style) { return; }
+
+    const gExclude = pref.globalExclude?.split(/\s+/) || [];
+    const tabs = await browser.tabs.query({});
+    tabs.forEach(async tab => {
+      if (tab.discarded) { return; }
+      if (!Match.supported(tab.url)) { return; }
+
+      let urls;
+      if (allFrames) {
+        const frames = await browser.webNavigation.getAllFrames({tabId: tab.id});
+        urls = [...new Set(frames.map(Match.cleanUrl).filter(Match.supported))];
+      }
+      else {
+        urls = [Match.cleanUrl(tab.url)];
+      }
+
+      const containerId = tab.cookieStoreId.substring(8);
+      if (!Match.get(pref[id], tab.url, urls, gExclude, containerId)) { return; }
+
+      browser.tabs.insertCSS(tab.id, {
+        code: Meta.prepare(css),
+        allFrames,
+        ...(origin && {cssOrigin: origin}),
+      });
+    });
   }
 }

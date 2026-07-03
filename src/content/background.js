@@ -1,146 +1,76 @@
 import {pref, App} from './app.js';
-import {Sync} from "./sync.js";
-import {Meta} from './meta.js';
-import {Match} from './match.js';
+import {Sync} from './sync.js';
 import {Script} from './script.js';
 import {Counter} from './counter.js';
 import {Migrate} from './migrate.js';
-import {OnMessage} from './api-message.js';
+import {WebRequest} from './webrequest.js';
+import './api-message.js';
 import './menus.js';
 import './installer.js';
-import './web-request.js';
 
-// ---------- User Preferences -----------------------------
-await App.getPref();
-
-// ---------- Process Preferences --------------------------
+// ---------- process preferences --------------------------
 class ProcessPref {
 
   static {
-    this.process();
+    // register persistent listeners
+    // from popup.js & options.js
+    browser.runtime.onMessage.addListener((...e) => this.onMessage(...e));
+
+    this.init();
   }
 
-  static async process() {
-    await Sync.get(pref);                                   // storage sync -> local update
+  static async init() {
+    // user preference
+    await App.getPref();
 
-    await Migrate.init(pref);                               // migrate after storage sync check
+    // storage sync -> local update
+    await Sync.get(pref);
 
-    // --- API Message
-    OnMessage.pref = pref;
+    // migrate after storage sync check
+    await Migrate.init(pref);
 
-    // --- Script Counter
+    // webRequest listener
+    WebRequest.init(pref);
+
+    // script counter
     Counter.init(pref);
 
-    // --- Scripts Register
-    await Script.init();                                    // await data initialization
-    Script.update(pref);                                    // register all
-
-    // Change listener, after migrate
-    browser.storage.onChanged.addListener((...e) => this.onChanged(...e));
+    // scripts register
+    Script.init(pref);
   }
 
-  static onChanged(changes, area) {
-    switch (true) {
-      case Sync.noUpdate:                                   // prevent loop from sync update
-        Sync.noUpdate = false;
+  static onMessage(message) {
+    const {update, pref, ids = []} = message;
+    if (!update) { return; }
+
+    // update Script Counter
+    Counter.init(pref);
+
+    switch (update) {
+      // update script []
+      case 'script':
+        // update every userScript (enable/disable/code change)
+        Script.update(pref, ids);
         break;
 
-      case area === 'local':
-        // update pref with the saved version
-        Object.keys(changes).forEach(item => {
-          typeof changes[item].newValue !== 'undefined' ?
-            pref[item] = changes[item].newValue :
-            delete pref[item];
-          });
-
-        OnMessage.pref = pref;                              // update API message pref
-        Counter.pref = pref;                                // update Counter pref
-        this.processPrefUpdate(changes);                    // apply changes
-        Sync.set(changes, pref);                            // set changes to sync
+      // update globalExclude from options.js
+      case 'globalExclude':
+        // update all userScripts
+        const js = App.getIds(pref).filter(i => i.js);
+        Script.update(pref, js);
         break;
 
-      case area === 'sync':                                 // from sync
-        Sync.apply(changes, pref);                          // apply changes to local
+      // update all from sync.js
+      case 'sync':
+        // previously enabled but deleted
+        Script.update(pref, ids);
+        // all current scripts
+        Script.update(pref);
+        break;
+
+      case 'cspExclude':
+        WebRequest.init(pref);
         break;
     }
-  }
-
-  static processPrefUpdate(changes) {
-    // check counter preference has changed
-    if (changes.counter && changes.counter.newValue !== changes.counter.oldValue) {
-      Counter.init(pref);
-    }
-
-    // global change
-    const gExclude = changes.globalScriptExcludeMatches;
-    if (gExclude && gExclude.newValue !== gExclude.oldValue) {
-      Script.update(pref);                                  // re-register all
-      return;                                               // end here
-    }
-
-    // find changed scripts
-    const relevant = ['name', 'enabled', 'injectInto', 'require', 'requireRemote', 'resource',
-    'allFrames', 'js', 'css', 'style', 'container', 'grant', 'matches', 'excludeMatches',
-    'includeGlobs', 'excludeGlobs', 'includes', 'excludes', 'matchAboutBlank', 'runAt'];
-
-    Object.keys(changes).filter(i => i.startsWith('_')).forEach(id => {
-      const {oldValue, newValue} = changes[id];
-
-      // if deleted, unregister
-      if (!newValue) {
-        Script.remove(oldValue);
-      }
-      // if added or relevant data changed
-      else if (!oldValue || relevant.some(i => !this.equal(oldValue[i], newValue[i]))) {
-        Script.process(pref, id);                           // also Script.update(pref, [id)];
-
-        // apply userCSS changes to tabs
-        switch (true) {
-          case !newValue.css:                               // not userCSS
-          case !oldValue && !newValue.enabled:              // new & disabled
-            break;
-
-          case !oldValue?.enabled && newValue.enabled:      // new & enabled OR disabled -> enabled
-            this.updateTabs(id);
-            break;
-
-          case newValue.enabled && oldValue.css !== newValue.css: // enabled & CSS change
-          case oldValue.enabled && !newValue.enabled:       // enabled -> disabled
-            this.updateTabs(id, oldValue.css);
-            break;
-        }
-      }
-    });
-  }
-
-  static equal(a, b) {
-    return JSON.stringify(a) === JSON.stringify(b);
-  }
-
-  static updateTabs(id, oldCSS) {
-    const {css, allFrames, enabled} = pref[id];
-    const gExclude = pref.globalScriptExcludeMatches?.split(/\s+/) || [];
-
-    browser.tabs.query({}).then(tabs => {
-      tabs.forEach(async tab => {
-        if (tab.discarded) { return; }
-        if (!Match.supported(tab.url)) { return; }
-
-        let urls;
-        if (allFrames) {
-          const frames = await browser.webNavigation.getAllFrames({tabId: tab.id});
-          urls = [...new Set(frames.map(Match.cleanUrl).filter(Match.supported))];
-        }
-        else {
-          urls = [Match.cleanUrl(tab.url)];
-        }
-
-        const containerId = tab.cookieStoreId.substring(8);
-        if (!Match.get(pref[id], tab.url, urls, gExclude, containerId)) { return; }
-
-        oldCSS && browser.tabs.removeCSS(tab.id, {code: Meta.prepare(oldCSS), allFrames});
-        enabled && browser.tabs.insertCSS(tab.id, {code: Meta.prepare(css), allFrames});
-      });
-    });
   }
 }

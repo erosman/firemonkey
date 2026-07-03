@@ -1,16 +1,10 @@
-
-/* ----- Dark Theme ----- */
+/* ----- theme ----- */
 :root {
-  --bg: #333;
-  --border: #555;
-}
+  /* Firefox 120 */
+  color-scheme: light dark;
 
-/* ----- Light Theme ----- */
-@media screen and (prefers-color-scheme: light) {
-  :root {
-    --bg: #eee;
-    --border: #ccc;
-  }
+  --bg: light-dark(#eee, #333);
+  --border: light-dark(#ccc, #555);
 }
 
 body {
@@ -30,67 +24,51 @@ div.fm {
   padding: 0.5em 1em;
   border-bottom: 1px solid var(--border);
   background-color: var(--bg);
+
+  h2 {
+    margin: 0;
+
+    &::before {
+      content: '';
+      background: url('../image/icon.svg') no-repeat center / contain;
+      display: inline-block;
+      height: 1.2em;
+      width: 1.2em;
+      margin-right: 0.3em;
+      vertical-align: text-bottom;
+    }
+  }
+
+  p {
+    margin: 0;
+  }
+
+  button {
+    font-size: 1.2em;
+    padding: 0.2em 1em;
+    justify-self: end;
+  }
 }
 
-.fm h2 {
-  margin: 0;
-}
-
-.fm h2::before {
-  content: '';
-  background: url('../image/icon.svg') no-repeat center / contain;
-  display: inline-block;
-  height: 1.2em;
-  width: 1.2em;
-  margin-right: 0.3em;
-  vertical-align: text-bottom;
-}
-
-.fm p {
-  margin: 0;
-}
-
-.fm p.buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.fm button {
-  font-size: 1.2em;
-  padding: 0.2em 1em;
-}
-
-.fm button.install {
-  justify-self: end;
-}
-
-.fm button.convert {
-  justify-self: start;
-  font-size: 0.9em;
-  visibility: hidden;
-}
-
-
-/* ----- Dark Theme ----- */
+/* ----- dark theme ----- */
 /* for CodeMirror based on 3024-night */
 @media screen and (prefers-color-scheme: dark) {
-  .cm-s-default span.cm-comment { color: #cdab53; }
-  .cm-s-default span.cm-atom { color: #a16a94; }
-  .cm-s-default span.cm-number { color: #a16a94; }
-
-  .cm-s-default span.cm-property, .cm-s-default span.cm-attribute { color: #01a252; }
-  .cm-s-default span.cm-keyword { color: #db2d20; }
-  .cm-s-default span.cm-string { color: #fded02; }
-
-  .cm-s-default span.cm-variable { color: #01a252; }
-  .cm-s-default span.cm-variable-2 { color: #01a0e4; }
-  .cm-s-default span.cm-def { color: #e8bbd0; }
-  .cm-s-default span.cm-bracket { color: #d6d5d4; }
-  .cm-s-default span.cm-tag { color: #db2d20; }
-  .cm-s-default span.cm-link { color: #a16a94; }
-
-  .cm-s-default span.cm-error { color: #f90; }
-  .cm-s-default span.cm-string-2 { color: #ccc; }
-  .cm-s-default .cm-qualifier {color: #aaa;}
-  .cm-s-default .cm-builtin {color: #05f;}
+  .cm-s-default {
+    .cm-atom { color: #a16a94; }
+    .cm-attribute, .cm-property { color: #01a252; }
+    .cm-bracket { color: #d6d5d4; }
+    .cm-builtin {color: #05f;}
+    .cm-comment { color: #cdab53; }
+    .cm-def { color: #e8bbd0; }
+    .cm-error { color: #f90; }
+    .cm-keyword { color: #db2d20; }
+    .cm-link { color: #a16a94; }
+    .cm-number { color: #a16a94; }
+    .cm-qualifier {color: #aaa;}
+    .cm-string { color: #fded02; }
+    .cm-string-2 { color: #ccc; }
+    .cm-tag { color: #db2d20; }
+    .cm-variable { color: #01a252; }
+    .cm-variable-2 { color: #01a0e4; }
+  }
 }

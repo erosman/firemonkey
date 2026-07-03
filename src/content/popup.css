@@ -1,414 +1,416 @@
 @import 'default.css';
 
-/* ----- Dark Theme ----- */
-:root, body.dark {
-  --scrollbar: #888 #222;
-  --check: #0ff;
+/* ----- general ----- */
+:root {
+  --width: 25em;
+  --height: 45em;
+  --header-height: 2rem;
 }
 
-/* ----- Light Theme ----- */
-@media screen and (prefers-color-scheme: light) {
-  :root {
-    --scrollbar: #ddd #f5f5f5;
-    --check: #05f;
-  }
-}
-
-/* ----- General ----- */
 body {
   font-size: 12px;
-  width: 25em;
+  opacity: 0;
   overflow: hidden;
+  transition: opacity 0.5s;
+  width: var(--width);
 }
 
-body.android {
+/* body.android {
   width: auto;
-}
+} */
 
 article {
   overflow: hidden;
   width: 200%;
   transition: 0.5s;
   display: grid;
-  /* main + info */
+  /* main | aside */
   grid-template-columns: 1fr 1fr;
-  /* transform: translateX(0%); */
 }
 
-section {
-  /* width: 50%; */
-  height: 560px;
-}
-
-section.main {
-  display: grid;
-  /* (h3 + ul) x2 + (h3) x3 + div.button */
-  grid-template-rows: repeat(2, auto 1fr) repeat(4, auto);
-}
-
-h3 {
-  font-weight: normal;
-  margin: 0;
-  padding: 0.5em;
-  background: var(--btn-bg);
-}
-
-label {
-  cursor: pointer;
-}
-/* ----- /General ----- */
-
-/* ----- Navigation ----- */
-#main:checked ~ article {
-  transform: translateX(0%);
-}
-
-#info:checked ~ article,
-#command:checked ~ article,
-#scratchpad:checked ~ article,
-#findScript:checked ~ article {
-  transform: translateX(-50%);
-}
-
-#info:checked ~ article section.info .infoList,
-#command:checked ~ article section.info .commandList,
-#scratchpad:checked ~ article section.info .scratchpad,
-#findScript:checked ~ article section.info .findScript {
-  display: grid;
-}
-/* ----- /Navigation ----- */
-
-/* ----- Selectors ----- */
-h3.list {
-  display: grid;
-  /* title + js + css + frame */
-  grid-template-columns: 1fr auto auto auto;
-  align-items: center;
-  column-gap: 0.3em;
-}
-
-.list label {
-  padding: 0;
-  border: 0;
-}
-
-.list label img {
-  width: 1.3em;
-  vertical-align: middle;
-  filter: grayscale(1);
-}
-
-h3 .frame{
-  padding: 0.1em 0.3em;
-  background: var(--bg);
-  color: var(--dim);
-  font-size: 0.8em;
-}
-
-#listJS:checked ~ h3 label[for="listJS"] img,
-#listCSS:checked ~ h3 label[for="listCSS"] img {
-  filter: grayscale(0);
-}
-
-#listJS:not(:checked) ~ ul li.js,
-#listCSS:not(:checked) ~ ul li.css {
-  display: none;
-}
-/* ----- /Selectors ----- */
-
-/* ----- menu ----- */
-h3.menu {
-  padding: 0.2em 0.5em;
-  cursor: pointer;
-  margin-bottom: 1px;
-  transition: 0.5s;
-}
-
-h3.menu label {
-  display: grid;
-  grid-template-columns: 1fr auto;
-}
-
-h3.menu:hover {
-  background-color: var(--hover);
-}
-
-h3.menu label::after,
-li span.name::after {
-  content: '';
-  background: url('../image/next.svg') no-repeat center / contain;
-  display: inline-block;
-  width: 1em;
-  opacity: 0;
-  transition: 0.5s;
-  filter: var(--img-filter);
-}
-
-h3.menu:hover label::after,
-li span.name:hover::after {
-  opacity: 1;
-}
-/* ----- /menu ----- */
-
-/* ----- Scripts ----- */
-ul {
-  list-style: none;
-  padding: 0.1em;
-  margin: 0;
-  overflow-y: auto;
-  scrollbar-color: var(--scrollbar);
-  scrollbar-width: thin;
-}
-
-li {
-  padding: 0 0.4em;
-  margin: 0;
-  display: grid;
-  /* on/off + name */
-  grid-template-columns: auto 1fr;
-}
-
-li span {
-  display: inline-block;
-  cursor: pointer;
-  transition: 0.5s;
-}
-
-li span:hover {
-  background-color: var(--hover);
-}
-
-li span.enable {
-  width: 1.5em;
-  text-align: center;
-  color: var(--check);
-  border: 1px dashed transparent;
-  border-radius: 5px;
-}
-
-li span.enable:hover {
-  border-color: var(--color);
-}
-
-li.disabled span.enable {
-  color: transparent;
-}
-
-li span.name {
-  padding: 0 0.4em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: grid;
-  /* flag(before) + name + next(after) */
-  grid-template-columns: auto 1fr auto;
-}
-
-li.disabled span.name {
-  color: var(--dim);
-}
-
-li span.name::before {
-  content: '';
-  width: 16px;
-  height: 16px;
-  display: inline-block;
-  vertical-align: text-bottom;
-  margin-right: 0.5em;
-}
-
-li.disabled span.name::before {
-  filter: grayscale(1);
-}
-
-li.js span.name::before {
-  background: url('../image/js.svg');
-}
-
-li.css span.name::before {
-  background: url('../image/css.svg');
-}
-/* ----- /Scripts ----- */
-
-/* ----- Info ----- */
 /*
-  grid & scroll bug
-  https://github.com/w3c/csswg-drafts/issues/1777
-  https://stackoverflow.com/questions/45395184/css-grid-row-max-height-1fr-scroll-content
+main | aside
+       info, command, scratchpad, find
 */
-section.info {
-  display: grid;
-  /* h3 + info/command/scratchpad */
-  grid-template-rows: auto minmax(0, 1fr);
-}
+section {
+  height: calc(var(--height) - var(--header-height));
 
-section.info h3 img {
-  width: 1.2em;
-  vertical-align: bottom;
-  filter: var(--img-filter);
-}
-
-dl {
-  margin: 0;
-  padding: 1em;
-  overflow-y: auto;
-  scrollbar-color: var(--scrollbar);
-  scrollbar-width: thin;
-  position: relative;
-}
-
-dl.js::after,
-dl.css::after {
-  content: '';
-  background: url('../image/js.svg') no-repeat center / contain;
-  display: inline-block;
-  width: 2em;
-  height: 2em;
-  position: absolute;
-  top: 0;
-  right: 0.5em;
-  /* color: var(--dim); */
-}
-
-dl.css::after {
-  background-image: url('../image/css.svg')
-}
-
-dl.disabled::after {
-  filter: grayscale(1);
-}
-
-dt {
-  font-weight: bold;
-}
-
-dd {
-  color: var(--dim);
-}
-
-dd + dt {
-  margin-top: 0.5em;
-  padding-top: 0.5em;
-  border-top: 1px solid var(--hover);
-}
-
-dt.error,
-dt.error ~ dd {
-  color: #f00;
-}
-
-dd:last-of-type {
-  padding-bottom: 1em;
-}
-/* ----- /Info ----- */
-.infoList,
-.commandList,
-.scratchpad,
-.findScript {
-  display: none;
-  grid-auto-flow: row;
-}
-
-.infoList {
-  /* dl + button */
-  grid-template-rows: 1fr auto;
-}
-
-.scratchpad {
-  /* (h2 + textarea + button) x2 */
-  grid-template-rows: repeat(2, auto 1fr auto);
-  row-gap: 0.5em;
+  &.main {
+    height: var(--height);
+  }
 }
 
 button[data-i18n="undo"] {
   color: #f00;
 }
+/* ----- /general ----- */
 
-/* ----- command----- */
-.commandList dd {
-  cursor: pointer;
-  padding: 0.5em 1em;
-  border-radius: 0.5em;
-  transition: 0.3s;
+/* ----- navigation ----- */
+#main:checked ~ article {
+  transform: translateX(0%);
 }
 
-.commandList dd:hover {
-  opacity: 1;
-  background-color: var(--hover);
+:is(#info, #command, #scratchpad, #find):checked ~ article {
+  transform: translateX(-50%);
+}
+
+.info,
+.command,
+.scratchpad,
+.find {
+  display: none;
+  grid-auto-flow: row;
+}
+
+#info:checked ~ article section.info,
+#command:checked ~ article section.command,
+#scratchpad:checked ~ article section.scratchpad,
+#find:checked ~ article section.find {
+  display: grid;
+}
+/* ----- /navigation ----- */
+
+/* ----- list togglers ----- */
+.main .list {
+  label {
+    padding: 0;
+    border: 0;
+    line-height: 1;
+
+    img {
+      width: 1.5em;
+    }
+  }
+
+  input {
+    display: none;
+  }
+
+  input:checked ~ img {
+    opacity: 0.5;
+  }
+
+  input.list-disable ~ img {
+    filter: grayscale(1);
+  }
+
+  &:has(.list-enable:checked) ~ ul li:not(.disabled),
+  &:has(.list-disable:checked) ~ ul li.disabled,
+  &:has(.list-js:checked) ~ ul li.js,
+  &:has(.list-css:checked) ~ ul li.css {
+    display: none;
+  }
+}
+/* ----- /list togglers ----- */
+
+/* ----- main ----- */
+header {
+  background-color: var(--bg-alt);
+  padding: 0.5em;
+  height: var(--header-height);
+
+  span.title {
+    font-size: 1.3em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &.tab-scripts {
+    display: grid;
+    /* title + 4 x img + frame */
+    grid-template-columns: 1fr repeat(4, auto) 2em;
+    align-items: center;
+    gap: 3px;
+
+    span.frame {
+      text-align: right;
+      padding: 0.1em 0.3em;
+      color: var(--dim);
+      font-size: 0.8em;
+    }
+  }
+}
+
+aside {
+  display: grid;
+  grid-template-rows: auto 1fr;
+
+  header {
+    padding: 0.7em;
+
+    img {
+      width: 1.3em;
+      vertical-align: bottom;
+    }
+  }
+}
+
+section.main {
+  display: grid;
+  /* (header + ul) x2 | label x3 | div.button */
+  grid-template-rows: repeat(2, auto 1fr) auto;
+
+  ul {
+    list-style: none;
+    padding: 0.1em;
+    margin: 0;
+    overflow-y: auto;
+  }
+
+  li {
+    padding: 0 0.4em;
+    margin: 0;
+    display: grid;
+    /* flag + name */
+    grid-template-columns: auto 1fr;
+    gap: 3px;
+    align-items: center;
+    border-left: 4px solid transparent;
+
+    span {
+      cursor: pointer;
+    }
+
+    &.group {
+      border-color: var(--group);
+    }
+
+    &.css .flag img[src*="js.svg"],
+    &.js .flag img[src*="css.svg"] {
+      display: none;
+    }
+
+    &.disabled {
+      .flag img {
+        filter: grayscale(1);
+      }
+
+      .name {
+        color: var(--dim);
+      }
+    }
+
+    .flag {
+      img {
+        width: 1.5em;
+        pointer-events: none;
+      }
+
+      &:hover img {
+        transform: scale(0.9);
+      }
+    }
+
+    .name {
+      padding: 0 0.4em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: grid;
+      /* name + next(after) */
+      grid-template-columns: 1fr auto;
+
+      &:hover {
+        background-color: var(--hover);
+      }
+
+      &::after {
+        content: '';
+        background: url('../image/next.svg') no-repeat center / contain;
+        display: inline-block;
+        width: 1em;
+        opacity: 0;
+      }
+
+      &:hover::after {
+        opacity: 1;
+      }
+    }
+  }
+
+  .buttons img[src$=".svg"] {
+    width: 1.4em;
+  }
+}
+/* ----- /main ----- */
+
+/* ----- info ----- */
+/*
+  grid & scroll bug
+  https://github.com/w3c/csswg-drafts/issues/1777
+  https://stackoverflow.com/questions/45395184/css-grid-row-max-height-1fr-scroll-content
+*/
+
+section.info {
+  /* icon | info | buttons */
+  grid-template-rows: auto 1fr auto;
+
+  div:first-of-type {
+    padding-right: 1em;
+    text-align: right;
+
+    img {
+      width: 2em;
+
+      .disabled & {
+        filter: grayscale(1);
+      }
+    }
+
+    &.css img[src*="js.svg"],
+    &.js img[src*="css.svg"] {
+      display: none;
+    }
+  }
+
+  dl {
+    margin: 0;
+    padding: 0 1em 1em;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  dt {
+    font-weight: bold;
+  }
+
+  dd {
+    color: var(--dim);
+  }
+
+  dd + dt {
+    margin-top: 0.5em;
+    padding-top: 0.5em;
+    border-top: 1px solid var(--hover);
+  }
+
+  dt.error,
+  dt.error ~ dd {
+    color: #f00;
+  }
+
+  img[src*="edit.svg"] {
+    width: 1.2em;
+  }
+}
+/* ----- /info ----- */
+
+/* ----- scratchpad ----- */
+.scratchpad {
+  /* (h2 + textarea + button) x2 */
+  grid-template-rows: repeat(2, auto 1fr auto) auto;
+  row-gap: 0.5em;
+
+  h2 {
+    font-size: 1.3em;
+    margin: 0.5em;
+    font-weight: normal;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 0.5em;
+
+    img {
+      width: 1.2em;
+      align-self: center;
+    }
+  }
+
+  textarea {
+    width: 90%;
+    margin: 0 auto;
+    resize: none;
+  }
+
+  select {
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  #run-js {
+    grid-column: span 3;
+  }
+}
+/* ----- /scratchpad ----- */
+
+/* ----- command----- */
+.command {
+  /* grid-template-rows: 1fr; */
+
+  dl {
+    margin: 0;
+    padding: 1em;
+    overflow-y: auto;
+  }
+
+  dd {
+    cursor: pointer;
+    padding: 0.5em 1em;
+    border-radius: 0.5em;
+
+    &:hover {
+      opacity: 1;
+      background-color: var(--hover);
+    }
+  }
 }
 /* ----- /command----- */
 
-/* ----- Scratchpad ----- */
-.scratchpad h2 {
-  font-size: 1.3em;
-  margin: 0.5em;
-  font-weight: normal;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  column-gap: 0.5em;
+/* ----- find script ----- */
+.find {
+  grid-template-rows: auto 1fr;
+
+  dl {
+    margin: 0;
+    padding: 1em;
+    overflow-y: auto;
+  }
+
+  dt {
+    margin-bottom: 0.5em;
+  }
+
+  dd {
+    &:hover {
+      background-color: var(--hover);
+    }
+
+    a {
+      display: block;
+      padding: 0.5em;
+    }
+
+    img {
+      width: 1.3em;
+      vertical-align: text-top;
+    }
+  }
+}
+/* ----- /find script ----- */
+
+/* ----- buttons ----- */
+button {
+  padding: 0.8em 0.1em;
 }
 
-.scratchpad h2 img {
-  width: 1.2em;
-  align-self: center;
-}
-
-.scratchpad textarea {
-  width: 90%;
-  margin: 0 auto;
-  resize: none;
-  /* opacity: 0.7; */
-}
-
-#runJS {
-  grid-column: span 3;
-}
-
-img.bin {
-  width: 1.2em;
-  /* cursor: pointer; */
-}
-/* ----- /Scratchpad ----- */
-
-/* ----- findScript ----- */
-.findScript dt {
-  margin-bottom: 0.5em;
-}
-
-.findScript dd:hover {
-  background-color: var(--hover);
-}
-
-.findScript dd a {
-  display: block;
-  padding: 0.5em;
-}
-
-.findScript dd img {
-  width: 1.3em;
-  vertical-align: text-top;
-}
-/* ----- /findScript ----- */
-
-/* ----- Buttons ----- */
 div.buttons {
   display: grid;
   grid-auto-flow: column;
-  column-gap: 0.1em;
-}
+  column-gap: 1px;
+  background-color:var(--bg-alt);
 
-button {
-  border: 0;
-  padding: 0.8em;
-}
+  button:not(:hover) {
+    background-color: unset;
+  }
 
-button img {
-  vertical-align: text-bottom;
-  width: 1.2em;
-}
+  label {
+    align-content: center;
+    text-align: center;
+    font-size: 1.1em;
 
-span.plus,
-img[src*="gear.svg"] {
-  filter: var(--img-filter);
+    &:hover {
+      background-color: var(--hover);
+    }
+  }
 }
-/* ----- /Buttons ----- */
+/* ----- /buttons ----- */

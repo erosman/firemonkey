@@ -1,6 +1,6 @@
 import {App} from './app.js';
 
-// ---------- Log (Side Effect) ----------------------------
+// ---------- log (side effect) ----------------------------
 class ShowLog {
 
   static {
@@ -10,7 +10,8 @@ class ShowLog {
 
     this.aTemp = document.createElement('a');
     this.aTemp.target = '_blank';
-    this.aTemp.textContent = '🗓 History';
+    this.aTemp.textContent = '🕓';
+    this.aTemp.title = 'History';
 
     const logSize = document.querySelector('#logSize');
     logSize.value = localStorage.getItem('logSize') || 100;
@@ -35,17 +36,28 @@ class ShowLog {
 
       // --- History diff link
       if (updateURL && message.startsWith('Updated version')) {
+        let a;
         switch (true) {
+          // old format
           case updateURL.startsWith('https://greasyfork.org/scripts/'):
           case updateURL.startsWith('https://sleazyfork.org/scripts/'):
-            const a = this.aTemp.cloneNode(true);
+            a = this.aTemp.cloneNode(true);
             a.href = updateURL.replace(/(\/\d+)-.+/, '$1/versions');
-            td[2].appendChild(a);
+            td[2].append(a);
+            break;
+
+          // new format
+          case updateURL.startsWith('https://update.greasyfork.org/scripts/'):
+          case updateURL.startsWith('https://update.sleazyfork.org/scripts/'):
+            a = this.aTemp.cloneNode(true);
+            a.href = updateURL.replace('://update.', '://').replace(/(\/scripts\/\d+\/).+/, '$1versions');
+            td[2].append(a);
             break;
         }
       }
 
-      this.tbody.insertBefore(tr, this.tbody.firstElementChild); // in reverse order, new on top
+      // in reverse order, new on top
+      this.tbody.insertBefore(tr, this.tbody.firstElementChild);
     });
   }
 
@@ -53,7 +65,8 @@ class ShowLog {
     newLog = App.JSONparse(newLog) || [];
     if (!newLog[0]) { return; }
 
-    const old = this.log.map(i => i.toString());            // need to convert to array of strings for Array.includes()
+    // need to convert to array of strings for Array.includes()
+    const old = this.log.map(i => i.toString());
     const newItems = newLog.filter(i => !old.includes(i.toString()));
 
     if (newItems[0]) {

@@ -1,31 +1,31 @@
-// ---------- Default Preferences --------------------------
+// ---------- default preferences --------------------------
 export const pref = {
   autoUpdateInterval: 0,
   autoUpdateLast: 0,
-  cmOptions: '',
   counter: true,
+  cspExclude: '',
   customOptionsCSS: '',
   customPopupCSS: '',
-  globalScriptExcludeMatches: '',
+  editorOptions: '',
+  globalExclude: '',
+  linterOptions: '',
   sync: false,
-  template: {css: '', js: ''}
+  template: {css: '', js: ''},
 };
-// ---------- /Default Preferences -------------------------
+// ---------- /default preferences -------------------------
 
-// ---------- App ------------------------------------------
+// ---------- app ------------------------------------------
 export class App {
 
   static android = navigator.userAgent.includes('Android');
 
-  // ---------- User Preferences ---------------------------
+  // ---------- user preferences ---------------------------
   static getPref() {
     // update pref with the saved version
-    return browser.storage.local.get().then(result => {
-      Object.keys(result).forEach(i => pref[i] = result[i]);
-    });
+    return browser.storage.local.get().then(r => Object.assign(pref, r));
   }
 
-  // ---------- Helper functions ---------------------------
+  // ---------- helper functions ---------------------------
   static notify(message, title = browser.i18n.getMessage('extensionName'), id = '') {
     browser.notifications.create(id, {
       type: 'basic',
@@ -38,7 +38,8 @@ export class App {
   static log(ref, message, type = '', updateURL = '') {
     let log = App.JSONparse(localStorage.getItem('log')) || [];
     log.push([new Date().toString().substring(0, 24), ref, message, type, updateURL]);
-    log = log.slice(-(localStorage.getItem('logSize') * 1 || 100)); // slice to the last n entries, default 100
+    // slice to the last n entries, default 100
+    log = log.slice(-(localStorage.getItem('logSize') * 1 || 100));
     localStorage.setItem('log', JSON.stringify(log));
   }
 
@@ -51,21 +52,12 @@ export class App {
     return Object.keys(pref).filter(i => i.startsWith('_'));
   }
 
-  static sortGrant(grant) {                                 // script.js, popup.js
-    const grantKeep = [];
-    const grantRemove = [];
-
-    // only needed for storage APIs
-    const storage = ['GM_getValue', 'GM_setValue', 'GM_deleteValue', 'GM_listValues'];
-
-    grant.forEach(i =>
-      storage.includes(i) && grant.includes(`GM.${i.substring(3)}`) ? grantRemove.push(i) : grantKeep.push(i)
-    );
-
-    return [grantKeep, grantRemove];
+  static higherVersion(a, b) {
+    return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}) > 0;
   }
 
-  static higherVersion(a, b) {                              // here bg opt
-    return a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}) > 0;
+  static getLanguage() {
+    const [generic] = navigator.language.split('-');
+    return [navigator.language, generic];
   }
 }

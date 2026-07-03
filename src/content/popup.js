@@ -1,43 +1,46 @@
 import {pref, App} from './app.js';
 import {Meta} from './meta.js';
 import {Match} from './match.js';
-import {PSL} from './psl.js';
+import {Group} from './group.js';
 import './scratchpad.js';
 import './i18n.js';
 
-// ---------- User Preferences -----------------------------
+// ---------- user preferences -----------------------------
 await App.getPref();
 
-// ---------- Popup ----------------------------------------
+// ---------- popup ----------------------------------------
 class Popup {
 
   static {
+    // --- add custom style
+    pref.customPopupCSS && document.querySelector('style').append(pref.customPopupCSS);
+
     // --- Scripts
-    this.liTemplate = document.querySelector('template').content.firstElementChild;
+    this.liTemplate = document.querySelector('section.main template').content.firstElementChild;
     this.ulTab = document.querySelector('ul.tab');
     this.ulOther = document.querySelector('ul.other');
 
-    // --- Theme
-    document.body.classList.toggle('dark', localStorage.getItem('dark') === 'true'); // defaults to false
-
-    // --- add custom style
-    pref.customPopupCSS && (document.querySelector('style').textContent = pref.customPopupCSS);
-
     this.docFrag = document.createDocumentFragment();
-    document.querySelectorAll('.main button').forEach(i => i.addEventListener('click', this.processButtons));
+    document.querySelectorAll('.main button').forEach(i =>
+      i.addEventListener('click', e => this.processButtons(e)));
+
     this.process();
+
+    // App.android && document.body.classList.add('android');
   }
 
-  static processButtons() {
-    const id = this.dataset.i18n;
-    switch (id) {
+  static processButtons(e) {
+    const [action] = e.target.dataset.i18n.split('|');
+    switch (action) {
       case 'options':
         browser.runtime.openOptionsPage();
         break;
 
-      case 'newJS|title':
-      case 'newCSS|title':
-        browser.tabs.create({url: '/content/options.html?' + id.slice(0, -6)});
+      case 'newJS':
+      case 'newCSS':
+        browser.tabs.create({
+          url: `/content/options.html?${action}&url=${encodeURIComponent(this.tab.url)}&container=${this.tab.cookieStoreId.substring(8)}`
+        });
         break;
 
       case 'help':
@@ -48,19 +51,21 @@ class Popup {
   }
 
   static async process() {
-    const tabs = await browser.tabs.query({currentWindow: true, active: true});
-    const tabId = tabs[0].id;                               // active tab id
+    [this.tab] = await browser.tabs.query({currentWindow: true, active: true});
+    // active tab id
+    const tabId = this.tab.id;
 
     // make find script list
-    this.setSearch(tabs[0].url);
+    this.setSearch(this.tab.url);
 
-    const [Tab, Other, frames] = await Match.process(tabs[0], pref);
-    document.querySelector('h3 span.frame').textContent = frames; // display frame count
+    const [Tab, Other, frames] = await Match.process(this.tab, pref);
+    // display frame count
+    document.querySelector('span.frame').textContent = frames;
 
-    Tab.forEach(i => this.docFrag.appendChild(this.addScript(pref[i])));
-    this.ulTab.appendChild(this.docFrag);
-    Other.forEach(i => this.docFrag.appendChild(this.addScript(pref[i])));
-    this.ulOther.appendChild(this.docFrag);
+    Tab.forEach(i => this.docFrag.append(this.addScript(pref[i])));
+    this.ulTab.append(this.docFrag);
+    Other.forEach(i => this.docFrag.append(this.addScript(pref[i])));
+    this.ulOther.append(this.docFrag);
 
     // check commands if there are active scripts in tab & has registerMenuCommand FM 2.45
     Info.getMenuCommand(Tab, tabId);
@@ -76,7 +81,7 @@ class Popup {
       case !li?.id:
         break;
 
-      case e.target.matches('.enable'):
+      case e.target.matches('.flag'):
         this.toggleState(li);
         break;
 
@@ -86,15 +91,16 @@ class Popup {
     }
   }
 
-  static addScript(item) {
+  static addScript(i) {
     const li = this.liTemplate.cloneNode(true);
-    li.id = '_' + item.name;
-    li.classList.add(item.js ? 'js' : 'css');
-    item.enabled || li.classList.add('disabled');
+    li.id = '_' + i.name;
+    li.classList.add(i.js ? 'js' : 'css');
+    i.enabled || li.classList.add('disabled');
+    i.group?.[0] && li.classList.add('group');
     const sp = li.children;
-    sp[1].textContent = item.name;
+    sp[1].textContent = i.name;
 
-    if (item.error) {
+    if (i.error) {
       sp[0].textContent = '✘';
       sp[0].style.color = '#f00';
     }
@@ -105,44 +111,49 @@ class Popup {
     const id = li.id;
     li.classList.toggle('disabled');
     pref[id].enabled = !li.matches('.disabled');
-    browser.storage.local.set({[id]: pref[id]});            // update saved pref
+
+    const obj = {[id]: pref[id]};
+
+    // --- process @group
+    const gIds = Group.set(pref, id);
+    gIds.forEach(i => obj[i] = pref[i]);
+
+    // update saved pref
+    browser.storage.local.set(obj);
+
+    // update scripts message to background.js
+    browser.runtime.sendMessage({update: 'script', pref, ids: Object.keys(obj)});
   }
 
   // --- set Find scripts for this site
   static setSearch(url) {
-    try { url = new URL(url); }
-    catch { return; }                                       // unacceptable url
+    // check for acceptable url
+    url = URL.parse(url);
+    if (!url) { return; }
 
-    let domain = '';
-    let sld = '';
-    url.protocol.startsWith('http') && ({domain, sld} = PSL.parse(url.host)); // only for http/https
-    document.querySelectorAll('.findScript a').forEach(i =>
-      i.href = i.href.replace(/;domain;/, domain).replace(/;sld;/, sld));
+    const domain = url.protocol.startsWith('http') ? url.hostname.replace(/^www\./, '') : '';
+    document.querySelectorAll('.find a').forEach(i => i.href = i.href.replace(/;domain;/, domain));
   }
 }
-// ---------- /Popup ---------------------------------------
+// ---------- /popup ---------------------------------------
 
-// ---------- Info + Run/Undo ------------------------------
+// ---------- info + run/undo ------------------------------
 class Info {
 
   static {
     // --- Info
     this.navInfo = document.querySelector('input#info');
-    this.info = document.querySelector('section.info');
-
-    this.infoListDL = this.info.querySelector('.infoList dl');
-    this.commandList = this.info.querySelector('.commandList dl');
+    this.infoDL = document.querySelector('.info dl');
+    this.commandList = document.querySelector('.command dl');
 
     this.dtTemp = document.createElement('dt');
     this.ddTemp = document.createElement('dd');
     this.aTemp = document.createElement('a');
     this.aTemp.target = '_blank';
 
-    // --- i18n
-    this.lang = navigator.language;
-
     this.docFrag = document.createDocumentFragment();
-    document.querySelectorAll('.infoList button').forEach(i => i.addEventListener('click', e => this.processButtons(e)));
+    document.querySelectorAll('.info button').forEach(i =>
+      i.addEventListener('click', e => this.processButtons(e)));
   }
 
   static processButtons(e) {
@@ -165,38 +176,42 @@ class Info {
   }
 
   static show(li) {
+    // reset
+    this.infoDL.textContent = '';
+    this.infoDL.previousElementSibling.className = '';
+    this.infoDL.previousElementSibling.classList.add(...li.classList);
+
     const id = li.id;
-    this.infoListDL.textContent = '';                       // clearing previous content
+    // deep clone pref object
+    const script = structuredClone(pref[id]);
+    // show homepage/support/etc
+    Object.assign(script, this.getMetadata(script));
 
-    this.infoListDL.className = '';                         // reset
-    this.infoListDL.classList.add(...li.classList);
-
-    const script = JSON.parse(JSON.stringify(pref[id]));    // deep clone pref object
-    const {homepage, support, license} = this.getMetadata(script); // show homepage/support
-    script.homepage = homepage;
-    script.support = support;
-    script.license = license;
-    script.require = [...script.require, ...script.requireRemote]; // merge together
     script.size = new Intl.NumberFormat().format(((script.js || script.css).length / 1024).toFixed(1)) + ' KB';
-    // script.size = new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 }).format((script.js || script.css).length/1024) + ' KB';
 
     const infoArray = [
-      'name', 'description', 'author', 'version', 'size', 'license', 'require',
+      'name', 'description', 'author', 'version', 'size', 'license', 'require', 'group',
       'matches', 'excludeMatches', 'includes', 'excludes', 'includeGlobs', 'excludeGlobs',
-      'grant', 'container', 'injectInto', 'runAt', 'error',
-      'homepage', 'support', 'updateURL'
+      'grant', 'container', 'injectInto', 'unwrap', 'connect', 'runAt', 'error',
+      'homepage', 'support', 'updateURL', 'antifeature',
     ];
 
-    infoArray.forEach(item => {
-      if (!script[item]) { return; }                        // skip to next
+    // --- i18n
+    const [lang, generic] = App.getLanguage();
 
-      let arr = Array.isArray(script[item]) ? script[item] : script[item].split(/\r?\n/);
-      if (!arr[0]) { return; }                              // skip to next
+    infoArray.forEach(item => {
+      if (!script[item]) { return; }
+
+      const arr = Array.isArray(script[item]) ? script[item] :
+        typeof script[item] === 'string' ? script[item].split(/\r?\n/) : [script[item]];
+      if (!arr[0]) { return; }
 
       switch (item) {
-        case 'name':                                        // i18n if different
+        // i18n if different
+        case 'name':
         case 'description':
-          const i18n = script.i18n[item][this.lang] || script.i18n[item][this.lang.substring(0, 2)]; // fallback to primary language
+          // fallback to primary language
+          const i18n = script.i18n[item][lang] || script.i18n[item][generic];
           i18n && i18n !== script[item] && arr.push(i18n);
           break;
 
@@ -209,17 +224,13 @@ class Info {
           arr[0] = a;
           break;
 
-        case 'matches':                                     // add UserStyle matches to matches
-          script.style?.[0] && arr.push(...script.style.flatMap(i => i.matches));
-          break;
-
         case 'injectInto':
           item = 'inject-into';
           break;
 
         case 'grant':
-          const [grantKeep] = App.sortGrant(arr);
-          arr = grantKeep.sort();
+        case 'connect':
+          arr.sort();
           break;
 
         case 'runAt':
@@ -231,89 +242,107 @@ class Info {
       const dt = this.dtTemp.cloneNode();
       item === 'error' && dt.classList.add('error');
       dt.textContent = item;
-      this.docFrag.appendChild(dt);
+      this.docFrag.append(dt);
 
-      arr.forEach(item => {
+      arr.forEach(i => {
         const dd = this.ddTemp.cloneNode();
-        dd.append(item);
+        dd.append(i);
         dd.children[0] && (dd.style.opacity = 0.8);
-        this.docFrag.appendChild(dd);
+        this.docFrag.append(dd);
       });
     });
 
-    this.infoListDL.appendChild(this.docFrag);
+    this.infoDL.append(this.docFrag);
     const edit = document.querySelector('div.edit');
     edit.id = id;
-    edit.children[2].disabled = !!script.js;                // only for CSS
+    // only for CSS
+    edit.children[2].disabled = !!script.js;
     edit.children[2].disabled && (edit.children[2].title = browser.i18n.getMessage('undoDisabled'));
 
-    this.navInfo.checked = true;                            // navigate slide to info page
+    // navigate slide to info page
+    this.navInfo.checked = true;
   }
 
   static getMetadata(script) {
-    const url = script.updateURL;
     const meta = (script.js || script.css).match(Meta.regEx)[2];
 
-    // look for @support @supportURL
-    const support = meta.match(/@support(URL)?\s+(http\S+)/)?.[2];
+    const regex = /@(\S+)[^\S\r\n]*(.*)/g;
+    let m = meta.matchAll(regex);
+    // always returns an array
+    m = [...m].map(i => [i[1], i[2]]);
 
-    // look for @license
-    const license = meta.match(/@license\s+(.+)/)?.[1];
+    // convert to obj
+    const obj = Object.fromEntries(m);
+
+    // get antifeature
+    const antifeature = m.filter(i => i[0] === 'antifeature').map(i => i[1]);
+    antifeature[0] && (obj.antifeature = antifeature);
+
+    // keep stored data
+    Object.keys(obj).forEach(i => script[i] && delete obj[i]);
 
     // look for @homepage @homepageURL @website and @source
-    let homepage = meta.match(/@(homepage(URL)?|website|source)\s+(http\S+)/)?.[3];
-
+    obj.homepage ||= obj.homepageURL || obj.website || obj.source;
     // make homepage from updateURL
+    const url = script.updateURL;
     switch (true) {
-      case !!homepage || !url:
+      case !!obj.homepage || !url:
+        break;
+
+      case url.startsWith('https://update.greasyfork.org/scripts/'):
+      case url.startsWith('https://update.sleazyfork.org/scripts/'):
+        obj.homepage = url.replace('://update.', '://').replace(/(\/scripts\/\d+\/).+/, '$1');
         break;
 
       case url.startsWith('https://greasyfork.org/scripts/'):
       case url.startsWith('https://sleazyfork.org/scripts/'):
-        homepage = url.replace(/\/code.+/, '');
+        obj.homepage = url.replace(/\/code.+/, '');
         break;
 
       case url.startsWith('https://openuserjs.org/install/'):
-        homepage = url.replace('/install/', '/scripts/').replace(/\.user\.js/, '');
+        obj.homepage = url.replace('/install/', '/scripts/').replace(/\.user\.js/, '');
         break;
 
       case url.startsWith('https://userstyles.org/styles/'):
-        homepage = url.replace(/userjs\/|\.(user\.js|css)$/, '');
+        obj.homepage = url.replace(/userjs\/|\.(user\.js|css)$/, '');
         break;
 
       case url.startsWith('https://cdn.jsdelivr.net/gh/'):
-        homepage = 'https://github.com/' + url.substring(28).replace('@', '/tree/').replace(/\/[^/]+\.user\.js/, '');
+        obj.homepage = 'https://github.com/' + url.substring(28).replace('@', '/tree/').replace(/\/[^/]+\.user\.js/, '');
         break;
 
       case url.startsWith('https://github.com/'):
-        homepage = url.replace('/raw/', '/tree/').replace(/\/[^/]+\.user\.js/, '');
+        obj.homepage = url.replace('/raw/', '/tree/').replace(/\/[^/]+\.user\.js/, '');
         break;
     }
 
-    return {homepage, support, license};
+    return obj;
   }
 
   static run(id) {
-    const item = pref[id];
-    const code = Meta.prepare(item.js || item.css);
-    if (!code.trim()) { return; }                           // e.g. in case of userStyle
+    const i = pref[id];
+    const code = Meta.prepare(i.js || i.css);
+    // in case of userStyle
+    if (!code.trim()) { return; }
 
-    (item.js ? browser.tabs.executeScript({code}) : browser.tabs.insertCSS({code}))
-    .catch(error => App.notify(id.substring(1) + '\n' + browser.i18n.getMessage('insertError') + '\n\n' + error.message));
+    (i.js ? browser.tabs.executeScript({code}) : browser.tabs.insertCSS({code, cssOrigin: i.origin || 'author'}))
+    .catch(e => App.notify(`${id.substring(1)}: ${e}`));
   }
 
   static undo(id) {
     const item = pref[id];
-    if (!item.css) { return; }                              // only for userCSS
+    // only for userCSS
+    if (!item.css) { return; }
 
     const code = Meta.prepare(item.css);
-    if (!code.trim()) { return; }                           // e.g. in case of userStyle
+    // e.g. in case of userStyle
+    if (!code.trim()) { return; }
 
-    browser.tabs.removeCSS({code})
-    .catch(error => App.notify(id.substring(1) + '\n\n' + error.message));
+    browser.tabs.removeCSS({code, cssOrigin: item.origin || 'author'})
+    .catch(e => App.notify(`${id.substring(1)}: ${e}`));
   }
 
-  // ---------- Script Commands ----------------------------
+  // ---------- script commands ----------------------------
   static getMenuCommand(Tab, tabId) {
     // --- check commands if there are active scripts in tab & has registerMenuCommand v2.45
     if (Tab.some(item => pref[item].enabled &&
@@ -331,18 +360,18 @@ class Info {
     const dl = this.commandList;
     const dt = this.dtTemp.cloneNode();
     dt.textContent = message.name;
-    this.docFrag.appendChild(dt);
+    this.docFrag.append(dt);
 
-    message.command.forEach(item => {
+    message.command.forEach(i => {
       const dd = this.ddTemp.cloneNode();
-      dd.textContent = item;
+      dd.textContent = i;
       dd.addEventListener('click', () => {
-        browser.tabs.sendMessage(tabId, {name: message.name, command: item});
+        browser.tabs.sendMessage(tabId, {name: message.name, command: i});
         window.close();
       });
-      this.docFrag.appendChild(dd);
+      this.docFrag.append(dd);
     });
-    dl.appendChild(this.docFrag);
+    dl.append(this.docFrag);
   }
 }
-// ---------- /Info + Run/Undo -----------------------------
+// ---------- /info + run/undo -----------------------------

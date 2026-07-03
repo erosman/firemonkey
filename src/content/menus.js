@@ -1,26 +1,30 @@
-// ---------- Context Menu (Side Effect) -------------------
+// ---------- context menu (side effect) -------------------
 class Menus {
 
   static {
-    browser.menus && this.init();                           // menus not supported on Android
+    // menus is not supported on Android
+    browser.menus && this.init();
   }
 
  static init() {
+    // icons do not change in light/dark
     const contextMenus = [
-      {id: 'options', icons: {16: '/image/gear.svg'}},
-      {id: 'newJS', icons: {16: '/image/js.svg'}},
-      {id: 'newCSS', icons: {16: '/image/css.svg'}},
-      {id: 'help', icons: {16: '/image/help.svg'}},
-      {id: 'log', icons: {16: '/image/document.svg'}},
-      {id: 'localeMaker', icons: {16: '/locale-maker/locale-maker.svg'}, title: 'Locale Maker'},
+      {id: 'options'},
+      {id: 'scripts'},
+      {id: 'newJS'},
+      {id: 'newCSS'},
+      {id: 'help'},
+      {id: 'log'},
+      // {id: 'localeMaker', icons: {16: '/locale-maker/locale-maker.svg'}, title: 'Locale Maker'},
     ];
 
-    contextMenus.forEach(item => {
-      if (item.id) {
-        item.title ||= browser.i18n.getMessage(item.id);    // always use the same ID for i18n
+    contextMenus.forEach(i => {
+      if (i.id) {
+        // always use the same ID for i18n
+        i.title ||= browser.i18n.getMessage(i.id);
       }
-      item.contexts = ['browser_action'];
-      browser.menus.create(item);
+      i.contexts = ['browser_action'];
+      browser.menus.create(i);
     });
 
     // prepare for manifest v3
@@ -35,14 +39,18 @@ class Menus {
 
       case 'newJS':
       case 'newCSS':
-      case 'help':
-      case 'log':
-        browser.tabs.create({url: '/content/options.html?' + info.menuItemId});
+        browser.tabs.create({url: `/content/options.html?${info.menuItemId}&url=${tab.url}`});
         break;
 
-      case 'localeMaker':
-        browser.tabs.create({url: '/locale-maker/locale-maker.html'});
+      case 'scripts':
+      case 'help':
+      case 'log':
+        browser.tabs.create({url: `/content/options.html?${info.menuItemId}`});
         break;
+
+      // case 'localeMaker':
+      //   browser.tabs.create({url: '/locale-maker/locale-maker.html'});
+      //   break;
     }
   }
 }

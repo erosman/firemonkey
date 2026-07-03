@@ -1,4 +1,4 @@
-// ---------- Greasy Fork ----------------------------------
+// ---------- greasy fork ----------------------------------
 // runs on greasyfork.org & sleazyfork.org
 class GreasyFork {
 
@@ -17,9 +17,10 @@ class GreasyFork {
 
     if (id) {
       const result = await browser.storage.local.get();
+      // new or old update URL format
       const item = Object.values(result).find(i =>
-        i.updateURL?.startsWith(`https://update.${hostname}/scripts/${id}/`) || // new update URL format
-        i.updateURL?.startsWith(`https://${hostname}/scripts/${id}-`)           // old update URL format
+        i.updateURL?.startsWith(`https://update.${hostname}/scripts/${id}/`) ||
+        i.updateURL?.startsWith(`https://${hostname}/scripts/${id}-`)
       );
 
       if (item?.js) {
@@ -28,7 +29,7 @@ class GreasyFork {
       else if (item?.css) {
         /==UserStyle==/i.test(item.css) ?
           FM.installedStyleVersion = item.version :
-            FM.installedCSSVersion = item.version;
+          FM.installedCSSVersion = item.version;
       }
     }
 

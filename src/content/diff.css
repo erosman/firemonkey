@@ -1,0 +1,46 @@
+@import 'default.css';
+@import '/lib/monaco-editor/monaco.css';
+
+/* ----- general ----- */
+body {
+  /* show body after page is populated */
+  opacity: 0;
+  overflow: hidden;
+}
+
+/* ----- editor ----- */
+.editor {
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+}
+/* ----- /editor ----- */
+
+/* ----- fieldset ----- */
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+
+  legend {
+    padding: 0.5em 0;
+    font-weight: bold;
+
+    &:is(.js, .css)::before {
+      content: '';
+      width: 1.2em;
+      height: 1.2em;
+      display: inline-block;
+      vertical-align: text-bottom;
+      margin-left: 0.2em;
+      margin-right: 0.5em;
+      background: url('../image/js.svg');
+    }
+
+    &.css::before {
+      background: url('../image/css.svg');
+    }
+  }
+}
+/* ----- /fieldset ----- */

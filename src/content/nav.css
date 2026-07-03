@@ -1,0 +1,54 @@
+/* ----- navigation ----- */
+:root {
+  --nav-height: 2.5rem;
+}
+
+input[name="nav"],
+input[type="checkbox"].control {
+  display: none;
+}
+
+section {
+  display: none;
+}
+
+nav {
+  display: grid;
+  grid-auto-flow: column;
+  place-content: center start;
+  background-color: var(--bg-alt);
+
+  &.off {
+    display: none;
+  }
+
+  label {
+    padding: 0.5em 1em;
+    user-select: none;
+
+    &:hover {
+      background-color: var(--btn-hover);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    /* ----- selected style ----- */
+    &:has(input[name="nav"]:checked) {
+      background-color: var(--selected-bg);
+    }
+  }
+
+  /* ----- show/hide section ----- */
+  &:has(#nav1:checked) ~ article section:nth-of-type(1),
+  &:has(#nav2:checked) ~ article section:nth-of-type(2),
+  &:has(#nav3:checked) ~ article section:nth-of-type(3),
+  &:has(#nav4:checked) ~ article section:nth-of-type(4),
+  &:has(#nav5:checked) ~ article section:nth-of-type(5),
+  &:has(#nav6:checked) ~ article section:nth-of-type(6),
+  &:has(#nav7:checked) ~ article section:nth-of-type(7),
+  &:has(#nav8:checked) ~ article section:nth-of-type(8) {
+    display: block;
+  }
+}

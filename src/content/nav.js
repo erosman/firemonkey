@@ -1,12 +1,14 @@
-// ---------- Navigation -----------------------------------
+// ---------- navigation -----------------------------------
 export class Nav {
 
   static {
-    document.querySelectorAll('label[for^="nav"]').forEach(i =>
-      this[i.dataset.i18n] = i.control);
+    document.querySelectorAll('nav input[name="nav"]').forEach(i =>
+      this[i.parentElement.dataset.i18n] = i);
+
+    [this.prams] = [...new URLSearchParams(location.search).entries()];
   }
 
-  static get(pram = location.search.substring(1)) {
+  static get(pram = this.prams?.[0]) {
     if (!pram) { return; }
 
     this[pram] ? this[pram].checked = true : this.process(pram);
@@ -16,16 +18,44 @@ export class Nav {
     switch (pram) {
       case 'newJS':
       case 'newCSS':
-        this.script.checked = true;
+        this.scripts.checked = true;
         document.querySelector(`button[data-i18n^="${pram}"]`)?.click();
         break;
 
-      default:
-        if (pram.startsWith('script=')) {
-          const id = '_' + decodeURI(pram.substring(7) + location.hash); // in case there is # in the name
-          const li = document.getElementById(id);
-          li ? li.click() : location.href = '/content/options.html'; // click or clear
+      case 'script':
+        // in case there is # in the name (URLSearchParams decodes prams)
+        const id = '_' + this.prams[1] + decodeURI(location.hash);
+        const li = document.getElementById(id);
+        if (li) {
+          this.scripts.checked = true;
+          li.click();
+          li.scrollIntoView();
         }
+        break;
+    }
+  }
+
+  // --- help
+  static {
+    const help = document.querySelector('iframe[src="help.html"]').contentDocument;
+
+    // --- data-link
+    const helpLink = help.querySelector('.nav-link');
+    document.querySelectorAll('[data-link]').forEach(i => i.addEventListener('click', e => {
+      const {link} = e.target.dataset;
+      if (!link) { return; }
+
+      Nav.get('help');
+      helpLink.href = link;
+      helpLink.click();
+    }));
+  }
+
+  // --- sidebar
+  static {
+    if (location.search === '?sidebar') {
+      document.body.classList.add('sidebar');
+      this.scripts.checked = true;
     }
   }
 }
