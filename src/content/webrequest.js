@@ -48,8 +48,8 @@ export class WebRequest {
     e.responseHeaders.forEach(i => {
       if (/content-security-policy/i.test(i.name)) {
         // enable js/css insertion
-        i.value = i.value.replace(/((style|script)-src) [^;]+/, `$1 'unsafe-inline' *`)
-                         .replace(/((font|img)-src) [^;]+/g, '$1 data: blob: *');
+        i.value = i.value.replace(/(script|style)-src(-elem|-attr)? [^;]+/g, `$& 'unsafe-inline' *`)
+                          .replace(/(font|img)-src [^;]+/g, '$& data: blob: *');
       }
     });
 

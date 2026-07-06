@@ -6,6 +6,11 @@
 fetch = window.fetch.bind(window);
 XMLHttpRequest = window.XMLHttpRequest;
 
+// Trusted Types (Firefox 148) Tinyfill
+if (typeof trustedTypes === 'undefined') {
+  trustedTypes = {createPolicy: (n, rules) => rules};
+}
+
 // ---------- GM API ---------------------------------------
 // API is set in MV2 api.js in browser.userScripts.onBeforeScript
 // initUserScript is set in userscript.js in preparation for MV3
@@ -344,20 +349,29 @@ class GM {
 
     const elem = document.createElement(tagName);
     elem.dataset.src = `${this.#script.name}.user.js`;
+
+    if (script) {
+      // prepare text & tidy up
+      let text = attributes.textContent || attributes.innerText || attributes.innerHTML;
+      ['innerText', 'innerHTML'].forEach(i => delete attributes[i]);
+
+      if (text) {
+        this.#script.injectInto !== 'page' && (text += this.#script.sourceURL + Math.random().toString(36).substring(2) + '.js');
+        // Trusted Types (Firefox 148)
+        const p = trustedTypes.createPolicy('fm-policy', {createScript: s => s});
+        attributes.textContent = p.createScript(text);
+      }
+    }
+
     Object.entries(attributes)?.forEach(([key, value]) =>
       ['textContent', 'innerText', 'innerHTML'].includes(key) ? elem[key] = value : elem.setAttribute(key, value));
 
-    // script only
-    if (script && attributes.textContent && this.#script.injectInto !== 'page') {
-      elem.textContent += this.#script.sourceURL + Math.random().toString(36).substring(2) + '.js';
-    }
-
     try {
-      // appendChild() returns the node, append() returns undefined
-      const el = parentElement.appendChild(elem);
-      script && el.remove();
+      // append() returns undefined, appendChild() returns the node
+      const el = script ? parentElement.append(elem) : parentElement.appendChild(elem);
       // userscript may track UUID in element's textContent
-      return script ? undefined : elem;
+      script && el.remove();
+      return el;
     }
     catch (e) {
       this.#log(`addElement ➜ ${tagName} ${e}`);
@@ -746,6 +760,10 @@ class GM {
 
   static getResourceUrl(resourceName) {
     return this.#script.resource[resourceName];
+  }
+
+  static GM_getResourceURL(resourceName) {
+    return this.getResourceUrl(resourceName);
   }
 
   static log = console.log;
