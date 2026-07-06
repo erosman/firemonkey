@@ -411,7 +411,7 @@ class GM {
     if (typeof key !== 'string') { return; }
 
     this.#script.storage[key] = value;
-    this.setValues({key: value});
+    this.setValues({[key]: value});
   }
 
   static GM_setValues(obj) {
@@ -444,7 +444,7 @@ class GM {
   static async getValue(key, defaultValue) {
     if (typeof key !== 'string') { return; }
 
-    const response = this.getValues({[key]: defaultValue});
+    const response = await this.getValues({[key]: defaultValue});
     // return Object.values(response)[0];
     return response[key];
   }
@@ -471,7 +471,7 @@ class GM {
   }
 
   static async setValues(obj) {
-    if (typeof obj !== 'object') { return; }
+    if (typeof obj !== 'object' || obj === null) { return; }
 
     return this.#script.sendMessage({
       api: 'setValues',
@@ -490,7 +490,7 @@ class GM {
 
     return this.#script.sendMessage({
       api: 'deleteValues',
-      data: [keys],
+      data: keys,
     });
   }
 
