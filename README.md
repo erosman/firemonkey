@@ -58,6 +58,34 @@
   </tbody>
 </table>
 
+### Version History
+
+<table>
+  <thead>
+    <tr>
+      <th>version</th>
+      <th>details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><i>4 (future)</i></td>
+      <td><i>Manifest V3 (MV3)</i></td>
+    </tr>      
+    <tr>
+      <td>3</td>
+      <td>Monaco Editor, ESLint</td>
+    </tr>    
+    <tr>
+      <td>2</td>
+      <td>CodeMirror Editor, JSHint, CSSLint</td>
+    </tr>    
+    <tr>
+      <td>1</td>
+      <td>Initial release, minimal editor</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Browser Minimum
 
@@ -71,7 +99,7 @@
   </thead>
   <tbody>
     <tr>
-      <td>2.0 - </td>
+      <td>3.0 - *</td>
       <td>version 128<br><i>(released 2024-07-09)</i></td>
       <td>version 128<br><i>(released 2024-07-09)</i></td>
     </tr>
