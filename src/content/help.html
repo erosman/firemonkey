@@ -376,7 +376,7 @@
     <table>
       <thead>
         <tr>
-          <th style="width: 22em;">Issue</th>
+          <th>Issue</th>
           <th colspan="2">Try</th>
         </tr>
       </thead>
@@ -394,8 +394,9 @@
         </tr>
 
         <tr>
-          <td><code>window.addEventListener('load', ...)</code><br>
-            or <code>'DOMContentLoaded'</code> do not fire</td>
+          <td><code>window.addEventListener</code> does not fire<br>
+            <code>'load/DOMContentLoaded'</code>
+          </td>
           <td colspan="2">Try setting <code>@run-at   document-end</code> in <a href="#User-Metadata">User Metadata</a><br>
             See also: <a href="#defaults">defaults</a></td>
         </tr>
@@ -436,7 +437,7 @@
     </table>
 
 
-    <h3 id="manifest-v3">Manifest V3</h3>
+    <h3 id="manifest-v3">Manifest V3 <em>(planned for FireMonkey 4)</em></h3>
 
     <table>
       <thead>
@@ -448,17 +449,36 @@
       <tbody>
         <tr>
           <td><a href="https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/userScripts/execute" target="_blank">userScripts.execute()</a></td>
-          <td>added in Firefox 153 <a href="https://bugzil.la/1930776" title="Implement userScripts.execute" target="_blank"></a></td>
+          <td>added in Firefox 153  (released 2026-07-21) <a href="https://bugzil.la/1930776" title="Implement userScripts.execute" target="_blank"></a></td>
         </tr>
 
         <tr>
-          <td>Setting headers in GM xmlHttpRequest<br>Cookie, Host, Origin, Referer</td>
-          <td>No support at the moment on Chrome <a href="https://github.com/w3c/webextensions/issues/786" title="Proposal: Allow extension contexts to set forbidden headers in fetch() API" target="_blank"></a></td>
+          <td>GM registerMenuCommand<br>GM addValueChangeListener</td>
+          <td><a href="https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onUserScriptMessage" target="_blank">runtime.onUserScriptMessage</a> added in Firefox 136 (released 2025-03-04)</td>
         </tr>
 
         <tr>
-          <td>Background GM xmlHttpRequest</td>
-          <td>No support at the moment on Chrome
+          <td>GM info.isIncognito</td>
+          <td>No support at the moment <a href="https://github.com/w3c/webextensions/issues/611" title="Expose chrome.runtime.inIncognitoContext" target="_blank"></a></td>
+        </tr>
+
+        <!-- <tr>
+          <td>User Style API</td>
+          <td>No support at the moment <a href="https://github.com/w3c/webextensions/issues/615" title="Support user styles through scripting.registerContentScripts via a code property" target="_blank"></a></td>
+        </tr> -->
+
+        <tr><td colspan="2"></td></tr>
+
+        <tr>
+          <td rowspan="2">GM xmlHttpRequest<br>
+            <em>(Chrome only)</em>
+          </td>
+          <td>No support for setting Cookie, Host, Origin, Referer at the moment on Chrome <a href="https://github.com/w3c/webextensions/issues/786" title="Proposal: Allow extension contexts to set forbidden headers in fetch() API" target="_blank"></a>
+
+          </td>
+        </tr>
+        <tr>
+          <td>No support for background execution (no CORS) at the moment on Chrome
             <blockquote>
               <p>The <code>XMLHttpRequest()</code> API is supported in extensions outside of the service worker</p>
 
@@ -467,33 +487,18 @@
           </td>
         </tr>
 
-        <tr>
-          <td>User Style API</td>
-          <td>No support at the moment <a href="https://github.com/w3c/webextensions/issues/615" title="Support user styles through scripting.registerContentScripts via a code property" target="_blank"></a></td>
-        </tr>
-
-        <tr>
-          <td>GM info.isIncognito</td>
-          <td>No support at the moment <a href="https://github.com/w3c/webextensions/issues/611" title="Expose chrome.runtime.inIncognitoContext" target="_blank"></a></td>
-        </tr>
-
-        <tr>
-          <td>GM registerMenuCommand<br>GM addValueChangeListener</td>
-          <td>No support at the moment (requires listener in userScript context) <a href="https://github.com/w3c/webextensions/issues/611#issuecomment-2893702040" title="Expose chrome.runtime.inIncognitoContext" target="_blank"></a></td>
-        </tr>
-
       </tbody>
     </table>
+
+
+    <h3>File access becomes opt-in <em>(Firefox 153)</em></h3>
+    <p>Extensions requesting <code>file://*/</code> or <code>&lt;all_urls&gt;</code> currently trigger the “Access your data for all websites” permission message, and when granted, can run content scripts in file:-URLs. From Firefox 153, file access in extensions requires an opt-in for all extensions, including those already installed (<a href="https://bugzil.la/2034168">bug 2034168</a>). <a href="https://blog.mozilla.org/addons/2026/04/23/webextensions-api-changes-firefox-149-152/" title="WebExtensions API Changes (Firefox 149-152)" target="_blank">ⓘ</a></p>
 
     <h3>Light/Dark Theme</h3>
     <p>Theme is based on the browser's default light/dark theme.</p>
 
     <h3 id="android">Firefox on Android</h3>
     <p>Support is experimental and based on user feedback.</p>
-
-    <h3>File access becomes opt-in</h3>
-    <p>Extensions requesting <code>file://*/</code> or <code>&lt;all_urls&gt;</code> currently trigger the “Access your data for all websites” permission message, and when granted, can run content scripts in file:-URLs. From Firefox 153, file access in extensions requires an opt-in for all extensions, including those already installed (<a href="https://bugzil.la/2034168">bug 2034168</a>). <a href="https://blog.mozilla.org/addons/2026/04/23/webextensions-api-changes-firefox-149-152/" title="WebExtensions API Changes (Firefox 149-152)" target="_blank">ⓘ</a></p>
-
 
 
     <h2 id="how-to-use">How to Use</h2>
@@ -826,7 +831,7 @@
         </tr>
         <tr>
           <td>linter</td>
-          <td>IntelliSense<br>ESLint <em>(10.6.0)</em></td>
+          <td>IntelliSense<br>ESLint <em>(10.7.0)</em></td>
           <td>n/a</td>
           <td>ESLint <em>(8.32.0)</em></td>
           <td>n/a</td>
@@ -2744,23 +2749,23 @@ element.innerHTML = dom;
           <td></td>
           <td></td>
           <td>ISOLATED <a href="https://www.tampermonkey.net/documentation.php?locale=en#settings:content_script_api" title="Content Script API" target="_blank"></a></td>
-          <td><a href="https://github.com/violentmonkey/violentmonkey/issues/1934" title="Manifest V3 for Chrome" target="_blank"></a> <a href="https://github.com/violentmonkey/violentmonkey/issues/2341" title="Forking Violentmonkey" target="_blank"></a></td>
+          <td>ISOLATED <a href="https://github.com/violentmonkey/violentmonkey/issues/1934" title="Manifest V3 for Chrome" target="_blank"></a> <a href="https://github.com/violentmonkey/violentmonkey/issues/2341" title="Forking Violentmonkey" target="_blank"></a></td>
           <td>?</td>
         </tr>
         <tr>
           <td>@grant &nbsp;&nbsp; ***</td>
           <td></td>
           <td></td>
-          <td>?</td>
-          <td></td>
+          <td>MAIN ?</td>
+          <td>MAIN ?</td>
           <td>?</td>
         </tr>
         <tr>
           <td>@grant &nbsp;&nbsp; none <em>(no @grant)</em></td>
           <td></td>
           <td></td>
-          <td>?</td>
-          <td></td>
+          <td>MAIN ?</td>
+          <td>MAIN ?</td>
           <td>?</td>
         </tr>
       </tbody>
@@ -5459,6 +5464,7 @@ if(... condition ...) { sendMessage(data); }`</span>;
           <li class="l2"><a href="#compatibility">Compatibility</a></li>
           <li class="l2"><a href="#quick-fixes">Quick Fixes</a></li>
           <li class="l2"><a href="#manifest-v3">Manifest V3</a></li>
+          <li class="l2"><a href="#android">Firefox on Android</a></li>
 
         <li><a href="#how-to-use">How to Use</a></li>
           <li class="l2"><a href="#toolbar-icon">Toolbar Icon</a></li>
@@ -5467,8 +5473,6 @@ if(... condition ...) { sendMessage(data); }`</span>;
           <li class="l2"><a href="#sidebar-editor">Sidebar Editor</a></li>
           <li class="l2"><a href="#keyboard-shortcut">Keyboard Shortcut</a></li>
           <li class="l2"><a href="#script-installation">Script/CSS Installation</a></li>
-          <li class="l2"><a href="#android">Firefox on Android</a></li>
-
 
         <li><a href="#options">Options</a></li>
           <li class="l2"><a href="#auto-update-interval">Auto-Update Interval</a></li>

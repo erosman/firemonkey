@@ -10,8 +10,11 @@ browser.userScripts.onBeforeScript.addListener(script => {
 
     // --- prepare return value, check if it is primitive value
     prepare(value) {
-      // used in fetch, cant be done in MV2 api-gm.js
-      if (value && Object.hasOwn(value, 'headers')) {
+      // used in fetch & xmlHttpRequest, cant be done in MV2 api-gm.js
+      if (value &&
+            (Object.hasOwn(value, 'headers') ||
+              (Object.hasOwn(value, 'response') && typeof value.response !== 'string'))
+      ) {
         return cloneInto(value, window);
       }
 

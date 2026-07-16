@@ -19,6 +19,11 @@
     <h2 id="changelog">Changelog</h2>
     <dl>
 
+      <dt>3.3</dt>
+      <dd>Fixed a "GM xmlHttpRequest" error with arraybuffer (#58)</dd>
+      <dd>Updated editor globals to 17.7.0 and ES2027</dd>
+      <dd>Updated ESLint to 10.7.0</dd>
+
       <dt>3.2</dt>
       <dd>Fixed GM storage typo errors (#56)</dd>
 
@@ -42,12 +47,12 @@
       <dd>Added default templates support in new script/CSS from toolbar popup and context-menu (support/issues/628)</dd>
       <dd>Added Diff Viewer feature for manual updates</dd>
       <dd>Added Direct Install notification (#21)</dd>
-      <dd>Added ESLint (10.6.0)</dd>
+      <dd>Added ESLint 10.6.0</dd>
       <dd>Added First-party isolation option (support/issues/431)</dd>
       <dd>Added Keyboard shortcut feature</dd>
       <dd>Added Light/Dark theme to GM popup</dd>
       <dd>Added links to Help from Options</dd>
-      <dd>Added Monaco Editor (0.55.1) with IntelliSense (support/issues/623, #3)</dd>
+      <dd>Added Monaco Editor 0.55.1 with IntelliSense (support/issues/623, #3)</dd>
       <dd>Added Sidebar Editor feature</dd>
       <dd>Added UserScript Wrapper (allows "return out of function" and "top-level await")</dd>
       <dd>Deprecated browser API style metadata block entries</dd>
@@ -105,7 +110,7 @@
       <dd>Moved source code and support to a new Github repository</dd>
       <dd>Removed openerTabId from "GM openInTab" on Android</dd>
       <dd>Suppressed error logging on failure to inject installation confirmation (support/issues/601)</dd>
-      <dd>Upgraded js-beautify to 1.15.1</dd>
+      <dd>Updated js-beautify to 1.15.1</dd>
 
       <dt>2.72</dt>
       <dd>Added "blob:" protocol support in relevant GM APIs</dd>
@@ -114,7 +119,7 @@
 
       <dt>2.71</dt>
       <dd>Fixed an oversight in scratchpad (from 2.68)</dd>
-      <dd>Upgraded js-beautify to 1.14.8</dd>
+      <dd>Updated js-beautify to 1.14.8</dd>
 
       <dt>2.70</dt>
       <dd>Moved "GM setValue" and "GM deleteValue" back to the background script (support/issues/559) (from 2.68)</dd>
@@ -165,15 +170,15 @@
       <dd>Updated "updateURL" to a link in popup Info page</dd>
       <dd>Updated API script to handle script storage directly</dd>
       <dd>Updated code in preparation for manifest v3</dd>
+      <dd>Updated CodeMirror to 5.65.13</dd>
       <dd>Updated GM3 API removal when both GM3/GM4 are granted, to storage API only</dd>
+      <dd>Updated js-beautify to 1.14.7</dd>
+      <dd>Updated JSHint to 2.13.6</dd>
       <dd>Updated module structure</dd>
       <dd>Updated Options page navigation</dd>
       <dd>Updated Toggle comment keyboard shortcut from "Ctrl-Q" to "Ctrl-/" (like VS Code) due to conflict with Firefox Quit</dd>
       <dd>Updated UI style</dd>
       <dd>Updated unsuccessful "GM fetch" return to "undefined" (was "null")</dd>
-      <dd>Upgraded CodeMirror to 5.65.13</dd>
-      <dd>Upgraded js-beautify to 1.14.7</dd>
-      <dd>Upgraded JSHint to 2.13.6</dd>
 
       <dt>2.67</dt>
       <dd>Fixed Toolbar popup Dark Theme application (support/issues/428) (from 2.33)</dd>
@@ -222,10 +227,10 @@
       <dd>Fixed Sync storage issue (support/issues/485)</dd>
       <dd>Fixed User Metadata and Storage not cleared when creating new script (support/issues/491)</dd>
       <dd>Removed allowed install URL checklist (support/issues/480)</dd>
+      <dd>Updated "fetch" and "XMLHttpRequest" mapping workaround</dd>
       <dd>Updated "unsafeWindow" implementation</dd>
       <dd>Updated Bulgarian (bg) locale</dd>
-      <dd>Updated "fetch" and "XMLHttpRequest" mapping workaround</dd>
-      <dd>Upgraded JSHint to 2.13.5</dd>
+      <dd>Updated JSHint to 2.13.5</dd>
 
       <dt>2.56</dt>
       <dd>Added experimental "@var" (support/issues/293)</dd>
@@ -240,8 +245,8 @@
       <dd>Removed Database Migrate 1.31 2020-03-13 (0 users)</dd>
       <dd>Removed Database Migrate 1.36 2020-05-25 (0 users)</dd>
       <dd>Removed Database Migrate 2.0 2020-12-08 (2 users) (use v2.53 to migrate)</dd>
-      <dd>Removed Database Migrate 2.5  2020-12-14 (0 users) (use v2.53 to migrate)</dd>
       <dd>Removed Database Migrate 2.25 2021-05-08 (1 users) (use v2.53 to migrate)</dd>
+      <dd>Removed Database Migrate 2.5  2020-12-14 (0 users) (use v2.53 to migrate)</dd>
       <dd>Updated Regular Expression support process (support/issues/429#issuecomment-1116631171)</dd>
       <dd>Updated the "fetch" and "XMLHttpRequest" mapping workaround</dd>
 
@@ -298,17 +303,17 @@
       <dd>Set JavaScript "window.close()" to work in tabs opened with "GM openIntab" (support/issues/429#issuecomment-1073011484)</dd>
       <dd>Updated "@require" CSS in userScript process</dd>
       <dd>Updated "@require" in userCSS to use "@import"</dd>
-      <dd>Upgraded jQuery-ui library to 1.13.1</dd>
+      <dd>Updated jQuery-ui library to 1.13.1</dd>
 
       <dt>2.44</dt>
       <dd>Fixed a typo in "GM_getResourceText" (from 2.43)</dd>
       <dd>Updated "GM addElement" to return the element</dd>
 
       <dt>2.43</dt>
+      <dd>Added "GM addElement"</dd>
       <dd>Added CodeMirror Key Maps (support/issues/423)</dd>
       <dd>Added experimental live userCSS update of open tabs (support/issues/295)</dd>
       <dd>Added experimental Sync storage compatibility (support/issues/98)</dd>
-      <dd>Added "GM addElement"</dd>
       <dd>Fixed an issue with disabled Auto-Update Interval</dd>
       <dd>Fixed an issue with Regular Expressions in "@include"</dd>
       <dd>Fixed F11 and sidebar</dd>
@@ -325,9 +330,9 @@
       <dd>Increased minimum version to Firefox 74 (released 2020-03-10) (no FireMonkey users below Firefox 77)</dd>
       <dd>Removed "@disable-synchGM" to disable synchronous GM API via user metadata (support/issues/408) due to auto-disable feature</dd>
       <dd>Removed hidden entries from multiple script selection</dd>
+      <dd>Updated Bootstrap 4 library to 4.6.1</dd>
+      <dd>Updated JSHint to 2.13.4</dd>
       <dd>Updated UI (support/issues/418)</dd>
-      <dd>Upgraded Bootstrap 4 library to 4.6.1</dd>
-      <dd>Upgraded JSHint to 2.13.4</dd>
 
       <dt>2.41</dt>
       <dd>Added "@disable-synchGM" to disable synchronous GM API via user metadata (support/issues/408)</dd>
@@ -337,8 +342,8 @@
       <dd>Added userScript container support for Firefox 98 (support/issues/378)</dd>
       <dd>Fixed the error when userScript is loaded in a background tab (support/issues/409)</dd>
       <dd>Removed editor update after save (support/issues/403)</dd>
-      <dd>Upgraded JSHint to 2.13.2</dd>
-      <dd>Upgraded Underscore library to 1.13.1</dd>
+      <dd>Updated JSHint to 2.13.2</dd>
+      <dd>Updated Underscore library to 1.13.1</dd>
 
       <dt>2.40</dt>
       <dd>Added automatic Trim Trailing Spaces on SAVE</dd>
@@ -365,8 +370,8 @@
       <dd>Fixed an error with setting responseType in "GM fetch" (from 2.35) (support/issues/386)</dd>
 
       <dt>2.35</dt>
-      <dd>Added "cookies" permission to deal with container/incognito cookie isolation</dd>
       <dd>Added "@website" and "@source" as homepage link to popup Info page</dd>
+      <dd>Added "cookies" permission to deal with container/incognito cookie isolation</dd>
       <dd>Added anonymous flag to "GM xmlHttpRequest" and fetch</dd>
       <dd>Added container/incognito cookie isolation for "GM xmlHttpRequest/fetch/download" (support/issues/378)</dd>
       <dd>Added feature to remove overlapping patterns</dd>
@@ -392,8 +397,8 @@
       <dd>Updated Locale Maker to 1.4</dd>
 
       <dt>2.33</dt>
-      <dd>Updated Dark Mode implementation for Private Window (support/issues/367)</dd>
       <dd>Updated "GM fetch" API to return an object (breaking change) (support/issues/364)</dd>
+      <dd>Updated Dark Mode implementation for Private Window (support/issues/367)</dd>
 
       <dt>2.32</dt>
       <dd>Removed Android export test code (support/issues/359)</dd>
@@ -405,13 +410,13 @@
       <dd>Set JSHint esversion to 11 (ECMAScript 2020)</dd>
       <dd>Suppressed CodeMirror UserCSS Metadata Block "*/" error</dd>
       <dd>Suppressed CSSLint Metadata Block "*/" error</dd>
-      <dd>Upgraded CodeMirror to 5.62.3</dd>
-      <dd>Upgraded JSHint to 2.13.1</dd>
+      <dd>Updated CodeMirror to 5.62.3</dd>
+      <dd>Updated JSHint to 2.13.1</dd>
 
       <dt>2.30</dt>
       <dd>Fixed a bug with setting multiple allowed headers</dd>
       <dd>Fixed case-insensitivity of header names</dd>
-      <dd>Upgraded Bootstrap 4 library to 4.6.0</dd>
+      <dd>Updated Bootstrap 4 library to 4.6.0</dd>
 
       <dt>2.29</dt>
       <dd>Fixed an option page display inconsistency across platforms</dd>
@@ -439,11 +444,11 @@
       <dd>Added error reason to info temporary insertion</dd>
       <dd>Added type indicator to toolbar icon mouse-over title</dd>
       <dd>Fixed an error when setting CodeMirror extraKeys</dd>
-      <dd>"GM addScript" will appear under the userScript name in debugger</dd>
       <dd>Popup enable/disable toggle will reflect on open options page</dd>
       <dd>Redesigned script menu as a sidebar</dd>
       <dd>Removed some styling in preparation for Proton in Firefox 89 (2021-06-01)</dd>
       <dd>Restructured database (migrate pre-2.25 storage)</dd>
+      <dd>Updated "GM addScript" to appear under the userScript name in debugger</dd>
       <dd>Updated Bulgarian (bg) locale</dd>
 
       <dt>2.24</dt>
@@ -475,8 +480,8 @@
       <dd>Added per script user "run-at" option</dd>
       <dd>Added user "@run-at" to popup Info page</dd>
       <dd>New JS icon</dd>
-      <dd>Updated the "GM.fetch" API to return response object on HEAD request</dd>
       <dd>Updated "userstyles.org" process</dd>
+      <dd>Updated the "GM.fetch" API to return response object on HEAD request</dd>
 
       <dt>2.19</dt>
       <dd>Added CodeMirror "match-highlighter" addon (off by default)</dd>
@@ -492,8 +497,8 @@
       <dd>Rewrote Multi-selection for enable/delete/export</dd>
       <dd>Updated auto-update process</dd>
       <dd>Updated code</dd>
-      <dd>Upgraded CodeMirror to 5.59.4</dd>
-      <dd>Upgraded jQuery library to 3.6.0</dd>
+      <dd>Updated CodeMirror to 5.59.4</dd>
+      <dd>Updated jQuery library to 3.6.0</dd>
 
       <dt>2.18</dt>
       <dd>Fixed option page script load order (new script/CSS from popup)</dd>
@@ -533,16 +538,16 @@
 
       <dt>2.11</dt>
       <dd>Fixed an error when creating a new script in a new installation (from 2.1)</dd>
-      <dd>Regex check code improvement</dd>
+      <dd>Updated Regex check code</dd>
 
       <dt>2.10</dt>
       <dd>Added "size" to Toolbar Pop-up script Info</dd>
-      <dd>Upgraded CodeMirror to 5.59.1</dd>
       <dd>Clicking the Script/CSS name on toolbar popup displays the info</dd>
+      <dd>Updated CodeMirror to 5.59.1</dd>
 
       <dt>2.9</dt>
       <dd>Fixed a CSS bug in v2.8 that prevented editing in the editor</dd>
-      <dd>Upgraded Underscore library to 1.12.0</dd>
+      <dd>Updated Underscore library to 1.12.0</dd>
 
       <dt>2.8</dt>
       <dd>Added "data-src" to the script injected via "GM_addScript"</dd>
@@ -618,9 +623,9 @@
       <dd>Changed default UserCSS insertion to "document-start"</dd>
       <dd>Fixed "unsafeWindow" bug (from 1.47)</dd>
       <dd>Restructured database (migrate pre-2.0 storage)</dd>
+      <dd>Updated Bootstrap 4 library to 4.5.3</dd>
       <dd>Updated code to ES6 modules</dd>
-      <dd>Upgraded Bootstrap 4 library to 4.5.3</dd>
-      <dd>Upgraded Moment library to 2.29.1</dd>
+      <dd>Updated Moment library to 2.29.1</dd>
 
       <dt>1.47</dt>
       <dd>Added more info to Log</dd>
@@ -664,9 +669,9 @@
       <dt>1.39</dt>
       <dd>Fixed an error when saving Template with Syntax Highlighting disabled</dd>
       <dd>Saving Template will only trim the start</dd>
-      <dd>Upgraded Bootstrap 4 library to 4.5.2</dd>
-      <dd>Upgraded Moment library to 2.29.0</dd>
-      <dd>Upgraded Underscore library to 1.11.0</dd>
+      <dd>Updated Bootstrap 4 library to 4.5.2</dd>
+      <dd>Updated Moment library to 2.29.0</dd>
+      <dd>Updated Underscore library to 1.11.0</dd>
 
       <dt>1.38</dt>
       <dd>Fixed an error in Import script</dd>
@@ -679,9 +684,9 @@
       <dd>Fixed an "@include" to "@match" conversion error</dd>
       <dd>Updated <i>Script Commands</i> Interface from "registerMenuCommand"</dd>
       <dd>Updated code OOP</dd>
+      <dd>Updated Moment Library to 2.27.0</dd>
       <dd>Updated Stylus Import due to support of Stylus Style UserStyle</dd>
-      <dd>Upgraded Moment Library to 2.27.0</dd>
-      <dd>Upgraded Underscore Library to 1.10.2</dd>
+      <dd>Updated Underscore Library to 1.10.2</dd>
 
       <dt>1.36</dt>
       <dd>Added image support to GM notification</dd>
@@ -693,7 +698,7 @@
       <dd>Restructured database (migrate pre-1.36 storage)</dd>
       <dd>Toolbar Icon mouse-over shows active scripts</dd>
       <dd>Updated code OOP</dd>
-      <dd>Upgraded jQuery library to 3.5.1</dd>
+      <dd>Updated jQuery library to 3.5.1</dd>
 
       <dt>1.35</dt>
       <dd>Added "@include" to "@match" conversion for ".co*.*"</dd>

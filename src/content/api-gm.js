@@ -7,6 +7,7 @@ fetch = window.fetch.bind(window);
 XMLHttpRequest = window.XMLHttpRequest;
 
 // Trusted Types (Firefox 148) Tinyfill
+// https://developer.mozilla.org/docs/Web/API/Trusted_Types_API#trusted_types_tinyfill
 if (typeof trustedTypes === 'undefined') {
   trustedTypes = {createPolicy: (n, rules) => rules};
 }
@@ -164,7 +165,7 @@ class GM {
 
       'cookie',
       'setValues',
-      'deleteValues'
+      'deleteValues',
     ];
 
     const dep = {

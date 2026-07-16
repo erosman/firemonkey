@@ -15,7 +15,7 @@ const extra = [
 const GM = [...Object.keys(globals.greasemonkey), ...extra];
 export const editorKeywords = [
   ...Object.keys(globals.browser),
-  ...Object.keys(globals.es2026),
+  ...Object.keys(globals.es2027),
   ...Object.keys(globals.jquery),
   ...GM,
   // change GM_ to GM.
@@ -41,7 +41,7 @@ export class ESLintOptions {
       // Change Request: globalReturn with module
       globals: {
         ...globals.browser,
-        ...globals.es2026,
+        ...globals.es2027,
         ...globals.jquery,
         // ...globals.greasemonkey,
 
