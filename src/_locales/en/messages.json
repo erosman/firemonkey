@@ -43,6 +43,7 @@
   "convertToUserCSS": { "message": "Convert to UserCSS" },
   "tidyMeta": { "message": "Tidy Metadata Block" },
   "convertToMatch": { "message": "Convert to Match" },
+  "convertDeprecated": { "message": "Convert Deprecated" },
 
   "discardConfirm": { "message": "Do you want to discard the changes without saving?" },
 
