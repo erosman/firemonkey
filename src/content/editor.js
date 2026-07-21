@@ -105,7 +105,7 @@ export class Editor {
         // set one empty line after metadata block
         str = str.replace(/(==\/(UserScript|UserCSS|UserStyle)==(\s+\*\/)?)\s+/i, '$1\n\n');
         this.set(str);
-      }
+      },
     });
 
     // --- convert to match
@@ -148,14 +148,27 @@ export class Editor {
       run: ed => {
         const str = UserStyleConverter.get(ed.getValue(), this.box.dataset.updateURL);
         this.set(str);
-      }
+      },
+    });
+
+    // --- convert deprecated
+    this.editor.addAction({
+      id: 'convert-deprecated',
+      label: browser.i18n.getMessage('convertDeprecated'),
+      contextMenuOrder: 4,
+      contextMenuGroupId: '2_fm',
+      run: ed => {
+        let str = ed.getValue();
+        Object.entries(UserScript.deprecated).forEach(([k, v]) => str = str.replaceAll(k, v));
+        this.set(str);
+      },
     });
 
     // --- save as template
     this.editor.addAction({
       id: 'save-as-template',
       label: browser.i18n.getMessage('saveTemplate'),
-      contextMenuOrder: 4,
+      contextMenuOrder: 5,
       contextMenuGroupId: '2_fm',
       run: ed => {
         const str = ed.getValue();
@@ -164,7 +177,7 @@ export class Editor {
           obj.template[type] = str;
           browser.storage.local.set(obj);
         });
-      }
+      },
     });
 
     // --- save

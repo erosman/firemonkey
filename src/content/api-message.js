@@ -256,7 +256,7 @@ class OnMessage {
       timeout:          xhr.timeout,
       withCredentials:  xhr.withCredentials,
       // finalUrl is clone of responseURL for GM|TM|VM compatibility
-      finalUrl:         xhr.responseURL
+      finalUrl:         xhr.responseURL,
     };
   }
   // ---------- /API message -------------------------------

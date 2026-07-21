@@ -51,8 +51,6 @@ class Options {
      this.linterOptions,
     ];
 
-
-
     this.init(['autoUpdateInterval', 'counter', 'sync', 'globalExclude', 'cspExclude',
       'editorOptions', 'linterOptions', 'customOptionsCSS', 'customPopupCSS']);
   }
@@ -359,7 +357,7 @@ class Script {
 @match            *://*/*
 @version          1.0
 ==/UserCSS==
-*/`
+*/`,
   };
 
   static async newScript(id) {

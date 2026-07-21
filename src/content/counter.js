@@ -24,7 +24,7 @@ export class Counter {
       browser.tabs.onUpdated.addListener(this.process) :
       browser.tabs.onUpdated.addListener(this.process, {
         urls: ['*://*/*', 'file:///*'],
-        properties: ['status']
+        properties: ['status'],
       });
   }
 

@@ -31,7 +31,7 @@ export class App {
       type: 'basic',
       iconUrl: '/image/icon.svg',
       title,
-      message
+      message,
     });
   }
 

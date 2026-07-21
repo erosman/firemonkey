@@ -4,9 +4,9 @@ import {Script} from './script.js';
 import {Counter} from './counter.js';
 import {Migrate} from './migrate.js';
 import {WebRequest} from './webrequest.js';
+import {Installer} from './installer.js';
 import './api-message.js';
 import './menus.js';
-import './installer.js';
 
 // ---------- process preferences --------------------------
 class ProcessPref {
@@ -15,6 +15,9 @@ class ProcessPref {
     // register persistent listeners
     // from popup.js & options.js
     browser.runtime.onMessage.addListener((...e) => this.onMessage(...e));
+
+    // cant runtime.sendMessage to the same context
+    Installer.callback = e => this.onMessage(e);
 
     this.init();
   }

@@ -46,7 +46,8 @@ class GM {
       resourceData: data.resourceData,
       resource: this.info.script.resources,
       sendMessage: e => API.sendMessage({...e, name: this.#script.name}),
-      sourceURL: `\n\n//# sourceURL=${data.FMUrl}userscript/page/${encodeURI(name)}-`,
+      // sourceURL: `\n\n//# sourceURL=${data.FMUrl}userscript/page/${encodeURI(name)}-`,
+      sourceURL: `\n\n//# sourceURL=${data.FMUrl}${encodeURI(name)}`,
       storage: {},
       // {key: callback}
       valueChange: {},
@@ -141,12 +142,7 @@ class GM {
 
   static #resolveDependencies(grant) {
     // default DOM GM. (needed in userscript.js)
-    const def = [
-      'addElement',
-      'addScript',
-      'addStyle',
-    ];
-    grant.push(...def.map(i => `GM.${i}`));
+    grant.push('GM.addElement');
 
     // direct dependencies
     const direct = [
@@ -211,7 +207,7 @@ class GM {
 
     switch (true) {
       case excludes[0] && isMatch(excludes.map(i => i.slice(1, -1))):
-      case includes[0] && !isMatch(includes) &&
+      case includes[0] && !isMatch(includes.map(i => i.slice(1, -1))) &&
             !isMatch(includeGlobs.map(i => prepareGlob(i))) &&
             !isMatch(matches.map(i => prepareMatch(i))):
         this.#script.matchLocation = false;
@@ -235,14 +231,6 @@ class GM {
         data: null,
       });
     }
-
-    // remove default APIs
-    const addElement = ['GM_addElement', 'GM.addElement'].some(i => grant.includes(i));
-    const addScript = ['GM_addScript', 'GM.addScript'].some(i => grant.includes(i));
-    const addStyle = ['GM_addStyle', 'GM.addStyle'].some(i => grant.includes(i));
-    !addScript && delete this.addScript;
-    !addStyle && delete this.addStyle;
-    !addScript && !addStyle && !addElement && delete this.addElement;
 
     // run only once
     delete this.initScript;
@@ -357,7 +345,7 @@ class GM {
       ['innerText', 'innerHTML'].forEach(i => delete attributes[i]);
 
       if (text) {
-        this.#script.injectInto !== 'page' && (text += this.#script.sourceURL + Math.random().toString(36).substring(2) + '.js');
+        this.#script.injectInto !== 'page' && (text += `${this.#script.sourceURL}/${crypto.randomUUID()}.js`);
         // Trusted Types (Firefox 148)
         const p = trustedTypes.createPolicy('fm-policy', {createScript: s => s});
         attributes.textContent = p.createScript(text);

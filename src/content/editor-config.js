@@ -93,13 +93,16 @@ export class UserScript {
     'import',
   ].flatMap(i => [`GM.${i}`, `GM_${i}`]);
 
-  static deprecated = [
-    ['Info', '@matches is deprecated, use @match instead', '@matches'],
-    ['Info', '@excludeMatches is deprecated, use @exclude-match instead', '@excludeMatches'],
-    ['Info', '@includeGlobs is deprecated, use @include instead', '@includeGlobs'],
-    ['Info', '@excludeGlobs is deprecated, use @exclude instead', '@excludeGlobs'],
-    ['Info', '@runAt is deprecated, use @run-at instead', '@runAt'],
-  ];
+  static deprecated = {
+    '@matches': '@match',
+    '@excludeMatches': '@exclude-match',
+    '@includeGlobs': '@include',
+    '@excludeGlobs': '@exclude',
+    '@runAt': '@runAt',
+    'GM_fetch': 'GM.fetch',
+  };
+
+  static depList = Object.entries(this.deprecated).map(i => ['Warning', `${i[0]} is deprecated, use ${i[1]} instead`, i[0]]);
 
   static custom = [
     ['Info', 'GM.info is available without @grant', '@grant\\s+GM\\.info', true, true, true, '\\S'],
@@ -129,12 +132,12 @@ export class UserScript {
     ...this.unsupported.map(i => ['Error', `${i} is not supported.`, i, true, false, true, '\\S']),
     ...this.custom,
     ...this.useMatch,
-    ...this.deprecated,
+    ...this.depList,
   ];
 
   static cssMarkers = [
     ...this.useMatch,
-    ...this.deprecated,
+    ...this.depList,
   ];
 
   static getMarkers(language) {

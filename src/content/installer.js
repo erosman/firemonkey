@@ -2,8 +2,12 @@ import {App} from './app.js';
 import {Meta} from './meta.js';
 import {RemoteUpdate} from './remote-update.js';
 
-// ----------------- installer (side effect) ---------------
-class Installer {
+// ----------------- installer -----------------------------
+export class Installer {
+
+  // cant runtime.sendMessage to the same context
+  // callback is set in background.js
+  static callback = () => {};
 
   static {
     // message from install.js content script
@@ -66,7 +70,7 @@ class Installer {
       // remove old data
       await browser.storage.local.remove(oldId);
       // unregister old data message to background.js
-      browser.runtime.sendMessage({update: 'script', pref, ids: [oldId]});
+      this.callback({update: 'script', pref, ids: [oldId]});
     }
 
     // --- check version, not for direct or local files
@@ -87,6 +91,9 @@ class Installer {
     direct && App.notify(data.name + '\n' + message);
 
     pref[id] = data;
-    browser.storage.local.set({[id]: pref[id]});
+    await browser.storage.local.set({[id]: pref[id]});
+
+    // register message to background.js
+    this.callback({update: 'script', pref, ids: [id]});
   }
 }

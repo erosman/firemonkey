@@ -90,14 +90,15 @@ export class UserScript {
 
     // injectInto page for @grant none
     const page = script.injectInto === 'page' || !grant[0] || unwrap;
-    const pageURL = page ? 'page/' : '';
+    // const pageURL = page ? 'page/' : '';
     const encodeName = encodeURI(name);
 
     // re UUID when inject-into page
     // https://bugzilla.mozilla.org/show_bug.cgi?id=1717671
     // Display inconsistency of sourceURL folder & file
     // https://bugzilla.mozilla.org/show_bug.cgi?id=1824910
-    const sourceURL = `\n\n//# sourceURL=${this.FMUrl}userscript/${pageURL}${encodeName}`;
+    // const sourceURL = `\n\n//# sourceURL=${this.FMUrl}userscript/${pageURL}${encodeName}`;
+    const sourceURL = `\n\n//# sourceURL=${this.FMUrl}${encodeName}`;
 
     // regex in include/exclude is handled by api-gm.js
     const hasRegex = includes[0] || excludes[0];
@@ -132,7 +133,7 @@ export class UserScript {
           options.css.push({code});
         }
         else {
-          code = `GM.addStyle(${JSON.stringify(code)})`;
+          code = `GM.addElement('style', {textContent: ${JSON.stringify(code)}})`;
           options.js.push({code});
         }
       }
@@ -145,7 +146,7 @@ export class UserScript {
         options.css.push({code});
       }
       else {
-        code = `GM.addStyle(${JSON.stringify(code)})`;
+        code = `GM.addElement('style', {textContent: ${JSON.stringify(code)}})`;
         options.js.push({code});
       }
     }
@@ -213,7 +214,7 @@ export class UserScript {
     // --- add @require location check for regex include/exclude
     if (hasRegex) {
       // convert CSS to JS
-      options.js.push(...options.css.map(i => ({code: `GM.addStyle(${JSON.stringify(i.code)});`})));
+      options.js.push(...options.css.map(i => ({code: `GM.addElement('style', {textContent: ${JSON.stringify(i.code)}});`})));
       // add URL check
       options.js.forEach(i => i.code &&= `GM.initScript().then(async () => { ${i.code}\n}).catch(() => {});`);
     }
@@ -245,7 +246,7 @@ export class UserScript {
       // inject with userScripts API
       if (hasRegex) {
         // catch() to suppress error
-        code = `GM.initScript(true).then(() => { GM.addScript(${JSON.stringify(code)})\n}).catch(() => {});`;
+        code = `GM.initScript(true).then(() => { GM.addElement('script', {textContent: ${JSON.stringify(code)}})\n}).catch(() => {});`;
         delete options.css;
       }
       else {

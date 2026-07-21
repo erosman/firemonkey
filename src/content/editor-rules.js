@@ -67,7 +67,7 @@ export const rules = {
     "preserve-caught-error": "error",
     "require-yield": "error",
     "use-isnan": "error",
-    "valid-typeof": "error"
+    "valid-typeof": "error",
   },
 
   fireMonkey: {
@@ -119,8 +119,8 @@ export const rules = {
     "no-restricted-properties": ["error", {
         "object": "GM",
         "allowProperties": ['info'],
-        "message": "(missing @grant or unsupported)"
+        "message": "(missing @grant or unsupported)",
       },
     ],
-  }
+  },
 };

@@ -370,7 +370,7 @@
       </tbody>
     </table>
 
-    <p class="footnote" colspan="3"><sup>1</sup> Many userscripts declare <code>@grant</code> for GM APIs that they don't use.</p>
+    <p class="footnote"><sup>1</sup> Many userscripts declare <code>@grant</code> for GM APIs that they don't use.</p>
 
     <h3 id="quick-fixes">Quick Fixes</h3>
     <table>
@@ -414,6 +414,18 @@
             See: <a href="#csp-exclude">CSP Exclude</a>
           </td>
         </tr>
+
+        <tr>
+          <td><a href="https://developer.mozilla.org/docs/Web/API/Trusted_Types_API" target="_blank">Trusted Types API</a> and jQuery 1-3<br>
+            <em>(Firefox 148)</em>
+          </td>
+          <td colspan="2">
+            <pre class="async">TypeError: Element.innerHTML setter: Sink type mismatch violation blocked by CSP</pre>
+
+            Try <a href="https://blog.jquery.com/2026/01/17/jquery-4-0-0/" target="_blank">jQuery 4</a>, or <a href="https://github.com/erosman/firemonkey/issues/60#issuecomment-4945096319" target="_blank">workaround</a>
+          </td>
+        </tr>
+
 
         <tr>
           <td rowspan="3">invalid Match Patterns<br><em>(Violentmonkey)</em></td>
@@ -707,7 +719,7 @@
 
 
     <h3 id="editor-options">Editor Options <em>(advanced users)</em></h3>
-    <p>Customize Monaco Editor <a href="https://microsoft.github.io/monaco-editor/docs.html#interfaces/editor.IGlobalEditorOptions.html" target="_blank">Global</a> or <a href="https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor.IEditorOptions.html" target="_blank">Variable</a> Editor Options with a valid JSON.</p>
+    <p>Customize Monaco Editor <a href="https://microsoft.github.io/monaco-editor/docs.html#interfaces/editor_editor_api.editor.IGlobalEditorOptions.html" target="_blank">Global</a> or <a href="https://microsoft.github.io/monaco-editor/docs.html#interfaces/editor_editor_api.editor.IEditorOptions.html" target="_blank">Variable</a> Editor Options with a valid JSON.</p>
 
 <pre>
 {
@@ -1444,7 +1456,7 @@
           <td>@run-at</td><td>document-idle <em>(JS)</em><br>document-start <em>(CSS)</em></td>
           <td>document-end</td>
           <td>document-idle <a href="https://www.tampermonkey.net/documentation.php#_run_at" target="_blank"></a> <a href="https://github.com/Tampermonkey/tampermonkey/issues/211" title="Make run-at document-start more reliable" target="_blank"></a></td>
-          <td>document-end</td>
+          <td>document-end <a href="https://github.com/violentmonkey/violentmonkey/issues/1934#issuecomment-5003229863" title="MV2 document-start issue" target="_blank">ⓘ</a></td>
           <td>document-idle</td>
           <td>document-start</td>
         </tr>
@@ -2314,7 +2326,7 @@ element.innerHTML = dom;
         <tr><th>Connect</th><td colspan="6"></td></tr>
 
         <tr><td>GM_download</td><td class="pass async"><em>(mapped to GM.*)</em></td><td class="fail"></td><td class="pass async"></td><td class="pass async"></td><td class="pass callback"></td><td>478</td></tr>
-        <tr><td>GM_fetch</td><td class="pass async"><em>(mapped to GM.*)</em></td><td class="fail"></td><td class="fail"></td><td class="fail"></td><td class="fail"></td><td>3</td></tr>
+        <tr><td class="deprecated">GM_fetch <em>(deprecated v3.4)</em></td><td class="pass async"><em>(mapped to GM.*)</em></td><td class="fail"></td><td class="fail"></td><td class="fail"></td><td class="fail"></td><td>3</td></tr>
         <tr><td>GM_xmlhttpRequest</td><td class="pass callback"></td><td class="fail"></td><td class="pass callback"></td><td class="pass callback"></td><td class="pass callback"></td><td>5,436</td></tr>
 
 
@@ -2490,7 +2502,7 @@ element.innerHTML = dom;
 
     <p>Contexts (scopes) are sandboxed layers of JavaScript in an extension to ensure security.</p>
 
-    <table width="100%">
+    <table>
       <caption>MV2 Context Layers</caption>
       <thead>
         <tr>
@@ -2526,7 +2538,7 @@ element.innerHTML = dom;
       </tbody>
     </table>
 
-    <table width="100%">
+    <table>
       <caption>MV3 Context Layers: <a href="https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/API/scripting/ExecutionWorld" target="_blank">ExecutionWorld</a></caption>
       <thead>
         <tr>
@@ -4292,7 +4304,7 @@ id (v2.15.9)</td>
 
 
 
-    <table width="100%">
+    <table>
       <caption>MV2 unsafeWindow Comparison</caption>
       <thead>
         <tr>
@@ -5372,7 +5384,7 @@ if(... condition ...) { sendMessage(data); }`</span>;
 
         <tr>
           <td>View Inserted UserScript</td>
-          <td>You can see the actual blob JavaScript in <a href="https://developer.mozilla.org/docs/Tools" target="_blank">Developer Tools</a> <kbd>F12</kbd> <b>Debugger</b> tab under <code>FireMonkey://userscript/</code> (you may have to refresh the page)
+          <td>You can see the actual blob JavaScript in <a href="https://developer.mozilla.org/docs/Tools" target="_blank">Developer Tools</a> <kbd>F12</kbd> <b>Debugger</b> tab (you may have to refresh the page)
             <div class="footnote">See also
             <ul>
               <li><a href="https://bugzil.la/1824910" target="_blank">Display inconsistency of folder & file</a> <em>(fixed in Firefox 114)</em></li>
