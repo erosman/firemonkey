@@ -1021,7 +1021,7 @@ class Script {
       }
 
       FS.readFile(file)
-      .then(this.readDataScript)
+      .then(i => this.readDataScript(i))
       .catch(alert);
     });
   }
