@@ -502,15 +502,20 @@
       </tbody>
     </table>
 
+    <h3>Light/Dark Theme</h3>
+    <p>Theme is based on the browser's default light/dark theme.</p>
+
+    <h3 class="experimental">Firefox on Android</h3>
+    <p>Support is experimental and based on user feedback.</p>
+
+    <dl>
+      <dt>Android 17+</dt>
+      <dd>On Android 17 devices one of the NEARBY_DEVICES (Identify Nearby devices) or ACCESS_LOCAL_NETWORK permissions needs to be granted in order to allow traffic to and from a local network address. <a href="https://bugzil.la/2053432" title="LNA prompt does not show on Android 17 devices when ACCESS_LOCAL_NETWORK or NEARBY_DEVICES is not already granted" target="_blank"></a></dd>
+    </dl>
 
     <h3>File access becomes opt-in <em>(Firefox 153)</em></h3>
     <p>Extensions requesting <code>file://*/</code> or <code>&lt;all_urls&gt;</code> currently trigger the “Access your data for all websites” permission message, and when granted, can run content scripts in file:-URLs. From Firefox 153, file access in extensions requires an opt-in for all extensions, including those already installed (<a href="https://bugzil.la/2034168">bug 2034168</a>). <a href="https://blog.mozilla.org/addons/2026/04/23/webextensions-api-changes-firefox-149-152/" title="WebExtensions API Changes (Firefox 149-152)" target="_blank">ⓘ</a></p>
 
-    <h3>Light/Dark Theme</h3>
-    <p>Theme is based on the browser's default light/dark theme.</p>
-
-    <h3 id="android">Firefox on Android</h3>
-    <p>Support is experimental and based on user feedback.</p>
 
 
     <h2 id="how-to-use">How to Use</h2>
@@ -843,7 +848,7 @@
         </tr>
         <tr>
           <td>linter</td>
-          <td>IntelliSense<br>ESLint <em>(10.8.0)</em></td>
+          <td>IntelliSense<br>ESLint <em>(10.9.0)</em></td>
           <td>n/a</td>
           <td>ESLint <em>(8.32.0)</em></td>
           <td>n/a</td>
