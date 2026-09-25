@@ -260,6 +260,11 @@ aside {
   margin: 0;
   padding: 0;
 
+  /* drag-n-drop */
+  &.drop-zone {
+    outline: 1px solid var(--highlight);
+  }
+
   legend {
     padding: 0.5em 0;
     font-weight: bold;

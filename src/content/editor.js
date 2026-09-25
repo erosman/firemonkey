@@ -5,6 +5,7 @@ import {Theme} from './editor-theme.js';
 import {eslint} from '/lib/eslint/linter.min.js';
 import {UserStyleConverter} from './userstyle-converter.js';
 import {Meta} from './meta.js';
+import {FS} from './fs.js';
 import './editor-env.js';
 
 // ---------- monaco editor --------------------------------
@@ -15,6 +16,22 @@ export class Editor {
     Theme.set(monaco);
     this.addGlobals();
     this.addAction();
+
+    // --- file drag and drop
+    const dropZone = document.querySelector('section.scripts .content fieldset');
+    dropZone.addEventListener('dragover', () => dropZone.classList.add('drop-zone'));
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drop-zone'));
+    dropZone.addEventListener('drop', e => {
+      // first file only
+      const file = e.dataTransfer.files?.[0];
+      if (!['text/css', 'application/x-javascript'].includes(file?.type)) { return; }
+
+      e.preventDefault();
+      dropZone.classList.remove('drop-zone');
+      FS.readFile(file)
+      .then(i => this.set(i))
+      .catch(alert);
+    });
   }
 
   // update with user options from options.js

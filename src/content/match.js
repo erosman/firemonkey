@@ -39,7 +39,7 @@ export class Match {
   }
 
   static cleanUrl(url) {
-    return (url.url || url).replace(/#.*/, '').replace(/(:\/\/[^:/]+):\d+/, '$1');
+    return (url.url || url).replace(/#.*/, '');
   }
 
   static get(item, tabUrl, urls, gExclude = [], containerId) {

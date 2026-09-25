@@ -118,16 +118,16 @@ header {
 
   &.tab-scripts {
     display: grid;
-    /* title + 4 x img + frame */
-    grid-template-columns: 1fr repeat(4, auto) 2em;
+    /* title + frame + 4 x img */
+    grid-template-columns: 1fr repeat(5, auto);
     align-items: center;
     gap: 3px;
 
     span.frame {
-      text-align: right;
-      padding: 0.1em 0.3em;
       color: var(--dim);
-      font-size: 0.8em;
+      margin-right: 0.3em;
+      text-align: right;
+      user-select: none;
     }
   }
 }

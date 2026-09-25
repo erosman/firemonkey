@@ -330,10 +330,10 @@ class Script {
         return this.uploadScript();
 
       case 'textEditor':
-        return this.textEditorShow();
+        return this.showTextEditor();
 
       case 'back':
-        return this.textEditorClose();
+        return this.closeTextEditor();
     }
   }
 
@@ -985,7 +985,7 @@ class Script {
     .catch(e => alert(`fetch: ${e}`));
   }
 
-  static textEditorShow() {
+  static showTextEditor() {
     const text = Editor.get();
     if (!text.trim()) { return; }
 
@@ -993,7 +993,7 @@ class Script {
     this.dialog.showModal();
   }
 
-  static textEditorClose() {
+  static closeTextEditor() {
     const text = Editor.get();
     const newText = this.dialogTextarea.value;
     // check if text has changed
@@ -1156,7 +1156,7 @@ class Script {
 
   static export(data, ext, name, folder = '', saveAs = true) {
     navigator.userAgent.includes('Windows') && (data = data.replace(/\r?\n/g, '\r\n'));
-    // removing disallowed characters
+    // remove disallowed characters
     const filename = folder + name.replace(/[<>:"/\\|?*]/g, '') + '.user' + ext;
     FS.writeFile({data, filename, saveAs});
   }

@@ -848,7 +848,7 @@
         </tr>
         <tr>
           <td>linter</td>
-          <td>IntelliSense<br>ESLint <em>(10.9.0)</em></td>
+          <td>IntelliSense<br>ESLint <em>(10.11.0)</em></td>
           <td>n/a</td>
           <td>ESLint <em>(8.32.0)</em></td>
           <td>n/a</td>
@@ -867,6 +867,8 @@
       </tbody>
     </table>
 
+    <h4>File Drag and Drop <em>(v3.9)</em></h4>
+    <p>A JavaScript or CSS file can be drag and dropped on the editor to replace the editor content.</p>
 
 
     <h4>Editor Buttons</h4>
@@ -1886,11 +1888,14 @@ element.innerHTML = dom;
         <tr><td class="fail code">https://mozilla.*.org/</td><td colspan="2"><code>"*"</code> in host must be at the start</td></tr>
         <tr><td class="fail code">https://*zilla.org/</td><td colspan="2"><code>"*"</code> in host must be the only character or be followed by <code>"."</code></td></tr>
         <tr><td class="fail code">http*://mozilla.org/</td><td colspan="2"><code>"*"</code> in scheme must be the only character</td></tr>
-        <tr><td class="fail code">https://mozilla.org:80/</td><td colspan="2">Host must not include a port number</td></tr>
         <tr><td class="fail code">*://*</td><td colspan="2">Empty path: this should be <code>"*://*/*"</code></td></tr>
         <tr><td class="fail code">file://*</td><td colspan="2">Empty path: this should be <code>"file:///*"</code></td></tr>
+
+        <tr><td class="fail code">https://mozilla.org:80/</td><td colspan="2">Host must not include a port number <sup>1</sup></td></tr>
       </tbody>
     </table>
+
+    <p class="footnote"><sup>1</sup> Firefox doesn't support the inclusion of a port number due to <a href="https://bugzil.la/1362809" target="_blank" title="URLs with ports should either be rejected as matches patterns, or be matched properly">bug 1362809</a> and <a href="https://bugzil.la/1468162" target="_blank" title="Ports in match patterns match no URLs">bug 1468162</a>.</p>
 
 
     <h3 id="matchAboutBlank">@matchAboutBlank</h3>
@@ -2301,7 +2306,7 @@ element.innerHTML = dom;
 
         <tr><td>GM.getResourceText</td><td class="pass sync"></td><td class="fail"><a href="https://github.com/greasemonkey/greasemonkey/issues/2548" title="Add or replace GM.getResourceText" target="_blank"></a></td><td class="pass async"></td><td class="pass sync"><em>(undocumented)</em></td><td class="pass sync"></td><td>11</td></tr>
         <tr><td>GM.getResourceUrl</td><td class="pass sync"><em>(different)</em> <a href="#GM.getResourceUrl"></a></td><td class="pass async"><a href="https://wiki.greasespot.net/GM.getResourceUrl" target="_blank"></a></td><td class="pass async"></td><td class="pass async">v2.13.1</td><td class="fail"></td><td>30</td></tr>
-        <tr><td>GM.info</td><td class="pass sync"></td><td class="pass sync"></td><td class="pass sync"></td><td class="pass sync"></td><td class="fail"></td><td>69</td></tr>
+        <tr><td>GM.info</td><td class="pass sync"></td><td class="pass sync"></td><td class="pass sync"></td><td class="pass sync"></td><td class="fail"><em>(works as GM.Info)</em> <a href="https://github.com/scriptscat/scriptcat/issues/1748" title="[Compatibility] GM.info is misspelled" target="_blank"></a></td><td>69</td></tr>
         <tr><td>GM.log</td><td class="pass sync"></td><td class="fail"></td><td class="pass async"></td><td class="pass sync"><em>(undocumented)</em></td><td class="pass async"><em>(not working)</em></td><td>7</td></tr>
         <tr><td>GM.notification</td><td class="pass async"></td><td class="pass async"></td><td class="pass async"></td><td class="pass async"></td><td class="pass async"></td><td>42</td></tr>
         <tr><td>GM.openInTab</td><td class="pass async"></td><td class="pass async"></td><td class="pass async"></td><td class="pass callback"></td><td class="pass callback"></td><td>178</td></tr>
@@ -2463,10 +2468,10 @@ element.innerHTML = dom;
 
         <tr>
           <td>CSP workaround</td>
-          <td>user defined <em>(v3.0)</em></td>
+          <td class="pass">user defined <em>(v3.0)</em></td>
           <td class="fail"></td>
-          <td class="pass">auto <em>(changeable)</em> <a href="https://github.com/Tampermonkey/tampermonkey/blob/07f668cd1cabb2939220045839dec4d95d2db0c8/src/background.js#L5907" title="v2.9 Latest commit on 8 Jan 2013" target="_blank"></a></td>
-          <td class="fail"><a href="https://github.com/violentmonkey/violentmonkey/issues/997" title="[Firefox] Can't modify page properties on sites which use CSP" target="_blank"></a> <a href="https://github.com/violentmonkey/violentmonkey/issues/1001" title="[Firefox] Can't modify page properties on sites which use CSP" target="_blank"></a></td>
+          <td class="pass">auto <em>(auto/all/off)</em> <a href="https://github.com/Tampermonkey/tampermonkey/blob/07f668cd1cabb2939220045839dec4d95d2db0c8/src/background.js#L5907" title="v2.9 Latest commit on 8 Jan 2013" target="_blank"></a></td>
+          <td class="pass">v2.46.0 <em>(on/off)</em> <a href="https://github.com/violentmonkey/violentmonkey/issues/997" title="[Firefox] Can't modify page properties on sites which use CSP" target="_blank"></a> <a href="https://github.com/violentmonkey/violentmonkey/issues/1001" title="[Firefox] Can't modify page properties on sites which use CSP" target="_blank"></a></td>
           <td class="pass"><em>(removes all)</em></td>
           <td></td>
         </tr>
@@ -4899,10 +4904,32 @@ xhr.send(<span class="keyword">null</span>);
 </pre>
 
 
-    <h4>Navigation: navigate() method <em>(not supported by Firefox yet)</em></h4>
-    <p>The <a href="https://developer.mozilla.org/docs/Web/API/Navigation/navigate" target="_blank">navigate()</a> method of the <a href="https://developer.mozilla.org/docs/Web/API/Navigation" target="_blank">Navigation</a> interface navigates to a specific URL, updating any provided state in the history entries list.</p>
 
-    <p class="footnote">See also: <a href="https://bugzil.la/1777171" target="_blank">Implement Navigation API</a></p>
+    <h4>Navigation API <em>(Firefox 147)</em></h4>
+    <p>The <a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigation/navigate_event" target="_blank">navigate event</a> of the <a href="https://developer.mozilla.org/docs/Web/API/Navigation" target="_blank">Navigation</a> interface is fired when <a href="https://github.com/WICG/navigation-api#appendix-types-of-navigations" target="_blank" title="External link (opens in new tab)">any type of navigation</a> is initiated, allowing you to intercept as required.</p>
+
+<pre>
+<span class="object">navigation</span>.addEventListener(<span class="string">'navigate'</span>, e =&gt; {
+  <span class="keyword">const</span> url = <span class="keyword">new URL</span>(e.destination.url);
+
+  if (url.pathname.startsWith(<span class="string">'/articles/'</span>)) {
+    e.intercept({
+       <span class="keyword">async</span> handler() {
+        <span class="comment">// code</span>
+      },
+    });
+  }
+
+  <span class="comment">// or
+  if (url.pathname === '/') {
+    e.intercept({handler: loadIndexPage});
+  } else if (url.pathname === '/cats/') {
+    e.intercept({handler: loadCatsPage});
+  }</span>
+});
+</pre>
+
+
 
 
     <h3 id="sharing-objects-with-page-scripts">Sharing objects with page scripts</h3>
