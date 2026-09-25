@@ -121,6 +121,12 @@ export class Meta {
             (/\.meta\.(js|css)$/i.test(value) ? data.metaURL = value : data.updateURL = value);
           return;
 
+        // uploadURL is a user preference set via the options-page User Metadata field
+        // (Meta.getUserMeta, already URL-validated) — never honor it from the script's
+        // own header, or a malicious/updated script could silently redirect uploadScript().
+        case 'uploadURL':
+          return;
+
         case 'matchAboutBlank':
           data.matchAboutBlank = value === 'true';
           return;
