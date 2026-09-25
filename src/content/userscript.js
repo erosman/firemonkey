@@ -109,8 +109,9 @@ export class UserScript {
 
     // ---------- add @require
     // sort @require into local|remoteCSS|remoteJS
+    // only https:// is trusted for remote @require to prevent MITM-injected code (CWE-94)
     const {local = [], remoteJS = [], remoteCSS = []} = Object.groupBy(require, i =>
-      !/^https?:\/\//i.test(i) ? 'local' : /\.css$/i.test(i) ? 'remoteCSS' : 'remoteJS');
+      !/^https:\/\//i.test(i) ? 'local' : /\.css$/i.test(i) ? 'remoteCSS' : 'remoteJS');
 
     // --- add local @require
     local.forEach(i => {
