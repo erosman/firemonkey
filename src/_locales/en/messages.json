@@ -7,6 +7,7 @@
   "scriptCommands": { "message": "Script Commands" },
   "back": { "message": "back" },
   "edit": { "message": "Edit" },
+  "frames": { "message": "Frames" },
 
   "autoUpdateInterval": { "message": "Auto-Update Interval" },
   "autoUpdateIntervalDescription": { "message": "Number of days between Updates (0 = no update)" },
