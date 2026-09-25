@@ -108,12 +108,9 @@ export class UserScript {
     const pageScripts = [];
 
     // ---------- add @require
-    // sort @require into local|remoteCSS|remoteJS|insecureRemote
-    // http:// remote @require is rejected (not fetched) to prevent MITM-injected code (CWE-94)
-    const {local = [], remoteJS = [], remoteCSS = [], insecureRemote = []} = Object.groupBy(require, i =>
-      !/^https?:\/\//i.test(i) ? 'local' :
-      /^http:\/\//i.test(i) ? 'insecureRemote' :
-      /\.css$/i.test(i) ? 'remoteCSS' : 'remoteJS');
+    // sort @require into local|remoteCSS|remoteJS
+    const {local = [], remoteJS = [], remoteCSS = []} = Object.groupBy(require, i =>
+      !/^https?:\/\//i.test(i) ? 'local' : /\.css$/i.test(i) ? 'remoteCSS' : 'remoteJS');
 
     // --- add local @require
     local.forEach(i => {
@@ -142,9 +139,6 @@ export class UserScript {
         }
       }
     });
-
-    // --- reject insecure HTTP @require, do not fetch
-    insecureRemote.forEach(i => App.log(name, `@require ${i} rejected: insecure HTTP`, 'error'));
 
     // --- add remote CSS @require
     if (remoteCSS[0]) {
