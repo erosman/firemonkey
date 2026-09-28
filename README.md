@@ -37,7 +37,7 @@
     <tr>
       <td>FireMonkey</td>
       <td>
-        <a href="https://addons.mozilla.org/firefox/addon/firemonkey/"><img src="https://img.shields.io/amo/v/firemonkey?logo=firefoxbrowser&logoColor=fff&label=Firefox%2093%2B" alt=""></a><br>
+        <a href="https://addons.mozilla.org/firefox/addon/firemonkey/"><img src="https://img.shields.io/amo/v/firemonkey?logo=firefoxbrowser&logoColor=fff&label=Firefox" alt=""></a><br>
         <a href="https://addons.mozilla.org/firefox/addon/firemonkey/"><img src="https://img.shields.io/amo/users/firemonkey" alt=""></a>
         <a href="https://addons.mozilla.org/firefox/addon/firemonkey/"><img src="https://img.shields.io/amo/dw/firemonkey" alt=""></a>
       </td>
