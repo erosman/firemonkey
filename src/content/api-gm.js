@@ -79,12 +79,28 @@ class GM {
     this.info.isIncognito = !!API.isIncognito;
 
     // --- process @grant
-    // clone to maintain the original
-    const grant = this.#resolveDependencies([...this.info.script.grant]);
+    const {grant} = this.info.script;
+
+    // default GM.addElement, used in userscript.js
+    grant.includes('GM_addElement') && (globalThis.GM_addElement = this.addElement.bind(this));
+
+    // http -> Http
+    grant.includes('GM_xmlhttpRequest') ? globalThis.GM_xmlhttpRequest = this.GM_xmlhttpRequest.bind(this) : delete this.GM_xmlhttpRequest;
+    grant.includes('GM.xmlHttpRequest') || delete this.xmlHttpRequest;
+
+    // URL -> Url
+    grant.includes('GM_getResourceURL') && (globalThis.GM_getResourceURL = this.getResourceUrl.bind(this));
+    ['GM_getResourceURL', 'GM.getResourceUrl'].some(i => grant.includes(i)) || delete this.getResourceUrl;
+
+    // unsafeWindow implementation
+    grant.includes('unsafeWindow') && (globalThis.unsafeWindow = window.wrappedJSObject);
+
+    // synch/async GM cookie object
+    grant.includes('GM_cookie') ? globalThis.GM_cookie = this.GM_cookie : delete this.GM_cookie;
+    grant.includes('GM.cookie') || delete this.cookie;
 
     // directly mapped APIs
     const api = [
-      'addElement',
       'addScript',
       'addStyle',
       'addValueChangeListener',
@@ -103,10 +119,10 @@ class GM {
 
     api.forEach(i => {
       grant.includes(`GM_${i}`) && (globalThis[`GM_${i}`] = this[i].bind(this));
-      grant.includes(`GM.${i}`) || delete this[i];
+      [`GM_${i}`, `GM.${i}`].some(i => grant.includes(i)) || delete this[i];
     });
 
-    // GM_ renamed APIs
+    // GM_* renamed APIs
     const GM_api = [
       'deleteValue',
       'deleteValues',
@@ -115,26 +131,11 @@ class GM {
       'listValues',
       'setValue',
       'setValues',
-
-      // http -> Http
-      'xmlhttpRequest',
-      'xmlHttpRequest',
-
-      // URL -> Url
-      'getResourceURL',
-      'getResourceUrl',
     ];
     GM_api.forEach(i => {
       grant.includes(`GM_${i}`) ? globalThis[`GM_${i}`] = this[`GM_${i}`].bind(this) : delete this[`GM_${i}`];
       grant.includes(`GM.${i}`) || delete this[i];
     });
-
-    // unsafeWindow implementation
-    grant.includes('unsafeWindow') && (globalThis.unsafeWindow = window.wrappedJSObject);
-
-    // synch/async GM cookie object
-    grant.includes('GM_cookie') ? globalThis.GM_cookie = this.GM_cookie : delete this.GM_cookie;
-    grant.includes('GM.cookie') || delete this.cookie;
 
     // add onMessage listener
     const needListener = ['GM_registerMenuCommand', 'GM.registerMenuCommand',
@@ -145,54 +146,6 @@ class GM {
 
     // cache matchLocation
     this.#getMatchLocation();
-  }
-
-  static #resolveDependencies(grant) {
-    // default DOM GM. (needed in userscript.js)
-    grant.push('GM.addElement');
-
-    // direct dependencies
-    const direct = [
-      'addValueChangeListener',
-      'download',
-      'fetch',
-      'getResourceText',
-      'log',
-      'notification',
-      'openInTab',
-      'popup',
-      'registerMenuCommand',
-      'removeValueChangeListener',
-      'setClipboard',
-      'unregisterMenuCommand',
-
-      'cookie',
-      'setValues',
-      'deleteValues',
-    ];
-
-    const dep = {
-      // indirect dependencies
-      'GM.getValue': 'GM.getValues',
-      'GM.setValue': 'GM.setValues',
-      'GM.deleteValue': 'GM.deleteValues',
-
-      'GM_deleteValue': 'GM.deleteValues',
-      'GM_setValue': 'GM.setValues',
-      'GM_xmlhttpRequest': 'GM.xmlHttpRequest',
-      'GM_getResourceURL': 'GM.getResourceUrl',
-
-      // direct dependencies
-      ...Object.fromEntries(direct.map(i => [`GM_${i}`, `GM.${i}`])),
-    };
-
-    // add grant
-    Object.entries(dep).forEach(([k, v]) => {
-      grant.includes(k) && grant.push(v);
-    });
-
-    // remove duplicates
-    return [...new Set(grant)];
   }
 
   static #getMatchLocation() {
@@ -321,7 +274,7 @@ class GM {
   }
   // ---------- /auxiliary functions -----------------------
 
-  // ---------- GM default functions -----------------------
+  // ---------- GM grant functions -------------------------
   static addScript(str) {
     this.addElement('script', {textContent: str});
   }
@@ -373,16 +326,12 @@ class GM {
       this.#log(`addElement ➜ ${tagName} ${e}`);
     }
   }
-  // ---------- /GM default functions ----------------------
-
-  // ---------- GM grant functions -------------------------
 
   // ---------- sync storage -------------------------------
   static GM_getValue(key, defaultValue) {
     if (typeof key !== 'string') { return; }
 
-    return Object.hasOwn(this.#script.storage, key) ?
-      this.#script.storage[key] : defaultValue;
+    return Object.hasOwn(this.#script.storage, key) ? this.#script.storage[key] : defaultValue;
   }
 
   static GM_getValues(obj) {
@@ -407,28 +356,40 @@ class GM {
     if (typeof key !== 'string') { return; }
 
     this.#script.storage[key] = value;
-    this.setValues({[key]: value});
+    this.#script.sendMessage({
+      api: 'setValues',
+      data: {[key]: value}
+    });
   }
 
   static GM_setValues(obj) {
     if (typeof obj !== 'object') { return; }
 
     this.#script.storage = {...this.#script.storage, ...obj};
-    this.setValues(obj);
+    this.#script.sendMessage({
+      api: 'setValues',
+      data: obj,
+    });
   }
 
   static GM_deleteValue(key) {
     if (typeof key !== 'string') { return; }
 
     delete this.#script.storage[key];
-    this.deleteValues([key]);
+    this.#script.sendMessage({
+      api: 'deleteValues',
+      data: [key],
+    });
   }
 
   static GM_deleteValues(keys) {
     if (!Array.isArray(keys)) { return; }
 
     keys.forEach(i => delete this.#script.storage[i]);
-    this.deleteValues(keys);
+    this.#script.sendMessage({
+      api: 'deleteValues',
+      data: keys,
+    });
   }
 
   static GM_listValues() {
@@ -441,7 +402,6 @@ class GM {
     if (typeof key !== 'string') { return; }
 
     const response = await this.getValues({[key]: defaultValue});
-    // return Object.values(response)[0];
     return response[key];
   }
 
@@ -463,7 +423,10 @@ class GM {
   static setValue(key, value) {
     if (typeof key !== 'string') { return; }
 
-    return this.setValues({[key]: value});
+    return this.#script.sendMessage({
+      api: 'setValues',
+      data: {[key]: value}
+    });
   }
 
   static async setValues(obj) {
@@ -478,7 +441,10 @@ class GM {
   static async deleteValue(key) {
     if (typeof key !== 'string') { return; }
 
-    return this.deleteValues([key]);
+    return this.#script.sendMessage({
+      api: 'deleteValues',
+      data: [key],
+    });
   }
 
   static async deleteValues(keys) {
@@ -501,7 +467,7 @@ class GM {
     this.#script.sendMessage({
       api: 'addValueChangeListener',
     });
-    // App.addListener();
+
     this.#script.valueChange[key] = callback;
     return key;
   }
@@ -512,9 +478,9 @@ class GM {
     });
     delete this.#script.valueChange[key];
   }
-  // ---------- /storage ---------------------------------
+  // ---------- /storage -----------------------------------
 
-  // ---------- script command registerMenuCommand -------
+  // ---------- script command registerMenuCommand ---------
   static registerMenuCommand(text, onclick, accessKey) {
     this.#script.command[text] = onclick;
   }
@@ -522,9 +488,9 @@ class GM {
   static unregisterMenuCommand(text) {
     delete this.#script.command[text];
   }
-  // ---------- /script command registerMenuCommand ------
+  // ---------- /script command registerMenuCommand --------
 
-  // ---------- other background functions ---------------
+  // ---------- other background functions -----------------
   static async download(url, filename) {
     // --- check url
     url = this.#checkURL(url);
@@ -623,8 +589,7 @@ class GM {
     };
   }
 
-  // GM.xmlHttpRequest returns Promise
-  static async xmlHttpRequest(init = {}) {
+  static async #xhr(init = {}) {
     // check url
     const url = init.url && this.#checkURL(init.url);
     if (!url) { return; }
@@ -651,10 +616,17 @@ class GM {
     return response;
   }
 
+  // GM.xmlHttpRequest returns Promise
+  static async xmlHttpRequest(init = {}) {
+    const response = await this.#xhr(init);
+    delete response.callback;
+    return response;
+  }
+
   // GM_xmlhttpRequest returns callback
   static async GM_xmlhttpRequest(init = {}) {
     // clone init to maintain the original
-    const response = await this.xmlHttpRequest({...init});
+    const response = await this.#xhr({...init});
 
     // callback: onload | onerror | ontimeout | onabort
     const callback = response.callback;
@@ -663,7 +635,7 @@ class GM {
   }
 
   // GM.cookie returns Promise
-  static cookie = {
+  static #gCookie = {
     async list(obj = {}) {
       if (typeof obj !== 'object') { return; }
       // Error: Permission denied to set cookie
@@ -737,18 +709,33 @@ class GM {
     },
   };
 
+  // GM.cookie returns Promise
+  static cookie = {
+    async list(obj) {
+      return GM.#gCookie.list();
+    },
+
+    async set(obj) {
+      return GM.#gCookie.set(obj);
+    },
+
+    async delete(obj) {
+      return GM.#gCookie.delete(obj);
+    },
+  };
+
   // GM_cookie returns callback
   static GM_cookie = {
     async list(obj, callback) {
-      callback(await GM.cookie.list());
+      callback(await GM.#gCookie.list());
     },
 
     async set(obj, callback) {
-      callback(await GM.cookie.set(obj));
+      callback(await GM.#gCookie.set(obj));
     },
 
     async delete(obj, callback) {
-      callback(await GM.cookie.delete(obj));
+      callback(await GM.#gCookie.delete(obj));
     },
   };
   // ---------- /other background functions ----------------
@@ -760,10 +747,6 @@ class GM {
 
   static getResourceUrl(resourceName) {
     return this.#script.resource[resourceName];
-  }
-
-  static GM_getResourceURL(resourceName) {
-    return this.getResourceUrl(resourceName);
   }
 
   static log = console.log;
@@ -892,7 +875,5 @@ dialog {
 @keyframes panel-right {
     0% { transform: translateX(100%); }
   100% { transform: translateX(0); }
-}
-
-`;
+}`;
 }

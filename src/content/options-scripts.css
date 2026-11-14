@@ -228,7 +228,7 @@ aside {
   display: grid;
   grid-auto-flow: column;
   place-content: center start;
-  gap: 3px;
+  /* gap: 3px; */
   padding: 0.2em 0;
   font-size: 0.9em;
 
@@ -236,6 +236,7 @@ aside {
   label {
     min-width: unset;
     padding: 0.4em 0.5em;
+    border: none;
 
     img {
       width: 1.4em;
@@ -399,8 +400,13 @@ body.sidebar {
       }
     }
 
-    aside .buttons {
-      display: none;
+    aside {
+      /* force full height */
+      height: 100vh;
+
+      .buttons {
+        display: none;
+      }
     }
   }
 }

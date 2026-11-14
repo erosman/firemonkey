@@ -411,6 +411,10 @@ div.buttons {
     &:hover {
       background-color: var(--hover);
     }
+
+    &.highlight {
+      background-color: var(--hover);
+    }
   }
 }
 /* ----- /buttons ----- */

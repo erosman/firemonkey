@@ -18,51 +18,44 @@ export class Meta {
 
     // --- metadata block
     const data = {
-      // --- string values
-      name: '',
-      version: '',
-      updateURL: '',
-      metaURL: '',
-      uploadURL: '',
-      injectInto: '',
-      // MV2: cssOrigin (case-insensitive), MV3: origin (case-insensitive from Firefox 144)
-      origin: '',
-      // "document_start" (css default) | "document_end" | "document_idle" (js default)
-      runAt: js ? 'document_idle' : 'document_start',
-
-      // --- boolean values
       allFrames: false,
-      matchAboutBlank: false,
-      unwrap: false,
-
-      // --- object values
-      matches: [],
-      excludeMatches: [],
-      includeGlobs: [],
-      excludeGlobs: [],
-      excludes: [],
-      includes: [],
+      connect: [],
       container: [],
-      require: [],
-      resource: {},
+      excludeGlobs: [],
+      excludeMatches: [],
+      excludes: [],
       grant: [],
       group: [],
-      connect: [],
       // only for navigator.language v3.0
       i18n: {name: {}, description: {}},
-
-      // --- user editable properties
-      storage: {},
+      includeGlobs: [],
+      includes: [],
+      injectInto: '',
+      matchAboutBlank: false,
+      matches: [],
+      metaURL: '',
+      name: '',
+      // MV2: cssOrigin (case-insensitive), MV3: origin (case-insensitive from Firefox 144)
+      origin: '',
+      require: [],
+      resource: {},
+      // "document_start" (css default) | "document_end" | "document_idle" (js default)
+      runAt: js ? 'document_idle' : 'document_start',
+      unwrap: false,
+      updateURL: '',
+      uploadURL: '',
       userMeta: '',
       userVar: {},
+      version: '',
 
-      // --- non-metadata properties
+      // ----- non-metadata properties
       autoUpdate: false,
       enabled: true,
       // reset error on save
       error: '',
+      storage: {},
 
-      // --- API related data
+      // --- script
       js: js ? str : '',
       // remove invisible characters to avoid CSS parse error
       css: !js ? this.clean(str) : '',
@@ -75,8 +68,52 @@ export class Meta {
     const arr = this.parseMeta(metaData);
     arr.forEach(([key, value]) => {
       switch (key) {
+        case 'allFrames':
+          value && (data[key] = value === 'true');
+          return;
+
+        case 'connect':
+          // no wildcard
+          js && value && !value.includes('*') && data[key].push(value);
+          return;
+
+        case 'container':
+          /default|private|container-\d+/i.test(value) && data[key].push(value.toLowerCase());
+          return;
+
+        case 'excludeGlob': // (deprecated v3.0)
+          value && data.excludeGlobs.push(value);
+          return;
+
+        case 'exclude-match':
+          value && data.excludeMatches.push(value);
+          return;
+
+        case 'exclude':
+          if (!value) { return; }
+
+          // revert .tld
+          value = value.replace(/\.tld\//i, '.*/');
+          value.startsWith('/') && value.endsWith('/') ? data.excludes.push(value) : data.excludeGlobs.push(value);
+          return;
+
+        case 'grant':
+          value && data[key].push(value);
+          return;
+
+        case 'group':
+          value && data[key].push(value);
+          break;
+
+        case 'includeGlob': // (deprecated v3.0)
+          value && data.includeGlobs.push(value);
+          return;
+
         // converting include/exclude to match, conflicts with user metadata disabling
         case 'include':
+          if (!value) { return; }
+
+          // Greasemonkey compatibility
           if (value === 'about:blank') {
             data.matchAboutBlank = true;
             return;
@@ -86,74 +123,31 @@ export class Meta {
           value.startsWith('/') && value.endsWith('/') ? data.includes.push(value) : data.includeGlobs.push(value);
           return;
 
-        case 'exclude':
-          // revert .tld
-          value = value.replace(/\.tld\//i, '.*/');
-          value.startsWith('/') && value.endsWith('/') ? data.excludes.push(value) : data.excludeGlobs.push(value);
-          return;
-
-        case 'match':
-          data.matches.push(value);
-          return;
-
-        case 'exclude-match':
-          data.excludeMatches.push(value);
-          return;
-
-        case 'includeGlob': // (deprecated v3.0)
-          data.includeGlobs.push(value);
-          return;
-
-        case 'excludeGlob': // (deprecated v3.0)
-          data.excludeGlobs.push(value);
-          return;
-
-        case 'container':
-          /default|private|container-\d+/i.test(value) && data.container.push(value.toLowerCase());
-          return;
-
-        // convert downloadURL/installURL to updateURL/metaURL
-        case 'downloadURL':
-        case 'installURL':
-        case 'updateURL':
-          // test for valid URL & save as metaURL
-          URL.parse(value) &&
-            (/\.meta\.(js|css)$/i.test(value) ? data.metaURL = value : data.updateURL = value);
-          return;
-
-        // uploadURL is a user preference set via the options-page User Metadata field
-        // (Meta.getUserMeta, already URL-validated) — never honor it from the script's
-        // own header, or a malicious/updated script could silently redirect uploadScript().
-        case 'uploadURL':
-          return;
-
-        case 'matchAboutBlank':
-          data.matchAboutBlank = value === 'true';
-          return;
-
-        case 'allFrames':
-          data.allFrames = value === 'true';
-          return;
-
-        case 'noframes':
-          data.allFrames = false;
-          return;
-
-        case 'run-at':
-        case 'runAt': // (deprecated v3.0)
-          value = value.replace('-', '_');
-          ['document_start', 'document_end'].includes(value) || (value = 'document_idle');
-          data.runAt = value;
-          return;
-
-        case 'resource':
-          const [resName, resURL] = value.split(/\s+/);
-          if (resName && resURL) { data.resource[resName] = resURL; }
-          return;
-
         // js only
         case 'inject-into':
           js && value === 'page' && (data.injectInto = value);
+          return;
+
+        case 'matchAboutBlank':
+          value && (data[key] = value === 'true');
+          return;
+
+        case 'match':
+          value && data.matches.push(value);
+          return;
+
+        case 'metaURL':
+          // disregard invalid urls
+          URL.canParse(value) && (data[key] = value);
+          return;
+
+        case 'name':
+          value && (data[key] = value);
+          return;
+
+        // compatibility
+        case 'noframes':
+          data.allFrames = false;
           return;
 
         // css only
@@ -163,20 +157,51 @@ export class Meta {
           !js && value === 'user' && (data[key] = value);
           return;
 
+        case 'require':
+          if (!value) { return; }
+
+          // disregard old bundled libraries v2.68
+          if (value.startsWith('lib/')) { return; }
+
+          // change Protocol-relative URL '//example.com/' to https://
+          value.startsWith('//') && (value = 'https:' + value);
+
+          // disregard invalid urls
+          if (value.toLowerCase().startsWith('http') && !URL.canParse(value)) { return; }
+
+          data[key].push(value);
+          return;
+
+        case 'resource':
+          const [resName, resURL] = value.split(/\s+/);
+          // disregard invalid urls
+          resName && URL.canParse(resURL) && (data.resource[resName] = resURL);
+          return;
+
+        case 'run-at':
+        case 'runAt': // (deprecated v3.0)
+          value = value.replace('-', '_');
+          ['document_start', 'document_end'].includes(value) || (value = 'document_idle');
+          data.runAt = value;
+          return;
+
         case 'unwrap':
-          js && (data.unwrap = true);
+          js && (data[key] = true);
           return;
 
-        case 'connect':
-          // , no wildcard
-          js && !value.includes('*') && data.connect.push(value);
+        // convert downloadURL/installURL to updateURL/metaURL
+        case 'updateURL':
+        case 'downloadURL':
+        case 'installURL':
+          // disregard invalid urls & save as metaURL if not already set
+          URL.canParse(value) &&
+            (/\.meta\.(js|css)$/i.test(value) ? data.metaURL ||= value : data.updateURL = value);
           return;
 
-        // temporary variable, not stored v3.0
-        case 'preprocessor':
-          // userStyle only (userstyle.js): default (standard CSS) | uso | less | stylus
-          userStyle && ['uso', 'less', 'stylus'].includes(value) && (this.preprocessor = value);
-          return;
+        case 'uploadURL':
+          // disregard invalid urls
+          URL.canParse(value) && (data[key] = value);
+          break;
 
         // --- var
         case 'var':
@@ -195,37 +220,22 @@ export class Meta {
           };
           return;
 
-        // --- add @require
-        case 'require':
-          if (value.startsWith('lib/')) { return; }
-          // change Protocol-relative URL '//example.com/' to https://
-          value.startsWith('//') && (value = 'https:' + value);
-          break;
+        case 'version':
+          value && (data[key] = value);
+          return;
+
+        // temporary variable, not stored v3.0
+        case 'preprocessor':
+          // userStyle only (userstyle.js): default (standard CSS) | uso | less | stylus
+          userStyle && ['uso', 'less', 'stylus'].includes(value) && (this.preprocessor = value);
+          return;
 
         // --- i18n
         default:
           const m = key.match(/^(name|description):([A-Za-z-]+)$/);
           if (m) {
             [lang, generic].includes(m[2]) && (data.i18n[m[1]][m[2]] = value);
-            return;
           }
-      }
-
-      // set key & value
-      if (Object.hasOwn(data, key) && value !== '') {
-        switch (typeof data[key]) {
-          case 'string':
-            data[key] = value;
-            break;
-
-          case 'boolean':
-            data[key] = value === 'true';
-            break;
-
-          case 'object':
-            Array.isArray(data[key]) && data[key].push(value);
-            break;
-        }
       }
     });
 
@@ -306,6 +316,11 @@ export class Meta {
     const arr = this.parseMeta(data.userMeta);
     arr.forEach(([key, value]) => {
       switch (key) {
+        // --- disable rules
+        case 'disable-container':
+          data.container = this.filter(data.container, value.toLowerCase());
+          break;
+
         case 'disable-match':
           data.matches = this.filter(data.matches, value);
           break;
@@ -324,44 +339,38 @@ export class Meta {
           data.excludeGlobs = this.filter(data.excludeGlobs, value);
           break;
 
-        case 'disable-container':
-          data.container = this.filter(data.container, value.toLowerCase());
+        // --- add/amend rules
+        case 'allFrames':
+          value && (data[key] = value === 'true');
           break;
 
-        case 'match':
-          value && matches.push(value);
+        case 'connect':
+          // no wildcard
+          js && value && !value.includes('*') && data[key].push(value);
+          return;
+
+        case 'container':
+          /default|private|container-\d+/i.test(value) && data[key].push(value.toLowerCase());
           break;
 
         case 'exclude-match':
           value && excludeMatches.push(value);
           break;
 
-        case 'container':
-          /default|private|container-\d+/i.test(value) && data.container.push(value.toLowerCase());
-          break;
-
-        case 'updateURL':
-        case 'metaURL':
-        case 'uploadURL':
-          // test for valid URL
-          value && URL.parse(value) && (data[key] = value);
-          break;
-
-        case 'matchAboutBlank':
-          data.matchAboutBlank = value === 'true';
-          break;
-
-        case 'allFrames':
-          data.allFrames = value === 'true';
-          break;
-
-        case 'run-at':
-          value = value.replace('-', '_');
-          ['document_start', 'document_end', 'document_idle'].includes(value) && (data.runAt = value);
+        case 'group':
+          value && data[key].push(value);
           break;
 
         case 'inject-into':
-          js && value && (data.injectInto = value);
+          js && value === 'page' && (data.injectInto = value);
+          break;
+
+        case 'matchAboutBlank':
+          value && (data[key] = value === 'true');
+          break;
+
+        case 'match':
+          value && matches.push(value);
           break;
 
         case 'origin':
@@ -370,12 +379,26 @@ export class Meta {
           !js && value === 'user' && (data[key] = value);
           break;
 
-        case 'group':
-          data.group.push(value);
+       case 'require':
+          value && data[key].push(value);
           break;
 
-        case 'connect':
-          js && data.connect.push(value);
+        case 'resource':
+          const [resName, resURL] = value.split(/\s+/);
+          // disregard invalid urls
+          resName && URL.canParse(resURL) && (data.resource[resName] = resURL);
+          break;
+
+        case 'run-at':
+          value = value.replace('-', '_');
+          ['document_start', 'document_end', 'document_idle'].includes(value) && (data.runAt = value);
+          break;
+
+        case 'metaURL':
+        case 'updateURL':
+        case 'uploadURL':
+          // disregard invalid urls
+          URL.canParse(value) && (data[key] = value);
           break;
       }
     });
@@ -441,14 +464,10 @@ export class Meta {
       str = str.replace(/(@advanced\s+image\s+[^\n]+)(\{[^}]+\})/g, this.prepareImage);
     }
 
-    // disallowed properties
-    const disallowed = ['autoUpdate', 'enabled', 'error', 'i18n',
-      'css', 'js', 'style', 'storage', 'userMeta', 'userVar'];
-
     const regex = /@(\S+)[^\S\r\n]*(.*)/g;
     const m = str.matchAll(regex);
-    // always returns an array
-    return [...m].map(i => [i[1], i[2].trim()]).filter(i => !disallowed.includes(i[0]));
+    // always returns array [string, string]
+    return [...m].map(i => [i[1], i[2].trim()]);
   }
 
   static prepareSelect(m, p1, p2) {

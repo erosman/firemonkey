@@ -6,6 +6,7 @@ class OnMessage {
 
   // ---------- API message --------------------------------
   static {
+    // MV3: browser.runtime.onUserScriptMessage.addListener()
     // message from api.js
     browser.runtime.onMessage.addListener((...e) => this.process(...e));
   }

@@ -145,6 +145,7 @@ class Info {
     this.navInfo = document.querySelector('input#info');
     this.infoDL = document.querySelector('.info dl');
     this.commandList = document.querySelector('.command dl');
+    this.commandLabel = document.querySelector('label[for="command"]');
 
     this.dtTemp = document.createElement('dt');
     this.ddTemp = document.createElement('dd');
@@ -344,13 +345,13 @@ class Info {
 
   // ---------- script commands ----------------------------
   static getMenuCommand(Tab, tabId) {
-    // --- check commands if there are active scripts in tab & has registerMenuCommand v2.45
-    if (Tab.some(item => pref[item].enabled &&
-      ['GM_registerMenuCommand', 'GM.registerMenuCommand'].some(i => pref[item].grant?.includes(i)))) {
-      browser.runtime.onMessage.addListener((message, sender) =>
-        sender.tab.id === tabId && this.addCommand(tabId, message));
-      browser.tabs.sendMessage(tabId, {listCommand: []});
-    }
+    // --- check if there are active scripts in tab with registerMenuCommand v2.45
+    if (!Tab.some(item => pref[item].enabled &&
+      ['GM_registerMenuCommand', 'GM.registerMenuCommand'].some(i => pref[item].grant?.includes(i)))) { return; }
+
+    browser.runtime.onMessage.addListener((message, sender) =>
+      sender.tab.id === tabId && this.addCommand(tabId, message));
+    browser.tabs.sendMessage(tabId, {listCommand: []});
   }
 
   static addCommand(tabId, message) {
@@ -361,6 +362,9 @@ class Info {
     const dt = this.dtTemp.cloneNode();
     dt.textContent = message.name;
     this.docFrag.append(dt);
+
+    // highlight script command label
+    this.commandLabel.classList.add('highlight');
 
     message.command.forEach(i => {
       const dd = this.ddTemp.cloneNode();

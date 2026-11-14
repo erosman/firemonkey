@@ -1,6 +1,5 @@
 /* ----- theme ----- */
 :root {
-  /* Firefox 120 */
   color-scheme: light dark;
 
   --bg: light-dark(#eee, #333);

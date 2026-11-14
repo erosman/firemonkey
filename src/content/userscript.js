@@ -7,6 +7,7 @@ export class UserScript {
   // not available in MV3 api.js (browser.runtime.getURL is not a function)
   static FMUrl = browser.runtime.getURL('');
   // FireMonkey version
+  // browser.runtime.getVersion() (Firefox 158)
   static FMV = browser.runtime.getManifest().version;
 
   static async init() {

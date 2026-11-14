@@ -443,7 +443,7 @@
             <code>@match  https://www.example.*/...</code><br>
             <code>@match  https://www.example.tld/...</code>
           </td>
-          <td><code>@include  https://www.example.*/...</code></td>
+          <td><code>@include  https://www.example.*/...</code> <a href="#url-matching"></a></td>
         </tr>
       </tbody>
     </table>
@@ -828,32 +828,32 @@
       <thead>
         <tr>
           <th></th>
-          <th>FireMonkey<br><em>(3.0)</em></th>
-          <th>Greasemonkey<br><em>(4.13)</em></th>
-          <th>Tampermonkey<br><em>(5.4.1)</em></th>
+          <th>FireMonkey<br><em>(3+)</em></th>
+          <th>Greasemonkey<br><em>(4.14)</em></th>
+          <th>Tampermonkey<br><em>(5.5.0)</em></th>
           <th>Violentmonkey<br><em>(2.31.0)</em></th>
-          <th>ScriptCat<br><em>(0.16.15)</em></th>
-          <th>Stylus<br><em>(2.3.18)</em></th>
+          <th>ScriptCat<br><em>(1.5.1)</em></th>
+          <th>Stylus<br><em>(2.4.17)</em></th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>editor</td>
-          <td>Monaco Editor <em>(0.55.1)</em></td>
-          <td>CodeMirror</td>
-          <td>CodeMirror</td>
-          <td>CodeMirror</td>
-          <td>Monaco Editor <em>(0.52.2)</em></td>
-          <td>CodeMirror</td>
+          <td>Monaco Editor<br><em>(0.55.1)</em></td>
+          <td>CodeMirror<br><em>(5.65.15)</em></td>
+          <td>CodeMirror<br><em>(5.58.1)</em></td>
+          <td>CodeMirror<br><em>(5.65.20)</em></td>
+          <td>Monaco Editor<br><em>(0.52.2)</em></td>
+          <td>CodeMirror<br><em>(5.65.20)</em></td>
         </tr>
         <tr>
           <td>linter</td>
-          <td>IntelliSense<br>ESLint <em>(10.11.0)</em></td>
+          <td>IntelliSense +<br>ESLint <em>(10.15.0)</em></td>
           <td>n/a</td>
           <td>ESLint <em>(8.32.0)</em></td>
           <td>n/a</td>
-          <td>IntelliSense<br>ESLint <em>(7.32.0)</em></td>
-          <td>Stylelint</td>
+          <td>IntelliSense +<br>ESLint <em>(9.26.0)</em></td>
+          <td>Stylelint<br><em>(17.16.0)</em></td>
         </tr>
         <tr>
           <td>light/dark theme</td>
@@ -883,15 +883,15 @@
           <dd>You can use the select to quickly enter values</dd>
           <dd><pre>
 <span class="comment">// Disable Rule
-// without a value disables ALL original metadata rules of that key
-// with a value disables SINGLE original metadata rule of that key</span>
+// without a value, disables ALL original metadata rules of that key
+// with a value, disables SINGLE original metadata rule of that key</span>
 @disable-container
 @disable-exclude
 @disable-exclude-match
 @disable-include
 @disable-match
 
-<span class="comment">// Add/Amend Rule changes existing metadata rules</span>
+<span class="comment">// Add/Amend Rule, changes existing metadata rules</span>
 @allFrames
 @connect
 @container
@@ -903,6 +903,8 @@
 @metaURL
 @origin
 @run-at
+@require
+@resource
 @updateURL
 @uploadURL
 </pre></dd>
@@ -1099,7 +1101,9 @@
           </td>
           <td>
             {{icon}}<br>
-            {{match}}
+            {{match}}<br>
+            {{name}} <em>(v1.5.0)</em><br>
+            {{date:YYYY-MM-DD}} <em>(v1.5.0)</em>
           </td>
         </tr>
 
@@ -1137,7 +1141,6 @@
     <h3 id="auto-update">Update and Auto-Update</h3>
     <p>Any target can be set for <code>@updateURL</code> as long it directly leads to the final file, and it is in plain text. The <code>.user.js</code> or <code>.user.css</code> file extensions are not necessary, although it makes sense to have them.</p>
     <p>FireMonkey uses <code>@version</code> for the update process and both the current file and the update file must have <code>@version</code> and the version of the target file must be higher.</p>
-
 
     <ul>
       <li>In case of GreasyFork/SleazyFork/OpenUserJS, the <code>@version</code> via <code>https://...../*.meta.js</code> (or <code>https://...../*.meta.css</code>) is checked first</li>
@@ -1312,6 +1315,8 @@
             @exclude-match<br>
             @inject-into<br>
             @run-at<br>
+            <br>
+            <em>Violentmonkey</em><br>
             @top-level-await
           </td>
 
@@ -1374,7 +1379,7 @@
         <tr><td>@connect</td>           <td class="pass">v3.0</td><td class="fail"></td><td class="pass"></td><td class="fail"></td><td class="pass"></td></tr>
         <tr><td>@container</td>         <td class="pass"></td><td class="fail"></td><td class="fail"><em>(via @run-in)</em></td><td class="fail"></td><td class="fail"></td></tr>
         <tr><td>@downloadURL</td>       <td class="pass"><a href="#update-comparison"></a></td><td class="fail"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td></tr>
-        <tr><td>@exclude-match</td>     <td class="pass"></td><td class="fail"></td><td class="fail"></td><td class="pass"></td><td class="fail"></td></tr>
+        <tr><td>@exclude-match</td>     <td class="pass"></td><td class="fail"></td><td class="fail"></td><td class="pass"></td><td class="pass">v1.5.0</td></tr>
         <tr><td>@exclude</td>           <td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td></tr>
         <tr><td>@grant</td>             <td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td></tr>
         <tr><td>@group</td>             <td class="pass">v3.0</td><td class="fail"></td><td class="fail"></td><td class="fail"></td><td class="fail"></td></tr>
@@ -1388,12 +1393,13 @@
         <tr><td>@noframes</td>          <td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td></tr>
         <tr><td>@origin</td>            <td class="pass">v3.0</td><td class="fail"></td><td class="fail"></td><td class="fail"></td><td class="fail"></td></tr>
         <tr><td>@require</td>           <td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td></tr>
+
         <tr><td>@resource</td>          <td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td></tr>
         <tr><td>@run-at</td>            <td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td></tr>
         <tr><td>@top-level-await</td>   <td>built-in v3.0</td><td class="fail"></td><td>built-in</td><td class="pass">v2.19.2 <a href="https://github.com/violentmonkey/violentmonkey/issues/2342" title="[Feature] default to top-level-await" target="_blank"></a></td><td>built-in</td></tr>
-        <tr><td>@unwrap</td>            <td class="pass">v3.0</td><td class="fail"></td><td class="pass"></td><td class="pass">v2.13.1</td><td class="fail"></td></tr>
+        <tr><td>@unwrap</td>            <td class="pass">v3.0</td><td class="fail"></td><td class="pass"></td><td class="pass">v2.13.1</td><td class="pass">v1.4.0</td></tr>
         <tr><td>@updateURL</td>         <td class="pass"><a href="#update-comparison"></a></td><td class="fail"></td><td class="pass"></td><td class="pass"><em>(undocumented)</em> <a href="https://github.com/violentmonkey/violentmonkey/blob/e49c64f7235ef4609fe0a33bc9e3670404cabb1c/src/background/utils/update.js#L71" target="_blank"></a></td><td class="pass"></td></tr>
-        <tr><td>@uploadURL</td>         <td class="pass experimental">v3.0</td><td class="fail"></td><td class="fail"></td><td class="fail"></td><td class="fail"></td></tr>
+        <tr><td>@uploadURL <a href="#uploadURL"></a></td> <td class="pass experimental">v3.0</td><td class="fail"></td><td class="fail"></td><td class="fail"></td><td class="fail"></td></tr>
         <tr><td>@var</td>               <td class="pass experimental"></td><td class="fail"></td><td class="fail"></td><td class="fail"></td><td class="fail"></td></tr>
         <tr><td>@version</td>           <td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"><em>(mandatory)</em></td></tr>
 
@@ -1404,11 +1410,13 @@
         <tr><td>@homepage</td>          <td class="pass"><em>(popup info only)</em></td><td class="fail"></td><td class="pass"></td><td class="fail"></td><td class="pass"></td></tr>
         <tr><td>@homepageURL</td>       <td class="pass"><em>(popup info only)</em></td><td class="fail"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td></tr>
         <tr><td>@source</td>            <td class="pass"><em>(popup info only)</em></td><td class="fail"></td><td class="pass"></td><td class="fail"></td><td class="pass"></td></tr>
-        <tr><td>@support</td>           <td class="pass"><em>(popup info only)</em></td><td class="fail"></td><td class="fail"></td><td class="fail"></td><td class="fail"></td></tr>
+        <tr><td>@support</td>           <td class="pass"><em>(popup info only)</em></td><td class="fail"></td><td class="fail"></td><td class="fail"></td><td class="pass">v1.5.1</td></tr>
         <tr><td>@supportURL</td>        <td class="pass"><em>(popup info only)</em></td><td class="fail"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td></tr>
         <tr><td>@website</td>           <td class="pass"><em>(popup info only)</em></td><td class="fail"></td><td class="pass"></td><td class="fail"></td><td class="pass"></td></tr>
 
+
         <tr><td>@namespace</td>         <td class="fail"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td><td class="pass"></td></tr>
+        <tr><td>@require-css</td>       <td class="fail"></td><td class="fail"></td><td class="fail"></td><td class="fail"></td><td class="pass"></td></tr>
         <tr><td>@run-in</td>            <td class="fail"><em>(via @container)</em></td><td class="fail"></td><td class="pass">v5.3.0 <a href="https://www.tampermonkey.net/changelog.php?more=true&show=dhdg#v5.3.0" title="5.3.0" target="_blank"></a></td><td class="fail"></td><td class="pass"></td></tr>
         <tr><td>@sandbox</td>           <td class="fail"><em>(via @inject-into)</em></td><td class="fail"></td><td class="pass">v4.18</td><td class="fail"><em>(via @inject-into)</em></td><td class="fail"></td></tr>
         <tr><td>@webRequest</td>        <td class="fail"></td><td class="fail"></td><td class="pass experimental"><em>(not on MV3 Chrome)</em></td><td class="fail"></td><td class="fail"></td></tr>
@@ -2115,7 +2123,7 @@ element.innerHTML = dom;
           <td>The script will be injected if the body element exists. <em>(Tampermonkey/Violentmonkey)</em></td>
         </tr>
         <tr>
-          <td>context-menu</td>
+          <td>context-menu  <em>(Tampermonkey, ScriptCat)</em></td>
           <td>The script will be injected if it is clicked at the browser context menu (desktop Chrome-based browsers only).<br>
           Note: all <code>@include</code> and <code>@exclude</code> statements will be ignored if this value is used, but this may change in the future.</td>
         </tr>
@@ -2268,9 +2276,9 @@ element.innerHTML = dom;
           <th>API</th>
           <th>FireMonkey<br><em>(3.0)</em></th>
           <th>Greasemonkey<br><em>(4.13)</em></th>
-          <th style="width: 16em;">Tampermonkey<br><em>(5.4.1)</em></th>
+          <th style="width: 16em;">Tampermonkey<br><em>(5.5.1)</em></th>
           <th>Violentmonkey<br><em>(2.31.0)</em></th>
-          <th style="width: 16em;">ScriptCat<br><em>(0.16.15)</em></th>
+          <th style="width: 16em;">ScriptCat<br><em>(1.5.1)</em></th>
           <th>Stats<sup>1</sup></th>
         </tr>
       </thead>
@@ -2390,7 +2398,7 @@ element.innerHTML = dom;
 
         <tr><td>window.close <sup>3</sup></td><td class="pass"><em>limited support</em></td><td class="fail"><a href="https://github.com/greasemonkey/greasemonkey/issues/2538" title ="Add support for @grant window.close (Tampermonkey parity)" target="_blank"></a></td><td class="pass async"></td><td class="pass async">v2.6.2 <a href="https://violentmonkey.github.io/api/metadata-block/#grant" target="_blank"></a></td><td class="pass"></td><td>279</td></tr>
         <tr><td>window.focus <sup>4</sup></td><td class="fail"></td><td class="fail"></td><td class="pass async"></td><td class="pass async">v2.12.10 <a href="https://violentmonkey.github.io/api/metadata-block/#grant" target="_blank"></a></td><td class="pass"></td><td>135</td></tr>
-        <tr><td>window.onurlchange</td><td class="fail"></td><td class="fail"></td><td class="pass callback">v4.11 <a href="https://www.tampermonkey.net/changelog.php?ext=dhdg&show=fire" target="_blank"></a></td><td class="fail"></td><td class="fail"></td><td>69</td></tr>
+        <tr><td>window.onurlchange</td><td class="fail"></td><td class="fail"></td><td class="pass callback">v4.11 <a href="https://www.tampermonkey.net/changelog.php?ext=dhdg&show=fire" target="_blank"></a></td><td class="fail"></td><td class="pass">v1.4.0</td><td>69</td></tr>
 
         <tr><td>window.external <sup>5</sup></td><td class="pass sync">v2.74</td><td class="fail"></td><td class="pass callback experimental">v4.2 <a href="https://www.tampermonkey.net/changelog.php?more=true&show=dhdg#v4.2" target="_blank"></a></td><td class="pass async">v2.12.8 <a href="https://github.com/violentmonkey/violentmonkey/releases/tag/v2.12.8" target="_blank"></a></td><td class="pass"></td><td></td></tr>
 
@@ -2865,7 +2873,7 @@ element.innerHTML = dom;
     <p class="caption">Examples of importing jQuery <em>(UMD module)</em></p>
 <pre>
 <span class="comment">// importing jQuery as global variable</span>
-<span class="keyword">import</span>(<span class="string">'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.slim.min.js'</span>)
+<span class="keyword">import</span>(<span class="string">'https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0/jquery.slim.min.js'</span>)
 .<span class="keyword">then</span>(() =&gt; {
   <span class="comment">// jQuery is only available in this block statement</span>
   jQuery(<span class="string">'&lt;div&gt;Hello, World!&lt;/div&gt;'</span>).appendTo(<span class="string">'body'</span>);
@@ -2873,7 +2881,7 @@ element.innerHTML = dom;
 
 <span class="comment">// ... or ...</span>
 (<span class="keyword">async</span> () =&gt; {
-  <span class="keyword">await</span> <span class="keyword">import</span>(<span class="string">'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.slim.min.js'</span>);
+  <span class="keyword">await</span> <span class="keyword">import</span>(<span class="string">'https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0/jquery.slim.min.js'</span>);
   <span class="comment">// jQuery is only available in this block statement</span>
   jQuery(<span class="string">'&lt;div&gt;Hello, World!&lt;/div&gt;'</span>).appendTo(<span class="string">'body'</span>);
 })();
@@ -4133,7 +4141,7 @@ host.remove();
 
 <pre>
 <span class="comment">// create a panel</span>
-<span class="keyword">const</span> popup = <span class="function">GM.popup</span>();
+<span class="keyword">const</span> dialog = <span class="function">GM.popup</span>();
 <span class="comment">// panel-left | panel-right | panel-top | panel-bottom</span>
 dialog.className = 'panel-left';
 

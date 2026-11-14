@@ -36,7 +36,7 @@ export class ESLintOptions {
     languageOptions: {
       // ecmaVersion: 'latest', // default, ecmaVersion: 15, ECMAScript 2024
       // allow top-level await
-      // sourceType: "module", // default
+      // sourceType: 'module', // default
       // https://github.com/eslint/eslint/issues/20535
       // Change Request: globalReturn with module
       globals: {
@@ -73,26 +73,28 @@ export class ESLintOptions {
 }
 
 // ---------- FireMonkey Markers ---------------------------
+// https://microsoft.github.io/monaco-editor/docs.html#interfaces/editor_editor_api.editor.ITextModel.html#findMatches
 // Error = 8, Warning = 4, Info = 2, Hint = 1,
 // [severity, message, searchString, searchOnlyEditableRange, isRegex, matchCase, wordSeparators, captureMatches, limitResultCount]
 export class UserScript {
 
-  // static unprocessed = [
-  //   '@icon',
-  //   '@namespace',
-  //   '@nocompat',
-  // ];
-
+  // used in parseGrant
   static unsupported = [
-    'getTab',
-    'getTabs',
-    'saveTab',
+    'GM.getTab',
+    'GM_getTab',
+    'GM.getTabs',
+    'GM_getTabs',
+    'GM.saveTab',
+    'GM_saveTab',
 
     // removed in v3.0
-    'createObjectURL',
-    'import',
-  ].flatMap(i => [`GM.${i}`, `GM_${i}`]);
+    'GM.createObjectURL',
+    'GM_createObjectURL',
+    'GM.import',
+    'GM_import',
+  ];
 
+  // used in convert deprecated
   static deprecated = {
     '@matches': '@match',
     '@excludeMatches': '@exclude-match',
@@ -102,51 +104,65 @@ export class UserScript {
     'GM_fetch': 'GM.fetch',
   };
 
-  static depList = Object.entries(this.deprecated).map(i => ['Warning', `${i[0]} is deprecated, use ${i[1]} instead`, i[0]]);
-
   static custom = [
-    ['Info', 'GM.info is available without @grant', '@grant\\s+GM\\.info', true, true, true, '\\S'],
-    ['Info', 'GM_info is available without @grant', '@grant\\s+GM_info', true, true, true, '\\S'],
-    ['Error', 'window.close is not supported', '@grant\\s+window\\.close', true, true, true, '\\S'],
-    ['Error', 'window.focus is not supported', '@grant\\s+window\\.focus', true, true, true, '\\S'],
-    ['Error', 'window.onurlchange is not supported', '@grant\\s+window\\.onurlchange', true, true, true, '\\S'],
-    ['Warning', 'GM.getResourceUrl is implemented differently (see Help for more information).', 'GM.getResourceUrl'],
-    ['Warning', 'GM_getResourceURL is implemented differently (see Help for more information).', 'GM_getResourceURL'],
-    ['Warning', `This type of resource is not supported for GM_getResourceText.`, '@resource\\s+.+\\.(jpe?g|png|gif|webp|svg)', true, true],
-    ['Warning', 'Regular Expression has the worst performance.', '@(include|exclude)\\s+/.+/', true, true, true, '\\S'],
-    ['error', 'Includes unexpected content e.g. ads, miners, etc.', '@antifeature\\s+.+', true, true, true, '\\S'],
+    // unprocessed
+    // ['Info', '@icon is not processed.', '@icon', true, false, true],
+    // ['Info', '@namespace is not processed.', '@namespace', true, false, true],
+    // ['Info', '@nocompat is not processed.', '@nocompat', true, false, true],
+
+    // unsupported
+    ['Error', 'GM.getTab is not supported.', 'GM\\.getTab\\b', true, true, true],
+    ['Error', 'GM_getTab is not supported.', 'GM_getTab\\b', true, true, true],
+    ['Error', 'GM.getTabs is not supported.', 'GM.getTabs', true, false, true],
+    ['Error', 'GM_getTabs is not supported.', 'GM_getTabs', true, false, true],
+    ['Error', 'GM.saveTab is not supported.', 'GM.saveTab', true, false, true],
+    ['Error', 'GM_saveTab is not supported.', 'GM_saveTab', true, false, true],
+
+     // removed in v3.0
+    ['Error', 'GM.createObjectURL is not supported.', 'GM.createObjectURL', true, false, true],
+    ['Error', 'GM_createObjectURL is not supported.', 'GM_createObjectURL', true, false, true],
+    ['Error', 'GM.import is not supported.', 'GM.import', true, false, true],
+    ['Error', 'GM_import is not supported.', 'GM_import', true, false, true],
+
+    // other
+    ['Info', 'GM.info is available without @grant', '@grant\\s+GM\\.info', true, true, true],
+    ['Info', 'GM_info is available without @grant', '@grant\\s+GM_info', true, true, true],
+
+    ['Warning', 'GM.getResourceUrl is implemented differently (see Help for more information).', 'GM.getResourceUrl', true, false, true],
+    ['Warning', 'GM_getResourceURL is implemented differently (see Help for more information).', 'GM_getResourceURL', true, false, true],
+    ['Warning', `This type of resource is not supported for GM_getResourceText.`, '@resource\\s+.+\\.(jpe?g|png|gif|webp|svg)', true, true, true],
+    ['Warning', 'Regular Expression has the worst performance.', '@(include|exclude)\\s+/[^/].+/$', true, true, true],
+
+    ['Error', 'window.close is not supported', '@grant\\s+window\\.close', true, true, true],
+    ['Error', 'window.focus is not supported', '@grant\\s+window\\.focus', true, true, true],
+    ['Error', 'window.onurlchange is not supported', '@grant\\s+window\\.onurlchange', true, true, true],
+    ['Error', 'Includes unexpected content e.g. ads, miners, etc.', '@antifeature\\s+.+', true, true, true],
   ];
 
   static validMatch = '(((https?|\\*)://(\\*|\\*\\.[^*:/]+|[^*:/]+)/.*)|file:///.+)$';
   static possibleMatch = '(\\*|(http[*s]*|file)://\\*|([*:]*//)?[^*:/^]+(/[^^$]*))?$';
 
-  static useMatch = [
-    ['Info', `This pattern would be better as @match.`, `@include\\s+${this.validMatch}`, true, true],
-    ['Info', `This pattern would be better as @exclude-match.`, `@exclude\\s+${this.validMatch}`, true, true],
-    ['Info', `It is recommended to convert to @match.`, `@include\\s+${this.possibleMatch}`, true, true],
-    ['Info', `It is recommended to convert to @exclude-match.`, `@exclude\\s+${this.possibleMatch}`, true, true],
+  static common = [
+    // deprecated
+    ...Object.entries(this.deprecated).map(i => ['Warning', `${i[0]} is deprecated, use ${i[1]} instead`, i[0], true, false, true]),
+
+    // use match
+    ['Info', `This pattern would be better as @match.`, `@include\\s+${this.validMatch}`, true, true, true],
+    ['Info', `This pattern would be better as @exclude-match.`, `@exclude\\s+${this.validMatch}`, true, true, true],
+    ['Info', `It is recommended to convert to @match.`, `@include\\s+${this.possibleMatch}`, true, true, true],
+    ['Info', `It is recommended to convert to @exclude-match.`, `@exclude\\s+${this.possibleMatch}`, true, true, true],
   ];
 
   static jsMarkers = [
-    // ...this.unprocessed.map(i => ['Info', `${i} is not processed.`, i]),
-    ...this.unsupported.map(i => ['Error', `${i} is not supported.`, i, true, false, true, '\\S']),
     ...this.custom,
-    ...this.useMatch,
-    ...this.depList,
+    ...this.common,
   ];
 
   static cssMarkers = [
-    ...this.useMatch,
-    ...this.depList,
+    ...this.common,
   ];
 
   static getMarkers(language) {
     return language === 'javascript' ? this.jsMarkers : this.cssMarkers;
   }
 }
-
-/*
-Expected severity: ["off", 0, "warn", 1, "error", 2]
-Options: ["always", "never", "ignore"] & ["smart", "allow-null"]
-["error", "always", {"null": "ignore"}]
-*/
