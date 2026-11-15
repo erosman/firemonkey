@@ -401,11 +401,15 @@ class GM {
   static async getValue(key, defaultValue) {
     if (typeof key !== 'string') { return; }
 
-    const response = await this.getValues({[key]: defaultValue});
+    const response = await this.#getValues({[key]: defaultValue});
     return response[key];
   }
 
   static async getValues(obj) {
+    return this.#getValues(obj);
+  }
+
+  static async #getValues(obj) {
     // nullish | array | object
     if (obj && typeof obj !== 'object') { return; }
 
