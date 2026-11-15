@@ -401,8 +401,10 @@ class GM {
   static async getValue(key, defaultValue) {
     if (typeof key !== 'string') { return; }
 
-    const response = await this.getValues({[key]: defaultValue});
-    return response[key];
+    return this.#script.sendMessage({
+      api: 'getValues',
+      data: {[key]: defaultValue},
+    });
   }
 
   static async getValues(obj) {
