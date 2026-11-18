@@ -6,7 +6,7 @@ export class Meta {
 
   static regEx = /==(UserScript|UserCSS|UserStyle)==(.+?)==\/\1==/is;
 
-  static get(str, pref) {
+  static get(str, pref, settings) {
     // --- get all
     let [, type, metaData] = str.match(this.regEx) || [];
     if (!metaData) { return null; }
@@ -254,24 +254,17 @@ export class Meta {
         Object.hasOwn(pref[id].userVar[i] || {}, 'user') && (data.userVar[i].user = pref[id].userVar[i].user));
     }
 
-    // this.enable etc are defined in options.js but not from background.js
-    if (this.enable) {
-      data.enabled = this.enable.checked;
-      data.autoUpdate = !!data.updateURL && !!data.version && this.autoUpdate.checked;
-      data.userMeta = this.userMeta.value;
+    // settings.enabled etc are passed in from options.js but not from background.js
+    if (settings) {
+      data.enabled = settings.enabled;
+      data.autoUpdate = !!data.updateURL && !!data.version && settings.autoUpdate;
+      data.userMeta = settings.userMeta;
 
       // --- userVar
-      !this.userVar.dataset.default && document.querySelectorAll('.user-var :is(input, select)').forEach(item => {
-        const id = item.dataset.id;
-        if (!data.userVar[id] || !item.value.trim()) { return; } // skip
-
-        // number | string
-        let val = item.type === 'checkbox' ? item.checked * 1 : Number.isNaN(item.value * 1) ? item.value : item.value * 1;
-
-        // color may have opacity
-        item.dataset.opacity && (val += item.dataset.opacity);
+      for (const [id, val] of Object.entries(settings.userVar)) {
+        if (!data.userVar[id]) continue;
         data.userVar[id].user = val;
-      });
+      }
     }
 
     // --- convert updateURL to metaURL
