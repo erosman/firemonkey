@@ -249,9 +249,12 @@ export class Meta {
       ['enabled', 'autoUpdate', 'userMeta', 'storage'].forEach(i => data[i] = pref[id][i]);
       !data.updateURL && (data.updateURL = pref[id].updateURL);
 
-      // --- userVar, get user value
-      Object.keys(data.userVar).forEach(i =>
-        Object.hasOwn(pref[id].userVar[i] || {}, 'user') && (data.userVar[i].user = pref[id].userVar[i].user));
+      // --- userVar, get user value, unless settings replace them
+      if (!settings) {
+        for (const i of Object.keys(data.userVar)) {
+          if (Object.hasOwn(pref[id].userVar[i] || {}, 'user')) data.userVar[i].user = pref[id].userVar[i].user;
+        }
+      }
     }
 
     // settings.enabled etc are passed in from options.js but not from background.js
