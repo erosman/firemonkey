@@ -45,7 +45,7 @@ export class Installer {
   static async process(text, name, updateURL, pref) {
     const direct = !pref;
     pref ||= await browser.storage.local.get();
-    const data = Meta.get(text, pref);
+    const data = Meta.get(text, pref, 'bg');
     if (!data) {
       App.log(`${name}: Meta Data error`, 'error');
       return;

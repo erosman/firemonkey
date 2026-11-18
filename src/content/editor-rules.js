@@ -94,6 +94,7 @@ export const rules = {
     // "no-console": "warn",
     "no-duplicate-imports": "error",
     "no-else-return": "error",
+    "no-empty-function": ["error", {allow: ["arrowFunctions"]}],
     "no-eval": "error",
     "no-implied-eval": "error",
     "no-invalid-this": "error",

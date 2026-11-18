@@ -6,7 +6,7 @@ export class Meta {
 
   static regEx = /==(UserScript|UserCSS|UserStyle)==(.+?)==\/\1==/is;
 
-  static get(str, pref) {
+  static get(str, pref, bg) {
     // --- get all
     let [, type, metaData] = str.match(this.regEx) || [];
     if (!metaData) { return null; }
@@ -254,31 +254,26 @@ export class Meta {
         Object.hasOwn(pref[id].userVar[i] || {}, 'user') && (data.userVar[i].user = pref[id].userVar[i].user));
     }
 
-    // this.enable etc are defined in options.js but not from background.js
-    if (this.enable) {
-      data.enabled = this.enable.checked;
-      data.autoUpdate = !!data.updateURL && !!data.version && this.autoUpdate.checked;
-      data.userMeta = this.userMeta.value;
+    // --- userVar
+    // used in this.parseStyle, available from options.js only
+    !bg && document.querySelectorAll('.user-var :is(input, select)').forEach(i => {
+      const id = i.dataset.id;
+      if (!data.userVar[id] || !i.value.trim()) { return; } // skip
 
-      // --- userVar
-      !this.userVar.dataset.default && document.querySelectorAll('.user-var :is(input, select)').forEach(item => {
-        const id = item.dataset.id;
-        if (!data.userVar[id] || !item.value.trim()) { return; } // skip
+      // number | string
+      let val = i.type === 'checkbox' ? i.checked * 1 :
+        Number.isNaN(i.value * 1) ? i.value : i.value * 1;
 
-        // number | string
-        let val = item.type === 'checkbox' ? item.checked * 1 : Number.isNaN(item.value * 1) ? item.value : item.value * 1;
-
-        // color may have opacity
-        item.dataset.opacity && (val += item.dataset.opacity);
-        data.userVar[id].user = val;
-      });
-    }
-
-    // --- convert updateURL to metaURL
-    data.metaURL ||= this.getMetaURL(data.updateURL);
+      // color may have opacity
+      i.dataset.opacity && (val += i.dataset.opacity);
+      data.userVar[id].user = val;
+    });
 
     // --- userStyle
     userStyle && this.parseStyle(data);
+
+    // --- convert updateURL to metaURL
+    data.metaURL ||= this.getMetaURL(data.updateURL);
 
     // --- User Metadata (after all others to override)
     data.userMeta && this.getUserMeta(data, js);
@@ -615,7 +610,7 @@ ${parts.join('\n\n')}
     return [before, middle];
   }
 
-  // used in userscript.js | usercss.js
+  // used also in userscript.js | usercss.js
   static getVar(userVar, js) {
     // --- add @var
     const uv = Object.entries(userVar).map(([key, value]) => {

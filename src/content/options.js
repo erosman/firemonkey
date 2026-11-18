@@ -219,21 +219,17 @@ class Script {
 
     this.enable = document.getElementById('enable');
     this.enable.addEventListener('change', () => this.toggleEnable());
-    Meta.enable = this.enable;
 
     this.autoUpdate = document.getElementById('autoUpdate');
     this.autoUpdate.addEventListener('change', () => this.toggleAutoUpdate());
-    Meta.autoUpdate = this.autoUpdate;
 
     // --- User Variables
     this.userVar = document.querySelector('ul.user-var');
-    Meta.userVar = this.userVar;
     document.querySelector('button.user-var').addEventListener('click', () => this.resetUserVar());
 
     // --- User Metadata
     this.userMeta = document.getElementById('userMeta');
     this.userMeta.value = '';
-    Meta.userMeta = this.userMeta;
 
     const userMetaSelect = document.getElementById('userMetaSelect');
     userMetaSelect.selectedIndex = 0;
@@ -244,7 +240,7 @@ class Script {
 
     this.settings = document.getElementById('settings');
 
-    // --- Storage
+    // --- storage
     this.storage = document.getElementById('storage');
     this.storage.value = '';
 
@@ -252,7 +248,7 @@ class Script {
     document.querySelectorAll('.scripts button[data-i18n]').forEach(i =>
       i.addEventListener('click', e => this.processButtons(e)));
 
-    // --- Import/Export Script
+    // --- import script
     document.getElementById('fileScript').addEventListener('change', e => this.processFileSelect(e));
 
     // --- unsaved changes
@@ -346,7 +342,6 @@ class Script {
 
     // refresh previously loaded content
     if (this.box.id) {
-      // this.box.value = '';
       Editor.set();
       document.getElementById(this.box.id).click();
     }
@@ -523,7 +518,6 @@ class Script {
   static showUserVar(id) {
     // reset
     this.userVar.textContent = '';
-    delete this.userVar.dataset.reset;
     const tmp = this.liTemplate.cloneNode();
     tmp.append(document.createElement('label'), document.createElement('input'));
     const sel = document.createElement('select');
@@ -613,7 +607,7 @@ class Script {
   static resetUserVar() {
     if (!this.userVar.children[0]) { return; }
 
-    this.userVar.dataset.default = 'true';
+    // this.userVar.dataset.default = 'true';
     this.userVar.querySelectorAll('input, select').forEach(i => {
       const val = i.type === 'checkbox' ? i.checked + '' : i.value;
       if (val !== i.dataset.default) {
@@ -735,6 +729,9 @@ class Script {
     this.autoUpdate.checked = false;
     this.legend.className = 'js';
     this.legend.textContent = browser.i18n.getMessage('scripts');
+    this.userMeta.value = '';
+    this.storage.value = '';
+    this.userVar.textContent = '';
   }
 
   static async saveScript() {
@@ -774,10 +771,11 @@ class Script {
     }
 
     // --- check matches
-    if (!data.matches[0] && !data.includes[0] && !data.includeGlobs[0]) {
-      // allow no matches but disable
-      data.enabled = false;
-    }
+    // if (!data.matches[0] && !data.includes[0] && !data.includeGlobs[0]) {
+    //   // allow no matches but disable
+    //   data.enabled = false;
+    // }
+
     // set id as _name
     const id = `_${data.name}`;
 
@@ -826,6 +824,11 @@ class Script {
       li.id = id;
     }
 
+    // --- get enable/autoUpdate/userMeta
+    data.enabled = this.enable.checked;
+    data.autoUpdate = data.updateURL && data.version && this.autoUpdate.checked;
+    data.userMeta = this.userMeta.value;
+
     // --- check storage, JS only
     if (data.js) {
       if (!this.storage.value.trim()) {
@@ -864,15 +867,11 @@ class Script {
     // update scripts
     browser.runtime.sendMessage({update: 'script', pref, ids: [id]});
 
-    // --- userVar
+    // --- userVar (in case there is an update in the script text)
     this.showUserVar(id);
 
     // --- progress bar
     ProgressBar.show();
-  }
-
-  static checkStorage() {
-
   }
 
   // --- Remote Update
@@ -903,13 +902,6 @@ class Script {
     // set id as _name
     const id = `_${data.name}`;
     const oldId = `_${name}`;
-
-    // --- check version (version is checked in getMeta for when metaURL is set)
-    // if (!App.higherVersion(data.version, pref[id].version)) {
-    //   // App.notify(browser.i18n.getMessage('noNewUpdate'), name);
-    //   CustomValidity.set(this.updateButton, browser.i18n.getMessage('noNewUpdate'));
-    //   return;
-    // }
 
     // --- check name change
     if (data.name !== name) {
@@ -945,6 +937,7 @@ class Script {
     };
     browser.storage.session.set({diff})
     .then(() => browser.tabs.create({url: '/content/diff.html'}));
+
     App.notify(browser.i18n.getMessage('scriptUpdated', data.version), name);
 
     // save to pref
@@ -1003,6 +996,9 @@ class Script {
 
   // ---------- import script ------------------------------
   static processFileSelect(e) {
+    // check for unsaved data
+    if (this.unsavedChanges()) { return; }
+
     // --- check for Stylus import
     if (e.target.files[0].type === 'application/json') {
       this.processFileSelectStylus(e);
@@ -1028,7 +1024,8 @@ class Script {
 
   static readDataScript(text) {
     // --- check meta data
-    const data = Meta.get(text, pref);
+    const data = Meta.get(text, pref, 'bg');
+
     // data.error ?
     if (!data || data.error) {
       App.notify(browser.i18n.getMessage('metaError'));
@@ -1072,6 +1069,7 @@ class Script {
 
     // update page display
     this.process();
+
     // update saved pref
     browser.storage.local.set(this.obj);
 
@@ -1105,9 +1103,9 @@ class Script {
         return;
       }
 
-      const data = Meta.get(i.sourceCode, pref);
+      const data = Meta.get(i.sourceCode, pref, 'bg');
       // new Stylus "updateUrl": null, | old Stylus "updateUrl": "",
-      data.updateUrl = i.updateUrl || '';
+      data.updateURL = i.updateUrl || '';
       data.enabled = i.enabled;
 
       // update user var
