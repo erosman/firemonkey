@@ -219,21 +219,17 @@ class Script {
 
     this.enable = document.getElementById('enable');
     this.enable.addEventListener('change', () => this.toggleEnable());
-    Meta.enable = this.enable;
 
     this.autoUpdate = document.getElementById('autoUpdate');
     this.autoUpdate.addEventListener('change', () => this.toggleAutoUpdate());
-    Meta.autoUpdate = this.autoUpdate;
 
     // --- User Variables
     this.userVar = document.querySelector('ul.user-var');
-    Meta.userVar = this.userVar;
     document.querySelector('button.user-var').addEventListener('click', () => this.resetUserVar());
 
     // --- User Metadata
     this.userMeta = document.getElementById('userMeta');
     this.userMeta.value = '';
-    Meta.userMeta = this.userMeta;
 
     const userMetaSelect = document.getElementById('userMetaSelect');
     userMetaSelect.selectedIndex = 0;
@@ -737,6 +733,30 @@ class Script {
     this.legend.textContent = browser.i18n.getMessage('scripts');
   }
 
+  // --- settings for the script being saved
+  static getSettings() {
+    const userVar = {};
+    if (!this.userVar.dataset.default) {
+      for (const item of document.querySelectorAll('.user-var :is(input, select)')) {
+        if (!item.value.trim()) continue; // skip
+
+        // number | string
+        let val = item.type === 'checkbox' ? item.checked * 1 : Number.isNaN(item.value * 1) ? item.value : item.value * 1;
+
+        // color may have opacity
+        if (item.dataset.opacity) val += item.dataset.opacity;
+        userVar[item.dataset.id] = val;
+      }
+    }
+
+    return {
+      enabled: this.enable.checked,
+      autoUpdate: this.autoUpdate.checked,
+      userMeta: this.userMeta.value,
+      userVar,
+    };
+  }
+
   static async saveScript() {
     const {box} = this;
 
@@ -749,7 +769,7 @@ class Script {
     if (!value) { return; }
 
     // --- check metadata
-    const data = Meta.get(value, pref);
+    const data = Meta.get(value, pref, this.getSettings());
     if (!data) {
       CustomValidity.set(this.saveButton, browser.i18n.getMessage('metaError'));
       return;
