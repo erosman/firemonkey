@@ -219,9 +219,11 @@ class Script {
 
     this.enable = document.getElementById('enable');
     this.enable.addEventListener('change', () => this.toggleEnable());
+    Meta.enable = this.enable;
 
     this.autoUpdate = document.getElementById('autoUpdate');
     this.autoUpdate.addEventListener('change', () => this.toggleAutoUpdate());
+    Meta.autoUpdate = this.autoUpdate;
 
     // --- User Variables
     this.userVar = document.querySelector('ul.user-var');
@@ -230,6 +232,7 @@ class Script {
     // --- User Metadata
     this.userMeta = document.getElementById('userMeta');
     this.userMeta.value = '';
+    Meta.userMeta = this.userMeta;
 
     const userMetaSelect = document.getElementById('userMetaSelect');
     userMetaSelect.selectedIndex = 0;
@@ -607,7 +610,6 @@ class Script {
   static resetUserVar() {
     if (!this.userVar.children[0]) { return; }
 
-    // this.userVar.dataset.default = 'true';
     this.userVar.querySelectorAll('input, select').forEach(i => {
       const val = i.type === 'checkbox' ? i.checked + '' : i.value;
       if (val !== i.dataset.default) {
@@ -823,11 +825,6 @@ class Script {
       li.textContent = data.name;
       li.id = id;
     }
-
-    // --- get enable/autoUpdate/userMeta
-    data.enabled = this.enable.checked;
-    data.autoUpdate = data.updateURL && data.version && this.autoUpdate.checked;
-    data.userMeta = this.userMeta.value;
 
     // --- check storage, JS only
     if (data.js) {

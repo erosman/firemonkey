@@ -81,20 +81,20 @@ export class Meta {
           /default|private|container-\d+/i.test(value) && data[key].push(value.toLowerCase());
           return;
 
-        case 'excludeGlob': // (deprecated v3.0)
-          value && data.excludeGlobs.push(value);
-          return;
-
-        case 'exclude-match':
-          value && data.excludeMatches.push(value);
-          return;
-
         case 'exclude':
           if (!value) { return; }
 
           // revert .tld
           value = value.replace(/\.tld\//i, '.*/');
           value.startsWith('/') && value.endsWith('/') ? data.excludes.push(value) : data.excludeGlobs.push(value);
+          return;
+
+        case 'exclude-match':
+          value && data.excludeMatches.push(value);
+          return;
+
+        case 'excludeGlob': // (deprecated v3.0)
+          value && data.excludeGlobs.push(value);
           return;
 
         case 'grant':
@@ -128,12 +128,12 @@ export class Meta {
           js && value === 'page' && (data.injectInto = value);
           return;
 
-        case 'matchAboutBlank':
-          value && (data[key] = value === 'true');
-          return;
-
         case 'match':
           value && data.matches.push(value);
+          return;
+
+        case 'matchAboutBlank':
+          value && (data[key] = value === 'true');
           return;
 
         case 'metaURL':
@@ -254,20 +254,26 @@ export class Meta {
         Object.hasOwn(pref[id].userVar[i] || {}, 'user') && (data.userVar[i].user = pref[id].userVar[i].user));
     }
 
-    // --- userVar
-    // used in this.parseStyle, available from options.js only
-    !bg && document.querySelectorAll('.user-var :is(input, select)').forEach(i => {
-      const id = i.dataset.id;
-      if (!data.userVar[id] || !i.value.trim()) { return; } // skip
+    // available from options.js only, get updated values from DOM
+    if (!bg) {
+      data.enabled = this.enable.checked;
+      data.autoUpdate = data.updateURL && data.version && this.autoUpdate.checked;
+      data.userMeta = this.userMeta.value;
 
-      // number | string
-      let val = i.type === 'checkbox' ? i.checked * 1 :
-        Number.isNaN(i.value * 1) ? i.value : i.value * 1;
+      // --- userVar
+      document.querySelectorAll('.user-var :is(input, select)').forEach(i => {
+        const id = i.dataset.id;
+        if (!data.userVar[id] || !i.value.trim()) { return; } // skip
 
-      // color may have opacity
-      i.dataset.opacity && (val += i.dataset.opacity);
-      data.userVar[id].user = val;
-    });
+        // number | string
+        let val = i.type === 'checkbox' ? i.checked * 1 :
+          Number.isNaN(i.value * 1) ? i.value : i.value * 1;
+
+        // color may have opacity
+        i.dataset.opacity && (val += i.dataset.opacity);
+        data.userVar[id].user = val;
+      });
+    }
 
     // --- userStyle
     userStyle && this.parseStyle(data);
@@ -290,6 +296,7 @@ export class Meta {
       data.injectInto = 'page';
     }
 
+    console.log(data);
     return data;
   }
 
@@ -316,8 +323,9 @@ export class Meta {
           data.container = this.filter(data.container, value.toLowerCase());
           break;
 
-        case 'disable-match':
-          data.matches = this.filter(data.matches, value);
+        case 'disable-exclude':
+          data.excludes = this.filter(data.excludes, value);
+          data.excludeGlobs = this.filter(data.excludeGlobs, value);
           break;
 
         case 'disable-exclude-match':
@@ -329,9 +337,8 @@ export class Meta {
           data.includeGlobs = this.filter(data.includeGlobs, value);
           break;
 
-        case 'disable-exclude':
-          data.excludes = this.filter(data.excludes, value);
-          data.excludeGlobs = this.filter(data.excludeGlobs, value);
+        case 'disable-match':
+          data.matches = this.filter(data.matches, value);
           break;
 
         // --- add/amend rules
@@ -360,12 +367,12 @@ export class Meta {
           js && value === 'page' && (data.injectInto = value);
           break;
 
-        case 'matchAboutBlank':
-          value && (data[key] = value === 'true');
-          break;
-
         case 'match':
           value && matches.push(value);
+          break;
+
+        case 'matchAboutBlank':
+          value && (data[key] = value === 'true');
           break;
 
         case 'origin':
